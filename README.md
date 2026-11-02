@@ -6,7 +6,7 @@ Privacy Leakage from Fine-Tuned Genomic Language Models**.
 We evaluate candidate-record membership ranking and exact sequence recovery from
 fine-tuned genomic language models. Candidate ranking is not personal identification.
 The experiments compare contextual access, candidate scoring, decoding protocols,
-and tokenization, using eight released checkpoints and a controlled 12.9M backbone.
+and tokenization, using eight released checkpoints and a controlled transformer backbone.
 
 At DNABERT-2's final chromosome-22 checkpoint, single-copy records rank first against
 100 alternatives in 18–26% of fresh-window evaluations across three training seeds,
