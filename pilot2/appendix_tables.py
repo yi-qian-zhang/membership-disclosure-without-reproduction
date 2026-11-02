@@ -244,7 +244,7 @@ def table_rerun(res: Path, out: Path):
                 rows.append((f"{c[0]}, {p.stem[3:]}", c[4], c[5], "---", c[6], c[8], c[9]))
             elif len(c) == 11:                                     # BPE
                 rows.append((f"{c[0]}, {p.stem[3:]}", c[3], c[4], "---", c[5], c[7], c[8]))
-    hdr = "run, checkpoint & tier & $n$ & standard & LOO top-1 & ceiling & ours \\\\"
+    hdr = "run, checkpoint & tier & $n$ & standard & LOO top-1 & power diag. & ours \\\\"
     lines = [head("A7: the 19 single-basis chromosome-22 cells of 23 Oct."),
              "\\begin{longtable}{lcccccc}",
              "\\caption{\\emph{Generated.} The 23 October re-measurement of chromosome~22: "
@@ -353,7 +353,7 @@ def table_capacity(rows, out: Path):
 
 # ---------------------------------------------------------------- A10 edge-conditioned audit
 def table_infill(res: Path, out: Path):
-    """All 120 masked cells under both protocols, as the audit recorded them."""
+    """All 264 tier rows under both protocols, as the audit recorded them."""
     src = res / "human_mlm" / "infill_audit.md"
     if not src.exists():
         print("  (no human_mlm/infill_audit.md)")
@@ -370,8 +370,7 @@ def table_infill(res: Path, out: Path):
     lines = [head(f"A10: the edge-conditioned audit, {len(body)} cells."),
              "\\begin{longtable}{lllcccccccc}"[:-1] + "}",
              "\\caption{\\emph{Generated.} Every masked cell of the controlled grid under the "
-             "prefix protocol and under edge-conditioned infilling, which recovers up to three "
-             "times more from diffusion language models. \\emph{ham} is the mean number of wrong "
+             "prefix protocol and under edge-conditioned infilling. \\emph{ham} is the mean number of wrong "
              "nucleotides out of 48; $r{=}0$ is the never-trained control.}\\label{tab:a10}\\\\",
              "\\toprule", hdr, "\\midrule", "\\endfirsthead",
              "\\toprule", hdr, "\\midrule", "\\endhead",
@@ -380,6 +379,57 @@ def table_infill(res: Path, out: Path):
     lines += ["\\end{longtable}"]
     (out / "t_infill.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(f"  t_infill.tex ({len(body)} cells)")
+
+
+def table_infill_summary(res: Path, out: Path):
+    """Summarize the complete audit without treating repeated evaluations as independent."""
+    src = res / "human_mlm" / "infill_audit.md"
+    body = []
+    for line in src.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("| ") or "---" in line or "dataset |" in line:
+            continue
+        cells = [x.strip().replace("**", "") for x in line.strip("|").split("|")]
+        if len(cells) == 10:
+            body.append(cells)
+    assert len(body) == 264
+    assert {c[4] for c in body} == {"r=0", "r=1", "r=16"}
+    assert all(c[5] == "20" and c[6] == c[8] == "0%" for c in body)
+    groups = {}
+    for c in body:
+        groups.setdefault(tuple(c[:3]), []).append(c)
+    assert len(groups) == 40
+    lines = [head("Grouped edge-conditioned audit; full 264 rows in t_infill_cells.csv."),
+             r"\begin{longtable}{lllccccccc}",
+             r"\caption{\emph{Generated.} Edge-conditioned audit across five datasets, four tokenizers and two masking rates. All prefix and infilling exact-recovery rates are zero. Entries are mean Hamming errors out of 48, averaged over the indicated seeds; each seed/tier row evaluates 20 records. $r=0$ denotes never-trained controls. This groups 88 configurations and 264 tier rows, not independent trials. The full rows are retained in \texttt{tables/t\_infill\_cells.csv} and the source report \texttt{results/human\_mlm/infill\_audit.md}.}\label{tab:a10}\\",
+             r"\toprule",
+             r"& & & & \multicolumn{2}{c}{$r=0$} & \multicolumn{2}{c}{$r=1$} & \multicolumn{2}{c}{$r=16$} \\",
+             r"dataset & tokenizer & mask rate & seeds & prefix & infill & prefix & infill & prefix & infill \\",
+             r"\midrule", r"\endfirsthead", r"\toprule",
+             r"& & & & \multicolumn{2}{c}{$r=0$} & \multicolumn{2}{c}{$r=1$} & \multicolumn{2}{c}{$r=16$} \\",
+             r"dataset & tokenizer & mask rate & seeds & prefix & infill & prefix & infill & prefix & infill \\",
+             r"\midrule", r"\endhead", r"\bottomrule", r"\endlastfoot"]
+    configurations = 0
+    for (dataset, tok, objective), rows in sorted(groups.items()):
+        seeds = {c[3] for c in rows}
+        configurations += len(seeds)
+        assert len(rows) == 3 * len(seeds)
+        values = []
+        for tier in ("r=0", "r=1", "r=16"):
+            subset = [c for c in rows if c[4] == tier]
+            assert {c[3] for c in subset} == seeds
+            for col in (7, 9):
+                values.append(f"{sum(float(c[col]) for c in subset)/len(subset):.1f}")
+        lines.append(" & ".join([esc(dataset), esc(tok), objective.split("@")[1],
+                                  str(len(seeds)), *values]) + r" \\")
+    assert configurations == 88
+    lines.append(r"\end{longtable}")
+    (out / "t_infill_summary.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    with (out / "t_infill_cells.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle, lineterminator="\n")
+        writer.writerow(["dataset", "tokenizer", "objective", "seed", "tier", "n",
+                         "prefix_exact", "prefix_hamming", "infill_exact", "infill_hamming"])
+        writer.writerows(body)
+    print("  t_infill_summary.tex (40 groups; 264 original rows retained in CSV)")
 
 
 # ---------------------------------------------------------------- A11 canary-split draws
@@ -507,6 +557,7 @@ def main(argv=None):
     table_placement(rows, out)
     table_capacity(rows, out)
     table_infill(res, out)
+    table_infill_summary(res, out)
     table_draws(res, out)
     return 0
 
