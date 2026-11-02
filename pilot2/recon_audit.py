@@ -1,35 +1,23 @@
-"""Why a masked cell can hold a record completely and reconstruct none of it, measured.
+"""Audit prefix recovery, target surprise and token-level re-masking on saved checkpoints.
 
     python -m pilot2.recon_audit --root outputs/human_mlm_long --tiers 1,4,16 --gpu 1
 
-The 150-round masked cells are the paper's strongest result and its most attackable one: a planted
-canary sits ~1.9 bits below the non-member control under the bidirectional scorer and is ranked
-first against 100 candidates even after a single insertion, while greedy reconstruction of its
-second half is exactly 0 % in all 30 cells and leaves 30-34 of 48 nucleotides wrong, which is the
-non-member distance. A reviewer will say the extractor is broken. Two measurements answer that, and
-neither exists in the saved runs:
+Teacher-forced target surprise and top-1 accuracy condition on true target context.
+Their per-record powers are conditional-prediction diagnostics, not probabilities
+or certified bounds on recovery by this or another decoder. The historical JSON
+fields `exact_upper_bound`, `bound` and `loo_bound` retain their names and values for compatibility.
 
-1. THE CONDITIONAL THE RULERS ACTUALLY USE. `rank_probe` normalises bits/nt over the whole 96-nt
-   canary, and `extract_prefix` reveals the first 48 of those for free. So a low canary surprise can
-   coexist with a hopeless reconstruction simply because half the scored span is the half the
-   attacker was given. This script measures the quantity extraction has to invert and nothing else:
-   the teacher-forced chain-rule surprise of the 48 TARGET nucleotides given the revealed prefix,
-   together with the fraction of decoding steps at which the true token is the argmax. All-48-exact
-   requires every step, so top1_rate**n_steps is an upper bound on the extraction rate, and a cell
-   with high target surprise cannot be rescued by any decoder, beam search included.
+Re-masking updates covering tokens sequentially from multiple initializations,
+stopping at a fixed point of the search computation or at the sweep cap. The
+attack selects by pseudo-log-likelihood without knowing the target; any-restart
+success uses the truth and is an oracle comparison over the same restart set.
+Exact recovery is scored on the hidden 48-nt crop, whereas LOO tests full original
+token identities. Leading revealed letters are constrained; trailing host letters
+within a covering token are not. Search is batched and LOO uses a single-row pass.
+Thus even early-stopped exact outputs do not certify the separate probe's premise.
 
-2. THE DECODE THAT WAS NEVER RUN. Both shipped protocols mask 8-16 target tokens at once, far
-   outside the 15 % iid masking the model was trained on, while the surprise and recognition rulers
-   read a conditional with ONE token masked. Iterated conditional modes closes that gap: initialise
-   the target, then re-mask exactly one target token at a time with every other target token at its
-   current value, sweeping to a fixed point. That is ~1/48 masking, inside the training
-   distribution, and it is the strongest attack available to someone holding only the flanking
-   sequence. If it still returns 0 %, the 0 % is a property of the model under every conditioning
-   such an attacker can construct, and the paper can say so.
-
-Reads only saved checkpoints, writes only new files, and does not touch pilot2/score.py, because
-queue_1012a is mid-flight and must score every cell with the same code. Fold the ICM decoder into
-`score.py:extract_infill` as `order="icm"` once that queue has finished.
+The routine reads saved checkpoints and leaves the training/scoring implementation
+unchanged. Zero tested recovery does not establish an absence of retained signal.
 """
 from __future__ import annotations
 
@@ -174,8 +162,9 @@ def target_surprise(model, tok, kind, probe: Probe, host, device, k_nt=48, offse
     """Teacher-forced surprise of the TRUE target half under the extractor's own conditioning.
 
     Returns bits per TARGET nucleotide (not per canary nucleotide: the revealed half is excluded,
-    which is the whole point), the fraction of steps whose argmax is the true token, and the upper
-    bound that fraction places on all-48-exact extraction.
+    which is the whole point), the fraction of steps whose argmax is the true token, and its
+    per-record power. The legacy `exact_upper_bound` key stores this diagnostic; it does not
+    certify all-48-exact recovery by any decoder.
     """
     content = tok.content_ids.to(device)
     start_nt, end_nt, lo, hi, start, end = _span(tok, offset, k_nt)
@@ -367,12 +356,8 @@ def extract_icm(model, tok, kind, probe: Probe, host, device, k_nt=48, offset=PR
     ham, n_sweeps = best["ham"], best["sweeps"]
     oracle = any(d["exact"] for d in results)
 
-    # The predictor that matches THIS decoder. The prefix-conditional top-1 rate bounds left-to-right
-    # decoding, and ICM beat that bound by two orders of magnitude on the one cell that extracts,
-    # because ICM conditions on the suffix and on the other target tokens. The operative quantity is
-    # therefore leave-one-out: every other target token at its TRUE value, one masked, is the
-    # conditional ICM converges to and the one the PLL scorer reads. Its product over the target
-    # tokens is the rate at which a fixed point can be the true string.
+    # LOO supplies all other true tokens. Its power is diagnostic only: the
+    # crop/full-token endpoints and the search/probe numerical maps can differ.
     xb = xb0.clone()
     for q in todo:
         xb[0, q + 1] = xt[q]
@@ -503,10 +488,10 @@ def main(argv=None):
                                  loo_bits=m("loo_bits"), oracle=m("oracle")))
                 r = rows[-1]
                 print(f"  {d.name:28s} r={t:<3d} n={r['n']:3d} | target {r['tgt_bits']:5.3f} b/nt "
-                      f"top1 {r['top1']:.2f} bound {r['bound']:.3f} | prefix {100*r['pre_exact']:5.1f}% "
+                      f"top1 {r['top1']:.2f} power diag. {r['bound']:.3f} | prefix {100*r['pre_exact']:5.1f}% "
                       f"(ham {r['pre_ham']:4.1f}) | icm {100*r['icm_exact']:5.1f}% "
                       f"(ham {r['icm_ham']:4.1f}) | loo top1 {r['loo_top1']:.2f} "
-                      f"bound {r['loo_bound']:.3f} bits {r['loo_bits']:5.3f} | "
+                      f"power diag. {r['loo_bound']:.3f} bits {r['loo_bits']:5.3f} | "
                       f"oracle {100*r['oracle']:5.1f}%", flush=True)
             del model
             torch.cuda.empty_cache()
@@ -515,23 +500,18 @@ def main(argv=None):
         print("no runs with a checkpoint under", args.root)
         return 1
     md = [f"# Reconstruction audit — {args.name}", "",
-          "`target` is the teacher-forced surprise of the 48 TARGET nucleotides given the revealed "
-          "48, in bits per target nucleotide: the conditional extraction has to invert, with the "
-          "revealed half excluded. `top1` is the fraction of decoding steps whose argmax is the true "
-          "token and `bound` = top1^steps is the implied ceiling on all-48-exact extraction, so a "
-          "cell whose bound is ~0 cannot be rescued by any decoder. `icm` re-masks one target token "
-          "at a time and sweeps to a fixed point, which is the in-distribution conditional the "
-          "surprise and recognition rulers read and neither shipped protocol enters. `LOO` is the "
-          "predictor that matches THAT decoder rather than left-to-right decoding: every other "
-          "target token held at its true value, one masked, which is the conditional ICM converges "
-          "to and the one the PLL scorer reads. `LOO bound` is its per-token top-1 rate raised to "
-          "the number of target tokens, so it is the rate at which a fixed point can be the true "
-          "string, and it is the column to read against `ICM exact`. `ICM exact` is the attack: "
-          "several restarts, each swept to a fixed point, and the one with the best "
-          "pseudo-log-likelihood is output, which an attacker can compute without the truth. "
-          "`any-restart` is the oracle over the same restarts and is an upper bound, not an "
-          "attack, because choosing it needs the answer.", "",
-          "| run | data | tok | obj | tier | n | target b/nt | top1 | prefix | LOO b/nt | LOO top1 | LOO bound | ICM exact | ICM ham | any-restart |",
+          "`target` is teacher-forced surprise over the hidden 48 nucleotides, in bits per "
+          "nucleotide. `top1` supplies true preceding target context; `LOO` supplies the other "
+          "true target tokens. Their per-record powers are conditional-prediction diagnostics, "
+          "not recovery probabilities or certified bounds for any decoder. JSON keys `exact_upper_bound`, `bound` "
+          "and `loo_bound` retain their historical names and numeric values for compatibility. "
+          "`ICM exact` scores the hidden nucleotide crop after selecting a restart by "
+          "pseudo-log-likelihood without the answer. Full-token LOO identity differs from this "
+          "cropped endpoint, and batched search can differ numerically from single-row LOO. "
+          "Early stopping does not certify the probe's necessary condition. Outputs can also "
+          "reach the sweep cap. `any-restart` uses the answer to choose among the same restarts; "
+          "it is an oracle comparison, not an executable attack selection rule.", "",
+          "| run | data | tok | obj | tier | n | target b/nt | top1 | prefix | LOO b/nt | LOO top1 | LOO power diag. | ICM exact | ICM ham | any-restart |",
           "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         md.append(f"| {r['run']} | {r['data']} | {r['tok']} | {r['obj']} | r={r['tier']} | {r['n']} | "

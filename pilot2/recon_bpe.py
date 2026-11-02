@@ -1,37 +1,20 @@
-"""The re-masking decoder for a VARIABLE-LENGTH (BPE) vocabulary, i.e. DNABERT-2.
+"""Nucleotide-level re-masking for DNABERT-2's variable-length BPE vocabulary.
 
-    python -m pilot2.recon_bpe --root outputs/dnabert_long --restarts 16 --gpu 0
+    python -m pilot2.recon_bpe --root outputs/bpe_human --restarts 16 --score fixed --gpu 0
 
-WHY A THIRD FILE. The decoder that takes a masked model from 0 % to 95 % re-masks one unit at a time
-and sweeps to a fixed point. What "one unit" means depends on the vocabulary, and all three cases are
-genuinely different:
+Each nucleotide candidate re-segments the window. With --score fixed (default),
+candidates are scored over a common boundary-aligned interval, with no division.
+The historical --score pernt path divides by each candidate's covered span;
+that candidate-dependent divisor introduces a letter prior. It remains available
+only to reproduce the historical campaign, not as a correction for length bias.
+Products of masked-token marginals need not be joint sequence probabilities.
 
-  pilot2/recon_audit.py    fixed-width non-overlapping k-mers (ours, and NT's 4096 6-mers). One TOKEN
-                           at a time; token t always covers nucleotides [t*k, (t+1)*k).
-  pilot2/recon_overlap.py  overlapping stride-1 k-mers (DNABERT). One token at a time is undefined,
-                           because neighbouring tokens share k-1 nucleotides and a changed token
-                           decodes to no DNA string. One NUCLEOTIDE at a time, masking the k tokens
-                           that cover it.
-  this file                BPE. Tokens have no fixed length and no fixed boundaries: changing one
-                           nucleotide RE-SEGMENTS the window, so there is no persistent token grid to
-                           iterate over at all. The latent variable is again the nucleotide string.
-
-THE SCORE. For candidate letter a at nucleotide j: write a into the window, re-tokenise, mask every
-token whose nucleotide span covers j, and read the model's log-probability of those tokens' true
-identities. Different candidates re-segment differently and so mask different numbers of tokens
-covering different numbers of nucleotides, which makes raw log-probabilities incomparable -- the
-standard length bias of BPE likelihoods. Dividing by the nucleotides those masked tokens cover
-removes it, and bits per nucleotide is the unit every scorer in this paper already uses. The mode of
-that 4-way distribution is the ICM update.
-
-WHAT IT IS FOR. DNABERT-2 is the second released tokeniser family with a FEW-SLOT target, and the
-only one besides NT. Under the standard protocol it already reaches 30 % verbatim on E. coli at
-0.026 bits past its own utility optimum (3.46(a)). If the search decoder lifts that the way it lifted
-NT from 35 % to 70 %, the under-reporting result rests on two independent released families rather
-than one. If it does not, the result is NT-specific and the paper has to say so.
-
-Restarts are batched and positions are swept sequentially, as in recon_overlap: parallel updates
-oscillate, and batching the restarts is what makes a 4-candidate score per position affordable.
+LOO supplies all other true target nucleotides. Its accuracy and per-record power
+are conditional-prediction diagnostics, not certified recovery bounds. The JSON
+field `loo_bound` is retained for compatibility. Search uses batched candidates
+whereas LOO uses a single-row path; zero exact recovery does not validate a bound.
+Restarts are batched and positions are swept sequentially up to the stated cap;
+truth-free selection and any-restart oracle results are reported separately.
 """
 from __future__ import annotations
 
@@ -60,8 +43,8 @@ def nt_dist_bpe(model, voc: BpeVocab, wins: np.ndarray, j: int, device, chunk: i
 
     For each candidate the window is re-tokenised, every token whose span covers j is masked, and the
     score is the summed log-probability of those tokens' true identities divided by the nucleotides
-    they cover -- per nucleotide, because candidates re-segment differently and raw token
-    log-probabilities are not comparable across segmentations.
+    they cover. This historical score introduces a candidate-dependent letter prior; use
+    nt_dist_bpe_fixed for the common-interval comparison. Retained for reproducing old runs.
     """
     B = wins.shape[0]
     jobs, meta = [], []
@@ -323,7 +306,7 @@ def main(argv=None):
                                  loo_bits=m("loo_bits"), loo_bound=m("loo_bound")))
                 r = rows[-1]
                 print(f"  {d.name:26s} r={t:<3d} n={r['n']:3d} | loo top1 {r['loo_top1']:.2f} "
-                      f"bits {r['loo_bits']:5.3f} bound {r['loo_bound']:.3f} | icm-bpe "
+                      f"bits {r['loo_bits']:5.3f} power diag. {r['loo_bound']:.3f} | icm-bpe "
                       f"{100*r['exact']:5.1f}% (ham {r['ham']:4.1f}) | oracle {100*r['oracle']:5.1f}%",
                       flush=True)
             del model
@@ -333,13 +316,15 @@ def main(argv=None):
         print("no DNABERT-2 cells with a checkpoint under", args.root)
         return 1
     md = [f"# Re-masking in nucleotide space on DNABERT-2's BPE vocabulary — {args.name}", "",
-          "BPE tokens have no fixed length or boundaries, so changing one nucleotide re-segments the "
-          "window and there is no persistent token grid to iterate over. The latent variable is the "
-          "nucleotide string: for each candidate letter the window is re-tokenised, every token whose "
-          "span covers that position is masked, and the score is the summed log-probability of those "
-          "tokens divided by the nucleotides they cover -- per nucleotide, because candidates "
-          "re-segment differently and raw BPE log-probabilities carry a length bias.", "",
-          "| run | data | seed | tier | n | LOO top1 | LOO b/nt | LOO bound | ICM-bpe exact | ham | any-restart |",
+          f"Scorer: `{args.score}`. `fixed` scores all four candidates on a common aligned "
+          "interval without division; historical `pernt` divides by each candidate's covered "
+          "span and carries a letter prior. LOO supplies all other true target nucleotides. "
+          "Its per-record power is a conditional-prediction diagnostic, not a recovery "
+          "probability or certified bound. JSON `loo_bound` retains its historical name and "
+          "values. LOO score units are bits/nt for `pernt` and bits/interval per target nt "
+          "for `fixed`; these scores are not directly comparable. Search selects within its "
+          "restart/pass budget, and zero exact recovery does not validate a bound.", "",
+          "| run | data | seed | tier | n | LOO top1 | LOO score | LOO power diag. | ICM-bpe exact | ham | any-restart |",
           "|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         md.append(f"| {r['run']} | {r['data']} | {r['seed']} | r={r['tier']} | {r['n']} | "

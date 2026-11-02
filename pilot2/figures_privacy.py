@@ -228,8 +228,12 @@ def fig_ident(rows, out: Path):
 
 
 # --------------------------------------------------------------- the blind-metric figure
-def _util(path: Path):
+def _util(path: Path, own_rates):
     """[(round, held-out bits, MCC, single-copy identification)] from utility_at_leak.
+
+    MCC comes from this file, but recognition comes from the 50-record own-window
+    CSV cells. Legacy r1_recognition mixes host conditions for NT and uses earlier
+    10-record probes for some BPE checkpoints, so it must not drive the figure.
 
     Two kinds of entry have to be dropped: one carrying a downstream score and no leak
     numbers (written when the utility probe ran on a checkpoint the scorer had not reached),
@@ -242,7 +246,7 @@ def _util(path: Path):
         if "mcc" not in lp or e.get("floor") is None:
             continue
         rows.append((EPOCH_X.get(str(e["epoch"]), 150), e["floor"], lp["mcc"],
-                     e.get("r1_recognition")))
+                     own_rates[(path.parent.name, str(e["epoch"]))]))
     seen, floors, keep = set(), set(), []
     for r in sorted(rows):
         if r[0] in seen or round(r[1], 6) in floors:
@@ -258,9 +262,18 @@ def fig_blind(res: Path, out: Path):
     panels = [("DNABERT-2 117M", [res / "bpe_human" / f"dnabert2bpe_human_s{s}"
                                   / "utility_at_leak.json" for s in (0, 1, 2)]),
               ("NT 250M", [res / "nt_ckpt" / "nt250m_mlm_human_s0" / "utility_at_leak.json"])]
+    own_rates = {}
+    for row in load(res / "figure_data.csv"):
+        if (row["group"] in ("bpe_human", "nt_ckpt") and row["tier"] == "1"
+                and row["host"] == "train" and int(row["n_probes"]) == 50):
+            key = (row["run"], row["epoch"])
+            value = float(row["rank1_rate"])
+            if key in own_rates and own_rates[key] != value:
+                raise ValueError(f"Conflicting own-window rates for {key}")
+            own_rates[key] = value
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.1), constrained_layout=True)
     for ax, (name, paths) in zip(axes, panels):
-        got = [_util(p) for p in paths if p.exists()]
+        got = [_util(p, own_rates) for p in paths if p.exists()]
         if not got:
             continue
         xs = [r[0] for r in got[0]]
@@ -282,9 +295,9 @@ def fig_blind(res: Path, out: Path):
 
         ax2 = ax.twinx()
         ax2.plot(xs[:n], [mean(idr, i) for i in range(n)], "--s", color=C_ID, ms=3.2, lw=1.1,
-                 label="single-copy identification (right)")
+                 label="own-window rank-1 (right)")
         ax2.set_ylim(-0.04, 1.04)
-        ax2.set_ylabel("identification, one copy", color=C_ID)
+        ax2.set_ylabel("own-window rank-1", color=C_ID)
         ax2.tick_params(axis="y", colors=C_ID)
         ax2.spines["top"].set_visible(False)
         best = max(range(n), key=lambda i: mean(mcc, i))
@@ -293,7 +306,8 @@ def fig_blind(res: Path, out: Path):
         if ax is axes[0]:
             h1, l1 = ax.get_legend_handles_labels()
             h2, l2 = ax2.get_legend_handles_labels()
-            ax.legend(h1 + h2, l1 + l2, frameon=False, loc="lower left", handlelength=1.8)
+            ax.legend(h1 + h2, l1 + l2, frameon=False, loc="upper left",
+                      bbox_to_anchor=(0.01, 0.68), handlelength=1.8)
     _save(fig, out, "F7_blind")
 
 

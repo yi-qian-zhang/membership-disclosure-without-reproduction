@@ -1,0 +1,172 @@
+{
+  "baseline": "5fc264c",
+  "changed_tracked_files": [
+    "paper/figures/F7_blind.pdf",
+    "paper/figures/F7_blind.png",
+    "paper/sections/p04_leak.tex",
+    "paper/sections/p07_practice.tex",
+    "paper/sections/p11_appendix.tex",
+    "paper_full/figures/F7_blind.pdf",
+    "paper_full/figures/F7_blind.png",
+    "paper_full/sections/p03_setup.tex",
+    "paper_full/sections/p04_leak.tex",
+    "paper_full/sections/p07_practice.tex",
+    "paper_full/sections/p11_appendix.tex",
+    "pilot2/figures_privacy.py",
+    "pilot2/recon_audit.py",
+    "pilot2/recon_bpe.py",
+    "pilot2/recon_overlap.py",
+    "results/README.md"
+  ],
+  "protected_data_table_bib_abstract_changes": [],
+  "decoder_semantics": [
+    {
+      "file": "pilot2/recon_audit.py",
+      "computation_and_JSON_structure_unchanged": true
+    },
+    {
+      "file": "pilot2/recon_bpe.py",
+      "computation_and_JSON_structure_unchanged": true
+    },
+    {
+      "file": "pilot2/recon_overlap.py",
+      "computation_and_JSON_structure_unchanged": true
+    }
+  ],
+  "F7_curves_round_floor_MCC_own_rank1": {
+    "nt_ckpt/nt250m_mlm_human_s0": [
+      [
+        15,
+        1.4107272624969482,
+        0.8023770473800598,
+        0.08
+      ],
+      [
+        30,
+        1.5013870000839233,
+        0.7979680293587244,
+        0.3
+      ],
+      [
+        50,
+        1.6321911811828613,
+        0.779749158801878,
+        0.64
+      ]
+    ],
+    "bpe_human/dnabert2bpe_human_s0": [
+      [
+        15,
+        1.2662480495960318,
+        0.7983069431595141,
+        0.04
+      ],
+      [
+        30,
+        1.2988383703199182,
+        0.7949235834140727,
+        0.04
+      ],
+      [
+        50,
+        1.3565541712333704,
+        0.7925735918714918,
+        0.26
+      ],
+      [
+        80,
+        1.453557233088576,
+        0.7905297326807174,
+        0.46
+      ],
+      [
+        120,
+        1.5988649270279591,
+        0.7881665332111704,
+        0.8
+      ],
+      [
+        150,
+        1.7255207267603752,
+        0.7868358415866772,
+        0.94
+      ]
+    ],
+    "bpe_human/dnabert2bpe_human_s1": [
+      [
+        15,
+        1.2613947497024325,
+        0.7986438545862468,
+        0.04
+      ],
+      [
+        30,
+        1.2920899197746547,
+        0.7956198303952133,
+        0.06
+      ],
+      [
+        50,
+        1.3529812215560257,
+        0.7898544918467988,
+        0.22
+      ],
+      [
+        80,
+        1.4562649371072935,
+        0.7874999329025227,
+        0.42
+      ],
+      [
+        120,
+        1.5925925923161108,
+        0.7844541827762321,
+        0.78
+      ],
+      [
+        150,
+        1.7280694577145852,
+        0.7824348893072719,
+        0.92
+      ]
+    ],
+    "bpe_human/dnabert2bpe_human_s2": [
+      [
+        15,
+        1.2634682230792256,
+        0.801003300170049,
+        0.04
+      ],
+      [
+        30,
+        1.295952482331848,
+        0.7999897730285978,
+        0.08
+      ],
+      [
+        50,
+        1.3524270905704707,
+        0.8023638016821206,
+        0.22
+      ],
+      [
+        80,
+        1.4567647077850636,
+        0.7949225314596119,
+        0.5
+      ],
+      [
+        120,
+        1.6071384165697713,
+        0.7919055842197491,
+        0.74
+      ],
+      [
+        150,
+        1.7344938547350655,
+        0.7871592069987573,
+        0.96
+      ]
+    ]
+  }
+}

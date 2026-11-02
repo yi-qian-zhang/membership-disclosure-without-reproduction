@@ -41,3 +41,11 @@ Early stopping alone does not validate the old bound interpretation. The correct
 also applies to masked controlled-backbone outputs from that routine. BPE and
 overlapping probes are nucleotide-level diagnostics. See manuscript Methods and
 `notes/31_loo_correction_appendix_revision_20261102.md`; raw data are unchanged.
+
+
+The decoder report generators now use diagnostic labels in prose, tables and console
+output. The historical JSON keys `exact_upper_bound`, `bound` and `loo_bound` remain
+unchanged. Teacher-forced prefix powers likewise do not bound arbitrary decoders.
+Archived reports preserve their original text; the interpretation above supersedes
+those explanations. See `notes/32_claim_scope_cleanup_20261102.md` for the final
+corpus/tier and reporting corrections. No raw measurement has been rewritten.

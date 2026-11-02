@@ -1,0 +1,922 @@
+[
+  {
+    "file": "p11_appendix.tex",
+    "line": 19,
+    "text": "have not all been re-measured on the current numerical basis. Main-text comparisons"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 43,
+    "text": "A canary is 96\\nt. The first 48\\nt{} are revealed and the last 48\\nt{} are the target, so every"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 44,
+    "text": "rate in the paper is ``all 48 target nucleotides exactly right''. The canary is planted inside a"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 46,
+    "text": "300 is divisible by every $k$ from 1 to 6, at an offset drawn independently for each copy."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 47,
+    "text": "Repetition tiers are 1, 4 and 16 copies; tier~0 is a never-trained canary of identical construction,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 48,
+    "text": "scored in the same run by the same decoder, and it is the control every table reports."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 51,
+    "text": "With every copy at the same offset, a model with learned absolute positions can score a record from"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 56,
+    "text": "placement manufactures a tokenizer effect. Every number in the main text uses drawn offsets, with"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 59,
+    "text": "nine days before the offset became an option, and are at fixed placement throughout. These results support within-table comparisons under a common placement condition. Their absolute"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 93,
+    "text": "The builder takes the 96\\nt{} window centered on a rare anchor variant and substitutes every rare"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 95,
+    "text": "all anchors. The builder does not check whether the anchor's carrier also carries the neighboring alleles or"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 102,
+    "text": "For every variant inside a planted window --- not only the rare ones --- we recorded the exact set"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 104,
+    "text": "given chromosome reads only if that chromosome carries every substituted allele \\emph{and} reads"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 105,
+    "text": "reference at every other variant site inside the window. The first version of this audit tested"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 106,
+    "text": "only the first half of that condition and reported 164 real haplotypes; requiring the second half"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 111,
+    "text": "and 5 for 8 --- never more than five, so ``carried by at most five'' is exact for this subset."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 112,
+    "text": "Twenty more are real \\emph{genotypes}, whose alleles all belong to one person but sit on both of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 116,
+    "text": "can say what a chromosome reads there. Restricted to the 338 windows with none, the classification"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 120,
+    "text": "Nothing about the leakage measurement depends on whose sequence was planted: the question asked of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 122,
+    "text": "well posed for all 400. The classification instead determines which interpretations the results support. We therefore split"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 123,
+    "text": "every rate by subset (\\texttt{pilot2/analyze\\_canary\\_status.py}) and report the stratification wherever it changes a result. One result changes: single-copy identification in a fresh window, $5/21$, $5/21$ and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 125,
+    "text": "never-trained controls do not separate."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 128,
+    "text": "nearly collinear with the number of substituted alleles --- every chimera is composite and 144 of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 130,
+    "text": "allele count, and this design cannot attribute it to one description rather than the other. And"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 131,
+    "text": "the subsets hold 21 and 23 \\emph{records}, not 63 and 69 scorings: all three training seeds share"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 144,
+    "text": "5{,}096 and none shared by more than five. Thirty-seven common alleles are written in across the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 147,
+    "text": "even the rebuilt windows are each one chromosome's sequence at its SNV sites rather than its every"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 156,
+    "text": "contextual access. Their contrast alone cannot distinguish record-specific learning"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 157,
+    "text": "from a generic advantage of memorized flanks. We therefore score never-trained"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 165,
+    "text": "real rare segments in the pool --- and the only difference is whether the model has seen the 96"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 176,
+    "text": "offset is not among the hundred and one candidates and cannot compete with them. What the control"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 178,
+    "text": "What it cannot separate is a model whose conditional distribution at that offset is sharp on a"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 180,
+    "text": "own-window column carries is the first of those, and only the first."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 183,
+    "text": "Every cell of Table~\\ref{tab:ident} was re-scored (\\texttt{pilot2/rescore.py},"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 184,
+    "text": "\\texttt{pilot2/queue\\_1027\\_gen.sh}); nothing was retrained and nothing already on disk was"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 185,
+    "text": "overwritten. Every member number reproduces to the digit and every held-out loss to four decimals."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 186,
+    "text": "The borrowed-host control reads $0.00$ to $0.04$ across all 18 cells against members at $0.04$ to"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 193,
+    "text": "$0.00$--$0.04$ against members at $0.06$ to $1.00$, and at sixteen it reads $0.00$ in every one of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 195,
+    "text": "$1.00$ in all three seeds under both tiers. The control therefore does not weaken where the record"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 197,
+    "text": "more familiar to the model, and a never-trained record placed in that window still ranks at"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 201,
+    "text": "Transformer was re-scored from saved weights and reads $0.00$ in all three seeds at both sizes,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 203,
+    "text": "HyenaDNA had to be retrained instead, because that script deleted every checkpoint it saved; the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 205,
+    "text": "($0.02$ in all three) and its held-out losses ($2.221 / 2.221 / 2.247$), and its borrowed-host"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 206,
+    "text": "control is $0.00$ in all three seeds."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 208,
+    "text": "The overlapping $k$-mer family is the fourth, and it had no own-window control at all. Its human"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 212,
+    "text": "every member own-window and fresh-window rate to the digit and every held-out loss to three"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 213,
+    "text": "decimals, in all twelve. Its own-window control reads $0.00$--$0.04$ against members at"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 214,
+    "text": "$0.04$--$0.10$ for $k=3$ to $5$ and $0.24$--$0.26$ at $k=6$, so only the coarsest cut of this"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 216,
+    "text": "one of fifty is not a separation, and twelve of fifty against one is. In the fresh window none of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 220,
+    "text": "is established here for DNABERT-2, not for every released genomic family. Verbatim recovery in the own window is zero for $k=3$"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 224,
+    "text": "scoring passes and twelve retraining runs (\\path{pilot2/queue_1028.sh}). All runs completed without failure."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 228,
+    "text": "confused: an earlier version of this paper reported ``3 of 900 never-trained controls ranked"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 229,
+    "text": "first, below chance'' when all three were one record in one seed at three consecutive rounds."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 232,
+    "text": "two sets overlap: probe~175 ranks first at every one of the six checkpoints of seed~2 in the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 238,
+    "text": "total is never quoted without one."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 245,
+    "text": "re-tokenizing, masking every token whose span covers $j$, and reading the log-probability of those"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 255,
+    "text": "where the four divisors differ, the largest falls on A 707 times against 359 expected, with C 312,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 256,
+    "text": "T 229 and G 187. ``Continues the run to the left'' accounts for only $0.291$ of those, barely above"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 263,
+    "text": "chance level of 36, so members did not separate from never-trained records at all. One cell is worth"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 270,
+    "text": "under all four candidates, scores exactly those nucleotides for each, and divides by nothing: the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 272,
+    "text": "window, and the four events differ only at $j$. On the same 60 cells the degenerate fraction falls"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 285,
+    "text": "the other an interval; only the top-1 accuracy and the Hamming distances are."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 299,
+    "text": "\\item[Nucleotide re-masking:] for overlapping $k$-mers, mask all tokens covering a"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 306,
+    "text": "and 32 in earlier runs. LOO supplies every other true target position. Its accuracy and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 307,
+    "text": "per-record power summary are conditional-prediction diagnostics in all arms, not recovery"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 313,
+    "text": "Table~\\ref{tab:a4} gives every DNABERT-2 chromosome-22 cell behind Figure~\\ref{fig:ident}, per seed, in both host conditions and with both controls. It consolidates the former main-text summary table with the complete per-seed data. Every row is 50 records per tier:"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 321,
+    "text": "\\emph{fresh} one the model never saw. The two control columns are the never-trained records in"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 323,
+    "text": "which did not exist before 27 October. \\emph{verbatim} is all 48 target nucleotides exact under the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 336,
+    "text": "averaging the 300\\nt{} rows gives Figure~\\ref{fig:slots}. Never-trained controls recover"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 337,
+    "text": "zero records at every tokenizer snapshot. Nominal slots are $48/k$; the actual"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 344,
+    "text": "288\\nt{} block is the replication. A dash means the run never reaches that loss; \\emph{never} in the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 345,
+    "text": "last column means extraction never reaches 100\\%.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 364,
+    "text": "over the full split). Consequently, our absolute scores are below the published values, and we interpret only changes"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 371,
+    "text": "the published value on all six tasks, by $0.039$ (H3), $0.049$ (promoter), $0.057$ (TF binding),"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 373,
+    "text": "itself only $0.363$, so absolute MCC is low on that task under both recipes; we read it as such."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 375,
+    "text": "$0.8677$, core promoter $0.6937$, splice $0.8499$, H3 $0.7827$ and H3K4me3 $0.3627$, all from its"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 383,
+    "text": "\\paragraph{The only exclusion in the paper.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 386,
+    "text": "the median at every other round, all four in DNABERT-2 or at round~0 or~1 (DNABERT-2 splice r0,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 388,
+    "text": "statistics and are the only exclusion anywhere in this work."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 393,
+    "text": "The table below reports every cell in the 23~October batch directly from the measurement reports. \\texttt{standard} is the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 396,
+    "text": "together, and $r{=}0$ is the never-trained control. The \\emph{Power diag.} column is the mean"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 411,
+    "text": "checkpoint moves by six points. A ranking flips only when two candidates score almost identically;"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 433,
+    "text": "With independently drawn canary offsets the objective dominates; with every copy at the same offset"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 434,
+    "text": "the tokenizer appears to, because a model with learned absolute positions can score a record from"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 444,
+    "text": "only because the model has learned absolute positions, then a position encoding without them should"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 445,
+    "text": "remove the effect. It does not: with RoPE, fixed offsets still permit extraction that drawn offsets do not at the same matched loss. The placement effect is therefore not specific to learned absolute position embeddings."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 446,
+    "text": "This control supports drawing offsets for the comparison; it does not rule out other"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 452,
+    "text": "absolute and rotary position encodings and under drawn and fixed canary offsets. 20 records per"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 453,
+    "text": "tier; a dash means the run never reaches that loss.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 461,
+    "text": "In the main 300\\nt{} non-overlapping tokenizer sweep, all 18 runs record exactly"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 473,
+    "text": "rows: lowering only the embedding learning rate makes the \\kmer{6} memorize \\emph{more} per unit of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 474,
+    "text": "overfitting, the opposite of that hypothesis. What survives every variant is the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 484,
+    "text": "all stored values therefore overstates trainable model size; we report 6.55M."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 490,
+    "text": "quantitatively: the character model memorizes \\emph{nothing}, every canary at chance including those"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 491,
+    "text": "seen $16 \\times 30 = 480$ times; the \\kmer{3} is at chance; the \\kmer{6} recognizes every member"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 492,
+    "text": "canary including those seen once per epoch and extracts every $16\\times$ canary verbatim from"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 496,
+    "text": "predate the placement fix of \\S\\ref{sec:placement}, so every canary copy sits at a fixed offset, and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 499,
+    "text": "which extraction first reaches 100\\%: every 6-mer variant pays between $2.02$ and $2.08$ whatever"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 507,
+    "text": "$16\\times$ at matched held-out loss, seed means. A dash means the run never reaches that loss."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 515,
+    "text": "A masked model does not have to be read left to right, and prefix-only probing is the weak way to"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 517,
+    "text": "sequences than prefix-conditioned ones \\cite{wang2026infilling}. We therefore re-ran every masked"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 519,
+    "text": "nucleotides decoded in confidence order. Across five datasets, every tokenizer, both mask rates, two to three seeds and all three repetition"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 523,
+    "text": "against \\NUM{35.0}--\\NUM{35.6} for non-members. This is the strongest form in which the from-scratch half of"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 525,
+    "text": "not be read as a property of masked models in general, since every released masked checkpoint we"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 532,
+    "text": "arm it is the same split for every model. With the mixed variant-derived canary set, the two groups of 50 records"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 536,
+    "text": "offset is gone after a single epoch (\\excess{} at round~1 is \\NUM{0.00}$\\pm$\\NUM{0.05} on every"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 546,
+    "text": "fourth draw admits none at all: its models' overfitting branches do not overlap, so there is no"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 548,
+    "text": "with a never-trained control in every cell rather than with a single-draw error bar."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 553,
+    "text": "\\excess{} \\bits{} at the highest matched loss of each draw.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 597,
+    "text": "\\emph{Checkpoints} are the epochs saved and scored; every rate in this"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 599,
+    "text": "not trained from scratch; the last row is the only backbone we train.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 615,
+    "text": "\\paragraph{What every arm shares.}"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 617,
+    "text": "at an independently drawn offset; 50 never-trained control records; a candidate pool of 100 real"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 618,
+    "text": "segments; \\texttt{data\\_seed} 1234, so all seeds of an arm share one member, control and pool"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 631,
+    "text": "run's own range --- which is what every dash in a matched-loss table means. Where a leak is priced"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 639,
+    "text": "distribution and absent from the corpus, and a set of never-trained control records placed in the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 642,
+    "text": "model never saw --- and the exact-recovery rate of the decoder matched to that model's vocabulary."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 648,
+    "text": "an adversary holding the corpus could search the corpus and would not need the weights, so only"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 659,
+    "text": "Every command runs from the repository root. The commands reproduce the reported"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 705,
+    "text": "shell will fail instantly in every cell when it is re-run from a script."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 716,
+    "text": "not a corrected-scorer sweep over all seeds, contexts or checkpoints."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 720,
+    "text": "We express the cost of each leak in \\bits{} above the lowest held-out loss among that run's saved"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 735,
+    "text": "for a next-token model, and every other slot for DNABERT-2 and NT. Overlapping DNABERT"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 745,
+    "text": "every covering token and reads token $\\min(j,W-k)$; consistent $k$-mer logits are"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 750,
+    "text": "cell can be compared at all, and $\\ell(M)-\\ell^{\\star}$ is the price every later table quotes."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 753,
+    "text": "A never-trained record has no training row. We therefore assign each control a member's row and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 754,
+    "text": "offset, and the ranking pass overwrites $[o,o+2L)$ with \\emph{every} candidate in turn. The memorized string is therefore not itself in $C$, and the two conditions"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 769,
+    "text": "The leave-one-out (LOO) probe supplies every other target slot at its true value and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 789,
+    "text": "trailing host letters within the final token are not. Exact recovery scores only the"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 796,
+    "text": "Aligned counterexamples also occur, so boundary mismatch cannot explain every case;"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 802,
+    "text": "as a conditional-prediction diagnostic for \\emph{all} reported arms. Historical JSON"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 828,
+    "text": "requires only its hidden letters, whereas the token-level probe tests its full identity."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 829,
+    "text": "That is the account \\S\\ref{sec:slots} tests: whether recoverability tracks $s$ alongside a separate measurement of target surprise. A controlled sweep can show that it does; it cannot by itself exclude every other"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 846,
+    "text": "one sweep re-masks a single slot and takes the restricted argmax with every other slot held:"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 867,
+    "text": "changes nothing, and the budget is six passes for \\eqref{eq:remask} and four for the two"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 871,
+    "text": "reported re-masking probe/context outputs, $950$ selected states use all six sweeps;"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 872,
+    "text": "$95.8\\%$ therefore stopped before the cap. These are not counts of every random restart."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 875,
+    "text": "historical BPE selected state uses all four passes in each of its $1{,}750$ outputs,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 881,
+    "text": "Because $\\Lambda$ uses only information available to the adversary, the reported rate measures an"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 884,
+    "text": "is not divided by nucleotides --- admissible only because $\\mathcal{S}$ is identical across the $R$"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 888,
+    "text": "token cannot be re-masked, because changing it contradicts the $2(k-1)$ tokens that overlap it and"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 889,
+    "text": "decodes to no string at all; the latent variable is the nucleotide, and to re-mask position $j$ we"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 902,
+    "text": "four candidates on a common interval, grown until it is stable under all of them,"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 909,
+    "text": "never on which letter is written there, so all four candidates are scored on the same nucleotides"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 910,
+    "text": "and $\\Psi_{j}$ divides by nothing. Our initial implementation instead divided by the nucleotide span covered by each candidate's own"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 920,
+    "text": "than single letters. The planted records and pool candidates have mean covered spans of $100.2$ and $99.7$, respectively. The never-trained control uses the same scorer, but this alone does not rule out an interaction between the divisor and membership. This remains a defect of the scoring rule, so we quantified its effect directly: from one forward pass per cell we re-ranked every candidate under the divided"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 922,
+    "text": "surprise across the nucleotides it covers and sums over $[o,o+2L)$ alone, scoring every candidate on"
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 927,
+    "text": "span-matched, with never-trained controls at $0.014$ against $0.014$ and $0.016$. Where the rules disagree, the span-matched rule reports \\emph{more} leakage. The positive membership signal survives these alternative scores in the tested cells; the numerical rates remain scorer-dependent."
+  },
+  {
+    "file": "p11_appendix.tex",
+    "line": 932,
+    "text": "file, \\path{ALL.chr22.GRCh38.phased.vcf.gz}, is dated 27 February 2019 and declares"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 12,
+    "text": "therefore report every leak twice: as a rate, and as the held-out loss it costs relative to the"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 24,
+    "text": "The never-trained control remains at zero throughout these evaluations. Records the model never saw are reproduced 0\\% of the time in every"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 25,
+    "text": "cell, every tier and every seed, and the never-trained window at the foot of each block is scored by"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 34,
+    "text": "re-masking decoder of \\S\\ref{sec:measure}. All cells re-measured on one numerical basis.}"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 45,
+    "text": "never-trained control & --- & --- & 0\\% & 0\\% \\\\"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 51,
+    "text": "Comparisons across Table~\\ref{tab:cost} show why this measurement cannot rely on a single extraction"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 55,
+    "text": "nothing at all. \\S\\ref{sec:measure} explains this protocol dependence. For each model, we use the stronger protocol"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 74,
+    "text": "decoded in one batch; the earlier rounds are the first seed only, and are there to show the"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 89,
+    "text": "never-trained control & --- & 0\\% & 0\\% & 0\\% & 0\\% \\\\"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 95,
+    "text": "record, present exactly once in the fine-tuning data, is recovered exactly by the 250M model in 8\\% of cases in \\emph{every one} of three seeds, and by the 500M in"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 97,
+    "text": "matched never-trained control at zero in all of them. The repeated tier"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 103,
+    "text": "Our decoder recovers 0\\% from DNABERT-2, and that is not evidence the model holds nothing. Asked for"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 104,
+    "text": "any single nucleotide of a planted record with every other nucleotide supplied, DNABERT-2 answers"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 107,
+    "text": "as in every arm, not a bound or an attainable whole-record recovery rate"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 115,
+    "text": "Table~\\ref{tab:loo} does this for every released checkpoint on chromosome~22 at once, because the"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 118,
+    "text": "case with the smallest power summary, $0.01$--$0.02$, alongside zero tested recovery."
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 127,
+    "text": "three seeds where shown. LOO supplies all other true target positions. \\emph{Power diag.}"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 130,
+    "text": "are $0.000$--$0.003$. The overlapping-family prefix column was rescored at all fifty"
+  },
+  {
+    "file": "p04_leak.tex",
+    "line": 146,
+    "text": "never-trained control  & 0  & 0.07--0.51  & 0.000--0.003 & 0\\%     & 0\\% \\\\"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 26,
+    "text": "leaking at all, so a study run only on a model one trains oneself reads more reassuringly than"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 31,
+    "text": "Table~\\ref{tab:blind} puts that score beside the leak at every checkpoint of the same runs."
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 35,
+    "text": "\\caption{Downstream task score measured at every checkpoint, beside the leak from the same weights."
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 59,
+    "text": "from nothing to 0.92--0.96 (Figure~\\ref{fig:blind}). Selecting on that score"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 61,
+    "text": "is not a privacy signal either: across the entire interval in which the model learns to disclose"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 65,
+    "text": "On NT fine-tuned on chromosome~22 the situation is worse, because the metric does not select a checkpoint with zero measured leakage. The highest task score belongs to the earliest checkpoint saved, and that one"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 84,
+    "text": "The obvious question about every number above is whether a real cohort, which is larger than ours,"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 89,
+    "text": "not manipulated, so what follows is window-count scaling and bears on cohort size only to the"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 95,
+    "text": "$0.64$. But $0.15$\\,\\bits{} further into overfitting every cohort size is identified at $0.91$ or"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 96,
+    "text": "better, and by $2.40$ every size that reaches it is at $1.00$. A larger corpus shifts the onset of the same leakage along the loss axis. This delay is useful and"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 98,
+    "text": "single-copy verbatim recovery is 0\\% at every size and sixteen-copy recovery is 78--100\\% at every"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 105,
+    "text": "chromosome~22 windows, not the number of participants. A dash means that corpus never reaches that"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 126,
+    "text": "\\emph{Stop where held-out loss stops improving, and compute it.} It is the only quantity we measured"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 128,
+    "text": "but the decoder's output is already closer to a planted single-copy record than to a never-trained"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 129,
+    "text": "one --- $32.7$ against $34.5$ nucleotides wrong out of 48, the same sign in all three seeds"
+  },
+  {
+    "file": "p07_practice.tex",
+    "line": 146,
+    "text": "training takes verbatim extraction from 100\\% to \\emph{zero} in every cell we ran (four corpora,"
+  }
+]

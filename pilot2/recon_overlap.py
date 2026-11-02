@@ -1,40 +1,19 @@
-"""The re-masking decoder for OVERLAPPING k-mer models, which is the only form it can take there.
+"""Nucleotide-level re-masking for DNABERT's overlapping k-mer vocabulary.
 
     python -m pilot2.recon_overlap --root outputs/dnabert_long --restarts 16 --gpu 2
 
-WHY THIS FILE EXISTS, SEPARATELY FROM recon_audit.
-`pilot2/recon_audit.py` re-masks one TOKEN at a time. On a non-overlapping vocabulary -- our own
-k-mers, NT's 4096 non-overlapping 6-mers, DNABERT-2's BPE -- that is exactly the conditional the
-model was trained on, and it takes a masked model from 0 % to 95 % verbatim reproduction. On
-DNABERT it is not merely weaker, it is undefined:
+Changing one token alone can violate consistency with its overlapping neighbors.
+We instead update a nucleotide, mask all covering tokens, and marginalize their
+consistent predictions onto A/C/G/T. Positions are swept sequentially; outputs
+are selected by a score available without the target. This decoding context is
+not asserted to equal the model's span-masking training distribution.
 
-  * DNABERT tokenises with stride 1, so token t is the k-mer starting at nucleotide t and any valid
-    token string satisfies token_t[1:] == token_{t+1}[:k-1]. Changing one token alone contradicts
-    the 2(k-1) tokens overlapping it, and the result decodes to no DNA string at all.
-  * Even if it decoded, five of a 6-mer's six letters are still visible in its neighbours, so a
-    single-token conditional is answerable from context with no memorisation whatever, and a
-    leave-one-out accuracy near 1.00 there would mean nothing.
-  * Hiding 48 nucleotides needs every token overlapping them, i.e. 48 + (k-1) tokens, which is about
-    48 FOR EVERY k. The joint-slot count is pinned to the nucleotide count.
-
-The latent variable is the nucleotide string, not the token string, so the correct analogue is
-ITERATED CONDITIONAL MODES IN NUCLEOTIDE SPACE: to re-mask nucleotide j, mask the k tokens covering
-j, read the distribution over the four letters at j, take its mode, and sweep. DNABERT's own
-pretraining defines that conditional, and `pilot2.dnabert.nt_logprobs` already computes it exactly,
-renormalised over ACGT; `nt_dist` below is that function returning all four letters instead of only
-the true one.
-
-WHAT THE RESULT MEANS EITHER WAY. Our mechanism claim is that the number of joint slots sets the
-price of recovery: 8 slots for a non-overlapping 6-mer against 16 for a 3-mer is 95 % against 0 %.
-Overlapping k-mers pin the slot count at ~48 for every k, so that claim PREDICTS a flat profile
-across DNABERT k=3,4,5,6. A flat profile here beside the 0-to-95 split on the non-overlapping axis
-is evidence for the mechanism that neither measurement gives alone, and it is evidence on released
-checkpoints rather than on a backbone we trained. A large spread across k here would refute the
-mechanism, which is worth knowing before the abstract is written.
-
-Updates are sequential across positions, because parallel ones oscillate, and batched across
-restarts, which is what makes 16-128 restarts affordable: one model call per (position, sweep) with
-the restarts as the batch.
+LOO supplies the remaining true target nucleotides. Its top-1 rate and per-record
+power summarize conditional prediction, not whole-record recoverability. The
+legacy `loo_bound` JSON name is retained for compatibility. Failed decoding is
+not evidence of no retained signal. Equal nucleotide update counts across k do
+not imply equal recovery: the overlapping-family measurements test and limit
+that simple slot-count prediction.
 """
 from __future__ import annotations
 
@@ -144,9 +123,8 @@ def icm_nt(model, voc: KmerVocab, win: np.ndarray, offset: int, device, k_nt: in
     best = int(np.argmax(pll))
     ham = [int((cur[r, start:end] != truth).sum()) for r in range(restarts)]
 
-    # leave-one-out: every other target nucleotide at its TRUE value, one unknown. This is the
-    # conditional ICM converges to and the one the surprise ruler reads, so its per-position top-1
-    # rate is what predicts whether a fixed point can be the true string at all.
+    # LOO supplies all other true target nucleotides. Its per-position accuracy
+    # and power diagnose conditional prediction, not whole-record recovery.
     tw = np.tile(win[None, :], (1, 1)).copy()
     tw[0, start:end] = truth
     dl = nt_dist(model, voc, torch.from_numpy(tw), target, device)[0]              # (P, 4)
@@ -232,7 +210,7 @@ def main(argv=None):
                                  loo_bits=m("loo_bits"), loo_bound=m("loo_bound")))
                 r = rows[-1]
                 print(f"  {d.name:34s} r={t:<3d} n={r['n']:3d} | loo top1 {r['loo_top1']:.2f} "
-                      f"bits {r['loo_bits']:5.3f} bound {r['loo_bound']:.3f} | icm-nt "
+                      f"bits {r['loo_bits']:5.3f} power diag. {r['loo_bound']:.3f} | icm-nt "
                       f"{100*r['exact']:5.1f}% (ham {r['ham']:4.1f}) | oracle {100*r['oracle']:5.1f}%",
                       flush=True)
             del model
@@ -242,17 +220,15 @@ def main(argv=None):
         print("no DNABERT cells with a checkpoint under", args.root)
         return 1
     md = [f"# Nucleotide-level re-masking on DNABERT's overlapping k-mers — {args.name}", "",
-          "One TOKEN at a time is undefined on a stride-1 vocabulary: changing a token contradicts "
-          "the ones overlapping it and decodes to no DNA string, and a token's letters are anyway "
-          "visible in its neighbours. So the latent variable is the nucleotide string and the "
-          "conditional is DNABERT's own: to re-mask nucleotide j, mask the k tokens covering j, "
-          "marginalise onto the letter at j and renormalise over ACGT. `loo top1` is the per-position "
-          "accuracy with every other target nucleotide at its true value, so it says whether the "
-          "record is stored; `icm-nt` is the attack, choosing between fixed points by "
-          "pseudo-log-likelihood, and `oracle` is the upper bound over the same restarts.", "",
-          "Hiding 48 nucleotides takes 48+(k-1) tokens here, i.e. about 48 slots for EVERY k, so the "
-          "joint-slot mechanism predicts a FLAT profile across k. A large spread would refute it.", "",
-          "| run | k | data | seed | tier | n | LOO top1 | LOO b/nt | LOO bound | ICM-nt exact | ham | any-restart |",
+          "Updates operate on nucleotides to preserve overlap consistency. At position j, "
+          "the covering tokens are masked and their consistent predictions are marginalized "
+          "onto A/C/G/T. LOO supplies every other true target nucleotide. Its accuracy and "
+          "per-record power are conditional-prediction diagnostics, not recovery probabilities "
+          "or certified bounds. JSON `loo_bound` retains its historical name and values. "
+          "`icm-nt` selects the final state by pseudo-log-likelihood within the stated budget; "
+          "`any-restart` is a truth-assisted oracle over the same restarts. The 48 nucleotide "
+          "update positions are shared across k, but this alone does not predict equal recovery.", "",
+          "| run | k | data | seed | tier | n | LOO top1 | LOO b/nt | LOO power diag. | ICM-nt exact | ham | any-restart |",
           "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         md.append(f"| {r['run']} | {r['k']} | {r['data']} | {r['seed']} | r={r['tier']} | {r['n']} | "
