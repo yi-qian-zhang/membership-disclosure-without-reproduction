@@ -88,3 +88,11 @@ copying unrelated staged work from the older public checkout.
 
 Final commit IDs, clean remote build counts and exact file comparisons are recorded in
 `31_loo_appendix_validation_20261102.json` after synchronization.
+
+Final release receipt: GitHub manuscript `a5de548` (factual repair `c914ab9`), public
+code/data `b0af7a4`, submission Overleaf `cf54fae`, full Overleaf `13ce514`.
+Actual remotes were freshly cloned and compiled: short 36 total / 9 main / 23 appendix;
+full 44 total / 16 main / 24 appendix. Both have 0 errors, undefined and overfull,
+and 2 underfull notices. All 41 short / 39 full tracked files match local content;
+only short `main.tex` differs in line endings. Every rendered remote page matches
+the corresponding local build. Final validation JSON accompanies this note.
