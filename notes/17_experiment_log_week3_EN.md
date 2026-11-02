@@ -5706,3 +5706,12 @@ scoped to their actual measurements. Report text now calls both prefix/LOO power
 diagnostics; legacy JSON fields and decoder calculation are unchanged by AST check.
 Both local PDFs remain36/44pages, main9/16, appendix23/24, with zero errors/undefined/
 overfull and two existing underfull notices each. Final remote receipts follow in note32.
+
+
+Final release receipt: manuscript `f506930`, decoder report text `e499131`, LF-only
+`7ed9a1e`; initial notes `b7cad3d`; public code `ff722d9`. Submission Overleaf
+`e803509`, full Overleaf `2bc7c82`. Both actual remotes were freshly cloned and built:
+short36/main9/appendix23; full44/main16/appendix24; errors/undefined/overfull all0,
+underfull2 each. All41 short and39 full tracked files are now byte-identical to local,
+including main.tex; every rendered page matches the local build. Hard-coded references
+pass4/4 and5/5. Final PDFs and checks are in work/claim_cleanup_20261102.

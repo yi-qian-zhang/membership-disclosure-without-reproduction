@@ -91,3 +91,12 @@ Full manuscript factual scope repairs do not compress its sections or tables.
 The final validation receipt records commits, clean remote builds, exact content parity,
 protected-file checks and plotted values. main.tex LF normalization is a separate
 format-only commit after scientific changes; its non-EOL bytes are asserted identical.
+
+
+Final release receipt: manuscript `f506930`, decoder report text `e499131`, LF-only
+`7ed9a1e`; initial notes `b7cad3d`; public code `ff722d9`. Submission Overleaf
+`e803509`, full Overleaf `2bc7c82`. Both actual remotes were freshly cloned and built:
+short36/main9/appendix23; full44/main16/appendix24; errors/undefined/overfull all0,
+underfull2 each. All41 short and39 full tracked files are now byte-identical to local,
+including main.tex; every rendered page matches the local build. Hard-coded references
+pass4/4 and5/5. Final PDFs and checks are in work/claim_cleanup_20261102.

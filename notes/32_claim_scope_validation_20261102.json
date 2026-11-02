@@ -168,5 +168,59 @@
         0.96
       ]
     ]
+  },
+  "remote": {
+    "short": {
+      "commit": "e803509a9f3f8922d22d3f28ea443aca52e0d673",
+      "tracked_files": 41,
+      "byte_mismatches": [],
+      "rendered_page_mismatches": [],
+      "source": "E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\claim_cleanup_20261102\\remote_short",
+      "pdf": "E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\claim_cleanup_20261102\\remote_build_short\\main.pdf",
+      "total_pages": 36,
+      "main_pages": 9,
+      "references_page": 11,
+      "appendix_page": 14,
+      "appendix_pages": 23,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "latexmk_exit": 0
+    },
+    "full": {
+      "commit": "2bc7c821d7cdc82da00aad8911e0e168d3e29215",
+      "tracked_files": 39,
+      "byte_mismatches": [],
+      "rendered_page_mismatches": [],
+      "source": "E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\claim_cleanup_20261102\\remote_full",
+      "pdf": "E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\claim_cleanup_20261102\\remote_build_full\\main.pdf",
+      "total_pages": 44,
+      "main_pages": 16,
+      "references_page": 18,
+      "appendix_page": 21,
+      "appendix_pages": 24,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "latexmk_exit": 0
+    }
+  },
+  "line_endings": {
+    "file": "paper/main.tex",
+    "removed_CR": 258,
+    "content_other_than_EOL_identical": true
+  },
+  "commits": {
+    "paper": "f506930",
+    "report_text": "e499131",
+    "LF_only": "7ed9a1e",
+    "initial_notes": "b7cad3d",
+    "public": "ff722d9"
+  },
+  "final_xrefs": {
+    "submission": 4,
+    "full": 5
   }
 }
