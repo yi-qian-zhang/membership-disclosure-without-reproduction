@@ -10,11 +10,13 @@ and tokenization, using eight released checkpoints and a controlled 12.9M backbo
 
 At DNABERT-2's final chromosome-22 checkpoint, single-copy records rank first against
 100 alternatives in 18–26% of fresh-window evaluations across three training seeds,
-against 0% for matched controls. The tested decoders recover none of the hidden
+against 0% for matched controls. For this DNABERT-2 experiment, the tested decoders recover none of the hidden
 48-nucleotide targets in the reported single-copy evaluations; the paper distinguishes
 their checkpoint coverage and the smaller corrected-scorer audit. Own-window ranking
 is 92–96%, but supplies privileged training context. These rates are not calibrated
-low-FPR attack performance or evidence of individual identification.
+low-FPR attack performance or evidence of individual identification. In the separate
+Nucleotide Transformer experiments, re-masking recovers single-copy targets in 8%
+of cases for NT 250M and 12–18% for NT 500M; zero recovery is not a cross-model result.
 
 In a separate synthetic-canary experiment with sixteen copies, 2-mer and 6-mer
 tokenizers recover 0% and 92% at matched held-out loss 2.40 bits/nt. This comparison
