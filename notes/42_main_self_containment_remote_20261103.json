@@ -1,0 +1,39 @@
+{
+  "implementation_commit": "0d25f6f",
+  "variants": {
+    "short": {
+      "overleaf_commit": "34f53a64aa03bc11b50a9978bdf151f10e8bede5",
+      "tracked_files": 44,
+      "source_differences": [],
+      "pages": 38,
+      "body_pages": 10,
+      "references_physical_page": 12,
+      "appendix_pages": 24,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "float_too_large": 0,
+      "literal_xrefs_pass": true,
+      "remote_pdf_text_matches_local_build": true,
+      "pdf_sha256": "51d6f7bd4abdd4738ce18f70a45bc82c166d788d01dd335dde1e4e92ed46b467"
+    },
+    "full": {
+      "overleaf_commit": "e1d99e6109ea78b6f6dd2c90e364d8806362b82c",
+      "tracked_files": 42,
+      "source_differences": [],
+      "pages": 49,
+      "body_pages": 18,
+      "references_physical_page": 20,
+      "appendix_pages": 27,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "float_too_large": 1,
+      "literal_xrefs_pass": true,
+      "remote_pdf_text_matches_local_build": true,
+      "pdf_sha256": "ec0ca5246aa4cb0d220b9160d6ac6e06ed20f865e7eb9ab52ec5f922db4d3801"
+    }
+  }
+}

@@ -70,8 +70,27 @@ Full version 49 pages, body 18, references start on physical page 20, appendix 2
 Both: 0 errors, 0 undefined references/citations, 0 Overfull, 2 existing Underfull.
 Submission has 0 oversized floats. Full version retains the previously documented
 F1 long-caption oversized-float warning 134.94266pt; this predates this patch.
-Literal cross-reference checks pass 4/4 and 5/5. Final source verification and
-remote synchronization receipts will be appended after publication.
+Literal cross-reference checks pass 4/4 and 5/5.
+
+## Final synchronization and independent remote builds
+
+Implementation: project GitHub 0d25f6f; public reproducibility GitHub 768defe.
+Submission Overleaf 34f53a6; full Overleaf e1d99e6.
+Both Overleaf projects were cloned again from the live remote with automatic line
+ending conversion disabled, then compiled into fresh build directories.
+Submission 44/44 files and full 42/42 files are byte-identical to local source.
+The clean remote builds reproduce the page counts above and match the local
+PDF text on every page. Errors, undefined references and Overfull remain zero.
+All existing literal cross-references pass. The full version's single pre-existing
+F1 oversized-float warning remains unchanged; the submission has none.
+
+The raw-source audit was re-run after edits: the published manifest matches all
+11 HyenaDNA cells, 4 overlapping-DNABERT cells and 2000 scorer evaluations;
+all four new table fragments match their generator exactly. The 33/20 scorer
+disagreement totals and headline member/control counts are asserted by the reader.
+Abstracts, bibliographies, all figure assets and the main CSV match baseline85a8c7d.
+The companion remote-validation JSON records commit IDs, source parity, page counts
+and PDF hashes. The final notebook-receipt commit does not alter either manuscript.
 
 中文：本轮补的是不读附录也应能判断的关键条件和证据，不改两条主结果。
 HyenaDNA 的四类背景第30轮65–100%有原始元数据支持；final是标签，不是另一轮。
