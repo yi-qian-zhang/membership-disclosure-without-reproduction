@@ -5784,3 +5784,8 @@ Eight focused tests and independent42-row/source checks pass; all11 public table
 fragments regenerate exactly. Final local builds: submission38pages/main10, full50
 pages/main18. No errors/undefined/Overfull; the full version retains its known F1
 float-size warning. Abstracts, bibliographies, figures and main CSV are unchanged.
+
+Remote receipt: GitHub implementation93bf65b (generator3aa660d), public codeb89ab11,
+submission Overleaf29943a6, full Overleafd9e4dce. Fresh remote clones compile to
+38/50 pages with10/18 main pages, source parity44/44 and42/42, and exact PDF page-text
+parity with local builds. See43_consistency_remote_20261103.json.

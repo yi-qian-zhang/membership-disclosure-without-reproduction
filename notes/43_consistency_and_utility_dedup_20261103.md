@@ -114,3 +114,18 @@ remote commits. The final receipt commit changes notes only.
 中文：本轮修复效用表按文件重复加权，并恢复被漏读的旧格式任务结果；生成器、公开
 聚合、两份表格和相关论述一并更新。69/73分别属于不同集合，全部保留并写清；其他
 Hamming、比例、标签和快照勘误同步到完整版。没有新训练，没有压缩完整版，没有改图。
+
+## Verified remote receipt
+
+Generator/report implementation3aa660d; manuscript/factual synchronization93bf65b;
+public reproducibility implementationb89ab11. Submission Overleaf29943a6 and full
+Overleafd9e4dce were each cloned from the actual HTTPS remote with autocrlf=false,
+then compiled in empty output directories. All44 submission and42 full tracked
+source files match local bytes; page text matches each local build exactly.
+The resulting counts/warnings are unchanged from the local validation above.
+See43_consistency_remote_20261103.json for full commit/PDF hashes and checks.
+
+Verified PDFs are under the workspace's work/consistency_revision_20261103/
+remote_build_short/main.pdf and remote_build_full/main.pdf. The pre-existing
+untracked paper/main.pdf was not overwritten and should not be used as this
+release's compiled artifact.

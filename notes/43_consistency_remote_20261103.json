@@ -1,0 +1,59 @@
+{
+  "implementation_commits": {
+    "generator": "3aa660d",
+    "manuscript": "93bf65b",
+    "public_code": "b89ab11"
+  },
+  "variants": {
+    "short": {
+      "physical_pages": 38,
+      "body_pages": 10,
+      "references_physical_page": 12,
+      "appendix_pages": 24,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "float_too_large": 0,
+      "literal_xrefs": {
+        "exit_code": 0,
+        "output": "check_xrefs: all 4 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\consistency_revision_20261103\\remote_build_short\\main.aux"
+      },
+      "utility_table": {
+        "number": "A5",
+        "printed_page": "21"
+      },
+      "pdf_sha256": "a2304647633e96407ae5456a7f8c3d04cef657f196ef5c922d6269d72a1bda08",
+      "last_body_content_bottom_pt": 537.1409301757812,
+      "source_files": 44,
+      "source_differences": [],
+      "overleaf_commit": "29943a63de409945fec3121970f54cee2ddd3dac",
+      "remote_pdf_text_matches_local": true
+    },
+    "full": {
+      "physical_pages": 50,
+      "body_pages": 18,
+      "references_physical_page": 20,
+      "appendix_pages": 28,
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "float_too_large": 1,
+      "literal_xrefs": {
+        "exit_code": 0,
+        "output": "check_xrefs: all 5 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\consistency_revision_20261103\\remote_build_full\\main.aux"
+      },
+      "utility_table": {
+        "number": "A5",
+        "printed_page": "45"
+      },
+      "pdf_sha256": "808a107e11812f06ea9f27c23ccf7310342a3dde0320c62e09ad9252b301071a",
+      "last_body_content_bottom_pt": 576.9669189453125,
+      "source_files": 42,
+      "source_differences": [],
+      "overleaf_commit": "d9e4dce1f41ab01a51847f3d06a685be724cb56b",
+      "remote_pdf_text_matches_local": true
+    }
+  }
+}
