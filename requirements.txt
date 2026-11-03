@@ -1,17 +1,2 @@
-# The environment every number in the paper was produced in, read off the machine rather than
-# written from memory: Python 3.10.18, CUDA 12.1, 4x RTX 4090.
-#
-# transformers is pinned old on purpose. DNABERT-2 ships custom modelling code that stopped
-# loading on the 4.3x series, and moving it would change the tokenizer path on the one model
-# whose tokenizer is the subject of the paper.
-#
-# Redrawing the figures and tables needs none of this -- only matplotlib. See README.md.
-
-torch==2.1.1
-transformers==4.29.2
-tokenizers==0.13.3
-peft==0.13.2
-numpy==1.24.3
-scipy==1.15.1
-scikit-learn==1.5.1
-matplotlib==3.9.2
+# Compatibility entry point; maintain model dependencies in one place.
+-r requirements-paper.txt

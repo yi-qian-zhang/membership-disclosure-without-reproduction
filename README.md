@@ -1,161 +1,78 @@
 # Membership Disclosure without Sequence Reproduction
 
-Code and measurements for **Membership Disclosure without Sequence Reproduction:
-Privacy Leakage from Fine-Tuned Genomic Language Models**.
+**English** | [简体中文](README.zh-CN.md)
 
-We evaluate candidate-record membership ranking and exact sequence recovery from
-fine-tuned genomic language models. Candidate ranking is not personal identification.
-The experiments compare contextual access, candidate scoring, decoding protocols,
-and tokenization, using eight released checkpoints and a controlled transformer backbone.
+Code and measurements for *Membership Disclosure without Sequence Reproduction:
+Privacy Leakage from Fine-Tuned Genomic Language Models*.
 
-At DNABERT-2's final chromosome-22 checkpoint, single-copy records rank first against
-100 alternatives in 18–26% of fresh-window evaluations across three training seeds,
-against 0% for matched controls. For this DNABERT-2 experiment, the tested decoders recover none of the hidden
-48-nucleotide targets in the reported single-copy evaluations; the paper distinguishes
-their checkpoint coverage and the smaller corrected-scorer audit. Own-window ranking
-is 92–96%, but supplies privileged training context. These rates are not calibrated
-low-FPR attack performance or evidence of individual identification. In the separate
-Nucleotide Transformer experiments, re-masking recovers single-copy targets in 8%
-of cases for NT 250M and 12–18% for NT 500M; zero recovery is not a cross-model result.
+We study candidate-record membership ranking and exact sequence recovery in
+fine-tuned genomic language models, comparing contextual access, scoring, decoding,
+and tokenization across eight released checkpoints and a controlled transformer.
 
-In a separate synthetic-canary experiment with sixteen copies, 2-mer and 6-mer
-tokenizers recover 0% and 92% at matched held-out loss 2.40 bits/nt. This comparison
-holds the backbone, objective and corpus fixed. It does not establish equal target
-predictability or slot count as the sole explanation. At the end of training,
-planted covering-token surprise is 0.824 versus 0.0052 bits per target nucleotide.
-It scores complete covering tokens (including trailing host letters), normalized
-by 48 target nucleotides, rather than marginalizing a strict 48-nt event. These are
-different checkpoints from the matched-loss comparison.
+## Main findings
 
-The overlapping DNABERT family uses two separate campaigns: the 50-epoch causal
-fine-tuning arm supplies the cross-family membership comparison; the 150-epoch masked
-arm supplies the stronger-decoder and leave-one-out diagnostics. They do not share
-checkpoints. Both the manuscript and its configuration table distinguish these arms.
+| Experiment | Reported result | Scope |
+| --- | --- | --- |
+| DNABERT-2, chr22, single-copy records | Fresh-window rank-1: **18–26%**; matched controls: **0%** | Final checkpoint, three training seeds, 50 records per seed, 100 alternatives |
+| Controlled synthetic canaries | 2-mer / 6-mer exact recovery: **0% / 92%** | Sixteen insertions, matched held-out loss **2.40 bits/nt** |
 
-## Rebuild the reported figures and tables
+In the reported DNABERT-2 single-copy evaluations, neither tested decoder recovers
+the hidden 48-nt target; their checkpoint coverage differs. This is not a universal
+zero: separate NT experiments recover single-copy targets at 8% (250M) and 12–18%
+(500M). Candidate ranking is **not personal identification or calibrated low-FPR
+membership inference**. Training seeds reuse the same records. Matched background
+loss does not establish equal target predictability or slot count as the sole mechanism.
 
-From the repository root, these commands need Python and matplotlib, without GPUs,
-model downloads or genomic inputs. Outputs go to a new directory, preserving the
-submitted figure and table files:
+## Quick start: regenerate figures and tables
 
-Plots use Arial to match the overview figure. Install Arial locally, or set
-`GLMEXT_FONT_DIR` to a private directory containing its regular, bold, italic and
-bold-italic TTF files. Fonts are not bundled; missing Arial causes an explicit
-error rather than a silent substitution. Existing figure font sizes are retained.
+Run from a fresh clone. This path needs no GPU, model weights or genomic downloads.
 
 ```bash
-python -m pip install matplotlib
+git clone https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction.git
+cd membership-disclosure-without-reproduction
+python -m venv .venv
+# Linux/macOS:
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements-analysis.txt
 python -m pilot2.figures_main10 --out reproduced/figures
 python -m pilot2.appendix_tables --results results --out reproduced/tables
 python -m pilot2.appendix_source_cells --summary results/appendix_source_cells.json --tables-out reproduced/tables
 ```
 
-`figures_main10` regenerates the two main quantitative figures (F2/F3). Figure 1 is
-an editable PowerPoint illustration exported through Microsoft PowerPoint; it is not
-generated by the plotting command. Its endpoint surprise values come from
-`results/kcurve_per_nt.json`. `results/figure_data.csv` supplies the main plotted
-trajectories; additional JSON/Markdown measurements supply the generated tables.
-See [results/README.md](results/README.md) for provenance and release boundaries.
+**Fonts:** the plotting command requires Arial. Install it, or set
+`GLMEXT_FONT_DIR` to a local directory containing the regular, bold, italic and
+bold-italic TTF files. Fonts are not bundled. Table generation does not require Arial.
 
-The last command regenerates the supplementary HyenaDNA epoch-30 and overlapping
-DNABERT full-50-record tables from an aggregate source manifest. With access to
-the original `outputs/`, run `python -m pilot2.appendix_source_cells --root .`
-to independently recount the saved evaluations and print their source hashes.
-The manifest also records the candidate-scorer audit with member/control counts;
-it contains no sequences or individual record identifiers.
+The commands regenerate **Figures 2–3 and 13 table fragments** from committed
+measurements, writing to ignored `reproduced/`. Figure 1 is a separate editable
+PowerPoint figure; its [source and export instructions](paper/figures/F1_source.md)
+are included. This repository's `paper/` contains figure assets, not a complete
+LaTeX manuscript.
 
-The six-task utility table uses the unrounded aggregates and source coverage in
-`results/dnabert_gue_ds/utility_downstream.json`. Repeated task panels from the same
-training configuration, seed and checkpoint are merged before averaging. Tasks use
-their available seeds; this is not a balanced panel across every task and epoch.
-The appendix-table command above regenerates this table without private outputs.
-To rebuild its aggregate manifest from the original saved evaluations:
+## Choose a reproduction path
 
-```bash
-python -m pilot2.analyze_downstream \
-  --root outputs/dnabert_gue_ds outputs/dnabert_gue_ds2 outputs/dnabert_yeast_ds \
-         outputs/hyena_gue_ds outputs/hyena_gue_ds2 outputs/hyena_yeast_ds \
-  --out-dir results/dnabert_gue_ds
-```
+- **Inspect a reported number:** [measurement guide](results/README.md).
+- **Rebuild plots, tables or model measurements:** [reproduction guide](docs/REPRODUCING.md).
+- **Find an implementation:** [code map](pilot2/README.md).
+- **Understand current versus historical material:** [repository guide](docs/REPOSITORY.md).
+- **Trace corrections and prior experiments:** [dated notes](notes/README.md).
 
-The `paper/` directory, when included in a manuscript checkout, contains the TeX
-source and `paper/build.sh`. The public analysis checkout can regenerate plots and
-table fragments without a TeX installation or a `paper/` directory.
+## Release boundaries
 
-## Reproduce model measurements
+All source inputs are public. The release includes aggregate measurements and
+redacted evaluation records, but not the consolidated human canary collection,
+sample-linking metadata or fine-tuned weights. Reconstructing inputs and retraining
+are separate from replaying the published tables.
 
-The recorded training environment used Python 3.10.18, PyTorch 2.1.1 with CUDA 12.1,
-transformers 4.29.2 and tokenizers 0.13.3. `requirements-paper.txt` records the core
-analysis/model dependencies; individual model backends may require their additional
-packages. The collaboration checkout's `requirements/requirements.txt` is a broader
-environment snapshot, not a minimal installation recipe. Full GPU training is separate
-from the lightweight figure/table checks above.
+Historical JSON fields such as `loo_bound` retain their names for compatibility.
+Their power summaries are **conditional-prediction diagnostics, not certified
+bounds on 48-nt recovery**, for all reported model families. Historical reports
+and logs can contain superseded interpretations; consult the measurement guide.
 
-```bash
-python -m pip install -r requirements-paper.txt
-export GLMEXT_DATA=/path/to/genomic-inputs
-```
+## Credit and license
 
-Place the IGSR GRCh38 recall file `ALL.chr22.GRCh38.phased.vcf.gz` and the matching
-chromosome-22 reference FASTA `chr22.fa` under `$GLMEXT_DATA/human/`. The VCF contains
-2,548 samples; this count belongs to the GRCh38 recall, not the 2015 phase-3 publication.
-The main experiment uses the builder's historical positional construction:
-
-```bash
-python -m pilot2.human_canary
-python -m pilot2.canary_census
-```
-
-Do not add `--phased` when reproducing the reported record set. The historical builder
-does not guarantee a phased haplotype: of 400 windows, the audit identifies 145 observed
-haplotypes, 20 within-person genotype composites and 235 unobserved composites. The
-rare-carrier criterion applies to the anchor variant, not automatically to the window.
-
-For example, one NT 250M fine-tuning run is:
-
-```bash
-python -m pilot2.nt --size 250m --data human --epochs 50 --mask_rate 0.15 \
-  --canary_npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
-  --probes_per_tier 50 --pool 100 --seed 0 --out outputs/nt_human_s0
-python -m pilot2.recon_audit --root outputs/nt_human_s0 --ckpt ckpt_ep50.pt --restarts 128
-```
-
-Use each reported run's `args.json`, the dated `pilot2/queue_*.sh` invocations and the
-paper's configuration/measurement appendices for the other arms. A generic example
-does not reproduce every table cell. Released models write `ckpt_ep<N>.pt`; the small
-controlled backbone uses `ep<N>.pt`.
-
-## Scoring and decoding boundaries
-
-| Protocol | Vocabulary / role | Reported budget or qualification |
-| --- | --- | --- |
-| Prefix decoding | Sequential generation in the model's vocabulary | Run by each training backend |
-| `pilot2/recon_audit.py` | Non-overlapping tokens, re-masking ICM | NT remeasurement: 128 restarts, up to six sweeps |
-| `pilot2/recon_overlap.py` | Overlapping k-mers, nucleotide updates | Main remeasurement: 16 restarts, four sweeps |
-| `pilot2/recon_bpe.py` | BPE, nucleotide proposals with re-tokenization | Main historical campaign: 16 restarts, four sweeps; common-interval correction audited separately |
-
-The historical BPE scorer and common-interval correction are not interchangeable.
-The latter audit covers 60 seed-0 final-checkpoint cells, not every trajectory cell.
-Never interpret a tested zero as extraction impossibility. Leave-one-out accuracy
-supplies the other true target positions; its per-record power summary is diagnostic
-for BPE and is not a general bound for arbitrary decoders. Fixed-point arguments
-apply only under the stated matching update rule, constraints and tie-breaking.
-
-## Data, reproducibility and credit
-
-All source inputs are public. We do not distribute the consolidated rare-record
-collection, anchor-to-sample links, or the fine-tuned checkpoints containing those
-records. Reconstruction code and aggregate measurements support reproduction from
-the public sources. Three model seeds share records and are not independent cohort
-replications. Numerical sensitivity of discrete decoding is documented in the paper
-and dated logs; one replay changed extraction by six percentage points, which is not
-a general estimate of run-to-run variance or a guarantee of stable membership ranks.
-
-`pilot2/` contains this study's experiment and analysis code, `results/` its published
-measurements, and `notes/` the dated laboratory record. Historical notes retain earlier
-claims and superseded analyses; use the current manuscript and its provenance labels
-to identify the reported experiment. The frozen `pilot/` directory predates this study.
-
-Built on Alexander Nemecek's GLM-Memorization framework and the released genomic-model
+Built on Alexander Nemecek's GLM-Memorization framework and released genomic-model
 backends. The predecessor is Nemecek et al., *Quantifying memorization and privacy
-risks in genomic language models*, ACM-BCB 2026. Apache License 2.0; see [LICENSE](LICENSE).
+risks in genomic language models*, ACM-BCB 2026.
+Licensed under [Apache License 2.0](LICENSE).

@@ -1,0 +1,2 @@
+# Lightweight figure/table reproduction; no model libraries or GPU runtime.
+matplotlib==3.9.2

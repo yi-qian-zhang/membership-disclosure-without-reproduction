@@ -111,3 +111,8 @@ configuration identities, aggregate counts, task coverage and source-file hashes
 it contains no sequences or individual record identifiers. Selection of the
 best held-out checkpoint uses unrounded values, and recovery percentages are
 displayed to one decimal place. The original raw evaluation files are unchanged.
+
+The 252 model/round/task summary cells combine 476 individual fine-tuned-head
+evaluations. All available MCC values, including zeros, contribute to task means;
+no low-MCC results are excluded. Frozen-probe and fine-tuned-head changes are
+computed separately. This supersedes the historical four-run exclusion description.
