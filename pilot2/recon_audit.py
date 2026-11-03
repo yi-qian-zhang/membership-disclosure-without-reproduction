@@ -159,10 +159,11 @@ def _allowed_fn(tok, win, start_nt, letters, content, device):
 
 @torch.no_grad()
 def target_surprise(model, tok, kind, probe: Probe, host, device, k_nt=48, offset=PROBE_OFFSET):
-    """Teacher-forced surprise of the TRUE target half under the extractor's own conditioning.
+    """Teacher-forced covering-token surprise under the extractor's conditioning.
 
-    Returns bits per TARGET nucleotide (not per canary nucleotide: the revealed half is excluded,
-    which is the whole point), the fraction of steps whose argmax is the true token, and its
+    Returns covering-token bits divided by 48 TARGET nucleotides. Leading revealed letters
+    constrain the content-token softmax; trailing host letters in the last token remain scored.
+    This is not a marginalized hidden48 event. Also returns true-token top-1 accuracy and its
     per-record power. The legacy `exact_upper_bound` key stores this diagnostic; it does not
     certify all-48-exact recovery by any decoder.
     """

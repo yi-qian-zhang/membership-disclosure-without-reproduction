@@ -9,8 +9,10 @@ WHAT IS COMPARABLE ACROSS TOKENIZERS, AND WHAT IS NOT. These runs are autoregres
 leave-one-out conditional tab:loo reports does not exist for them (extract_icm returns None for
 causal models). What target_surprise gives is:
 
-  target_bits_per_nt   surprise of the true hidden half under teacher forcing, PER NUCLEOTIDE.
-                       Comparable across tokenizers: that is what the per-nt normalisation is for.
+  target_bits_per_nt   teacher-forced covering-token surprise divided by 48 target nucleotides.
+                       Leading revealed letters constrain the softmax; trailing host letters
+                       in the final token remain scored. A common divisor does not make this
+                       a strictly cropped 48-nucleotide event across tokenizers.
   top1_rate            teacher-forced argmax accuracy PER TOKEN. A 6-mer step covers six
                        nucleotides and a character step covers one, so 0.9 means very different
                        things in the two, and this column must never be called a per-nucleotide

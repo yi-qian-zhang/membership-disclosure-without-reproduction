@@ -213,8 +213,9 @@ def extract_prefix(model, voc, probe: Probe, host, device, offset, objective, k_
         gen = "".join(voc.id2str[cur[t + 1]] for t in range(n_rev, last + 1))
     pred = gen[:len(truth)]
     ham = sum(1 for a, b in zip(pred, truth) if a != b) + max(0, len(truth) - len(pred))
-    return {"k_revealed_nt": int(revealed - offset), "offset": int(offset), "n_generated_nt": int(len(truth)),
-            "exact": bool(ham == 0), "hamming_nt": int(ham), "pred_nt": pred, "truth_nt": truth}
+    from .target48 import target48
+    return target48({"k_revealed_nt": int(revealed - offset), "offset": int(offset), "n_generated_nt": int(len(truth)),
+            "exact": bool(ham == 0), "hamming_nt": int(ham), "pred_nt": pred, "truth_nt": truth})
 
 
 def score_run(model, voc, ds, device, pool_size, seed, probes_per_tier=None, floor_n=200,

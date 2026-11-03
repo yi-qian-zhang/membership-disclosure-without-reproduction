@@ -49,3 +49,25 @@ unchanged. Teacher-forced prefix powers likewise do not bound arbitrary decoders
 Archived reports preserve their original text; the interpretation above supersedes
 those explanations. See `notes/32_claim_scope_cleanup_20261102.md` for the final
 corpus/tier and reporting corrections. No raw measurement has been rewritten.
+
+## Coordinate-correct 48-nt evaluation (2 November 2026)
+
+The reported DNABERT-2 prefix exactness and Hamming errors now refer to the hidden
+48 nucleotides. Historical BPE generation starts at the preceding token boundary;
+`pilot2.target48` crops saved strings by nucleotide coordinates without rerunning
+the decoder or pretending it had the full nominal prefix. Missing output letters
+count as errors. `figure_data.csv` changes only these two endpoint columns, retains
+all candidate-ranking/held-out-loss values, and adds `evaluation_endpoint`.
+Early archival rows without saved strings retain historical metrics and carry
+`legacy_variable`; these rows are not current manuscript 48-nt evaluations.
+
+`target48_audit.json` records the initial old/new cells, chromosome-22 per-cell
+means, sample standard deviations, standard errors and Wilson intervals. Fresh
+controls use independent host/offset draws; own controls match the member context.
+The member-control Hamming differences do not consistently exceed their within-cell
+uncertainty. Do not pool repeated checkpoints/seeds as independent record samples.
+Raw score JSON and released redacted historical records remain unchanged.
+
+Figure 2's whiskers still span the three seed values (minimum to maximum), not SE.
+The per-seed table includes sixteen-copy fresh-window membership,30–40% at round15
+and96–98% at the final checkpoint, distinct from the single-copy18–26% result.

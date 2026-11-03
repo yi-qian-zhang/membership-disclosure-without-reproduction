@@ -84,11 +84,11 @@ def table_ident(rows, out: Path, res: Path):
     runs = [f"dnabert2bpe_human_s{s}" for s in (0, 1, 2)]
     eps = sorted({r["epoch"] for r in rows if r["group"] == "bpe_human"}, key=lambda e: EPOCH_ORDER[e])
     lines = [head("A4: per-seed DNABERT-2 on chromosome 22, both host conditions, both controls."),
-             "\\begin{tabular}{llcccccccc}", "\\toprule",
-             "& & & \\multicolumn{1}{c}{16 copies} & \\multicolumn{2}{c}{1 copy, id} & "
+             "\\begin{tabular}{llccccccccc}", "\\toprule",
+             "& & & \\multicolumn{2}{c}{16 copies, id} & \\multicolumn{2}{c}{1 copy, id} & "
              "\\multicolumn{2}{c}{control, id} & \\multicolumn{2}{c}{verbatim} \\\\",
-             "\\cmidrule(lr){4-4}\\cmidrule(lr){5-6}\\cmidrule(lr){7-8}\\cmidrule(lr){9-10}",
-             "checkpoint & seed & \\bits & id & own & fresh & own & fresh & 16 & 1 \\\\",
+             "\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\\cmidrule(lr){8-9}\\cmidrule(lr){10-11}",
+             "checkpoint & seed & \\bits & own & fresh & own & fresh & own & fresh & 16 & 1 \\\\",
              "\\midrule"]
 
     def bhcell(e, key, i):
@@ -110,6 +110,7 @@ def table_ident(rows, out: Path, res: Path):
                 f"{('round~' + e if e != 'final' else 'final') if i == 0 else ''} & {i} & "
                 f"{'---' if floor is None else f'{floor:.3f}'} & "
                 f"{two(cell(rows, 'bpe_human', run, '16', 'train', e, 'rank1_rate'))} & "
+                f"{two(cell(rows, 'bpe_human', run, '16', 'fresh', e, 'rank1_rate'))} & "
                 f"{two(bhcell(e, 'r=1/train', i))} & "
                 f"{two(bhcell(e, 'r=1/fresh', i))} & "
                 f"{two(c_own)} & {two(c_fresh)} & "
@@ -129,7 +130,7 @@ def table_ident(rows, out: Path, res: Path):
                 f"${hi:.2f}$; \\texttt{{pilot2/count\\_control\\_hits.py}} gives the distinct "
                 f"records behind them")
     lines += ["\\midrule",
-              "\\multicolumn{10}{l}{\\footnotesize 50 records per cell. " + note + ".} \\\\",
+              "\\multicolumn{11}{l}{\\footnotesize 50 records per cell. " + note + ".} \\\\",
               "\\bottomrule", "\\end{tabular}"]
     (out / "a4_ident_perseed.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print("  a4_ident_perseed.tex")
@@ -540,16 +541,40 @@ def table_placement(rows, out: Path):
     (out / "t_placement.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print("  t_placement.tex")
 
+def table_target48(res, out):
+    """Descriptive per-seed uncertainty, never pooling repeated checkpoints."""
+    d = json.loads((res / 'target48_audit.json').read_text(encoding='utf-8'))
+    cells = {(r['seed'], r['checkpoint'], r['tier'], r['host']): r for r in d['chromosome22_cells']}
+    gaps = {(r['seed'], r['checkpoint']): r for r in d['fresh_single_copy_gaps']}
+    lines = [head('Coordinate-cropped hidden48 Hamming distances; saved predictions, no new decoding.'),
+             r'\begin{tabular}{llccc}', r'\toprule',
+             r'round & seed & member mean $\pm$ SE & control mean $\pm$ SE & difference $\pm$ SE \\', r'\midrule']
+    for ep in ('ep15','ep30','ep50','ep80','ep120','final'):
+        for seed in range(3):
+            m=cells[seed,ep,1,'fresh']; c=cells[seed,ep,0,'fresh']; g=gaps[seed,ep]
+            label=ep.removeprefix('ep') if seed==0 else ''
+            lines.append(f"{label} & {seed} & ${m['hamming_mean']:.2f}\\pm{m['hamming_se']:.2f}$ & "
+                         f"${c['hamming_mean']:.2f}\\pm{c['hamming_se']:.2f}$ & "
+                         f"${g['control_minus_member']:.2f}\\pm{g['unpaired_descriptive_se']:.2f}$ \\\\")
+        lines.append(r'\addlinespace[2pt]')
+    lines += [r'\bottomrule',r'\end{tabular}']
+    (out/'a4_target48.tex').write_text('\n'.join(lines)+'\n',encoding='utf-8',newline='\n')
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="results")
     ap.add_argument("--out", default="paper/tables")
+    ap.add_argument("--only", choices=("all", "ident"), default="all")
     args = ap.parse_args(argv)
     res, out = Path(args.results), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     rows = load(res)
     print(f"{len(rows)} rows ->")
     table_ident(rows, out, res)
+    table_target48(res, out)
+    if args.only == "ident":
+        return 0
     table_kcurve(rows, out)
     table_downstream(res, out)
     table_rerun(res, out)

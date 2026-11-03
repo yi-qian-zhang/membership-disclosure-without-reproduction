@@ -16,6 +16,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+from .target48 import target48
 
 RUN = re.compile(r"dnabert(?P<k>\d|2bpe)(?P<var>_[A-Za-z0-9._-]+?)?_s(?P<seed>\d+)")
 KLABEL = lambda k: "BPE" if k == 7 else str(k)   # DNABERT-2 (BPE) sorts after the 6-mer
@@ -29,7 +30,7 @@ def tier_stats(r, tier, host):
         return None
     return (np.mean([p["ranks"][key]["probe_bits_per_nt"] for p in ps]),
             np.mean([p["ranks"][key]["rank"] == 1 for p in ps]),
-            np.mean([p["extract"][host]["exact"] for p in ps]), len(ps))
+            np.mean([target48(p["extract"][host])["exact"] for p in ps]), len(ps))
 
 
 def main(argv=None):

@@ -22,8 +22,10 @@ In a separate synthetic-canary experiment with sixteen copies, 2-mer and 6-mer
 tokenizers recover 0% and 92% at matched held-out loss 2.40 bits/nt. This comparison
 holds the backbone, objective and corpus fixed. It does not establish equal target
 predictability or slot count as the sole explanation. At the end of training,
-planted-target surprise is 0.824 versus 0.0052 bits/nt; these are different checkpoints
-from the matched-loss comparison.
+planted covering-token surprise is 0.824 versus 0.0052 bits per target nucleotide.
+It scores complete covering tokens (including trailing host letters), normalized
+by 48 target nucleotides, rather than marginalizing a strict 48-nt event. These are
+different checkpoints from the matched-loss comparison.
 
 The overlapping DNABERT family uses two separate campaigns: the 50-epoch causal
 fine-tuning arm supplies the cross-family membership comparison; the 150-epoch masked

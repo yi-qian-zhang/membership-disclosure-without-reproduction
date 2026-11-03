@@ -66,7 +66,7 @@ def fig_ident(rows, out):
         for ax in (top, bottom):
             ax.set_xlim(5, 160)
             ax.set_ylim(-.065, 1.065)
-            ax.set_xticks([15, 50, 100, 150], ['15', '50', '100', 'final'])
+            ax.set_xticks(xs, [str(f.EPOCH_X[e]) if e != 'final' else 'final' for e in epochs])
             ax.set_yticks([0, .5, 1], ['0', '0.5', '1'])
             ax.tick_params(length=3, pad=3)
             f._style(ax)

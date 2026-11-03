@@ -27,9 +27,15 @@ target-surprise comparison; it does not identify these checkpoints. The endpoint
 shows both absolute planted surprise and the control-minus-planted gap. The common
 target before the tokenizer fork is neutral gray.
 
-The pre-revision full figure remains in `../../paper_full/figures/` and the
-`paper-full-before-v4-20261031` archive tag. The exact source copy used for this edit
+Both manuscripts now use the same corrected editable figure. The pre-revision
+full figure remains in the `methods-before-target48-20261102` and
+`paper-full-before-v4-20261031` archive tags. The exact source copy used for this edit
 is now archived inside this project at `archive/F1_author_source_before_20261031.pptx`;
 its provenance and SHA-256 are recorded in `archive/README.md`. The author working
 path is mutable; this archive is the preserved original. See notes 25 and 26 for
 object preservation, scientific scope, page count and synchronization checks.
+
+The 2 November endpoint revision distinguishes nominal prefix input from the
+hidden48 evaluation crop, shows decoder flank visibility, separates paired own
+controls from independently drawn fresh contexts, and labels covering-token bits
+including trailing host letters. All native objects and minimum fonts are retained.
