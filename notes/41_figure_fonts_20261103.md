@@ -53,4 +53,12 @@ size or position adjustment is warranted.
 正文及附录全部5张图已核对。投稿版仍正文10页、附录23页，所有图所在页未变。
 字体文件只用于私有渲染，不进入GitHub或Overleaf；生成脚本新增明确的字体依赖说明。
 
-Remote synchronization receipts follow after verification.
+## Synchronization receipt
+
+Implementation: GitHub864873d. Submission Overleaf4a8579f; full Overleaf9048ce4.
+Public plotting-code releasebaaeda6. Fresh clones with core.autocrlf=false have
+42/42 and40/40 tracked files byte-identical to the locally compiled and visually
+inspected sources. No claim of a second remote build is needed: the local clean
+builds above use these exact TeX/PDF inputs. The independent font/ink validation
+and source parity results are recorded in the adjacent JSON. No font binaries
+were added to any repository or Overleaf project.
