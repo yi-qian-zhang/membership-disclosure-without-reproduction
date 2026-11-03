@@ -56,3 +56,20 @@ byte for byte. No training, inference, experimental results or statistical estim
 were changed. No data or full-manuscript files were pushed to the public repository.
 
 Remote receipts are appended after synchronization.
+
+## Final remote verification
+
+- Collaboration manuscript commit: `3279f45` on `glmex`; backup tag pushed.
+- Public codebase: `08b4614` on `main`; the PDF links to this exact guide revision.
+- Submission Overleaf: `16f269d`. A new clone of the actual remote was compiled.
+- Remote result: 23 pages, main 10, bibliography 3, appendix 9; references begin
+  at physical page 12 and appendix at 15. Errors/undefined/Overfull: 0/0/0; one
+  existing bibliography Underfull warning. All 28 active reference targets resolve.
+- Remote/local source parity: 51/51 files, byte-identical. Main-source hashes and
+  every full-version hash unchanged. PDF main text matches after normalizing appendix
+  numbers and page breaks; shorter reference numbers move one line from physical
+  page 6 to 5, without changing content or the ten-page main-body count.
+- Full-length Overleaf was intentionally not modified: this is an appendix-only
+  presentation change, not a scientific correction.
+
+Machine-readable checks: `notes/46_appendix_remote_validation_20261103.json`.

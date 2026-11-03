@@ -1,0 +1,20 @@
+{
+  "submission_commit": "16f269dc65ee9e85e265aff7c8df5a3a95316359",
+  "collaboration_manuscript_commit": "3279f45",
+  "public_commit": "08b4614",
+  "physical_pages": 23,
+  "main_pages": 10,
+  "references_first_physical": 12,
+  "appendix_first_physical": 15,
+  "appendix_pages": 9,
+  "source_parity": "51/51",
+  "main_pdf_text_equal_after_reference_and_pagebreak_normalization": true,
+  "reference_renumbering_moves_one_line_from_physical_6_to_5": true,
+  "changed_existing_tracked_manuscript_files": [
+    "paper/check_xrefs.py",
+    "paper/sections/p11_appendix.tex"
+  ],
+  "errors_undefined_overfull": [],
+  "underfull_count": 1,
+  "appendix_code_markers": []
+}
