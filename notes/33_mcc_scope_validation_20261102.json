@@ -1,0 +1,69 @@
+{
+  "paper": {
+    "pages": 36,
+    "references_physical_page": 11,
+    "main_pages": 9,
+    "appendix_start_candidates": [
+      14
+    ],
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "reviewed_pages": [
+      29,
+      30
+    ]
+  },
+  "paper_full": {
+    "pages": 44,
+    "references_physical_page": 18,
+    "main_pages": 16,
+    "appendix_start_candidates": [
+      21
+    ],
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "reviewed_pages": [
+      40,
+      41
+    ]
+  },
+  "changed_files": [
+    "paper/figures/F7_blind.pdf",
+    "paper/figures/F7_blind.png",
+    "paper/sections/p07_practice.tex",
+    "paper_full/figures/F7_blind.pdf",
+    "paper_full/figures/F7_blind.png",
+    "paper_full/sections/p07_practice.tex",
+    "pilot2/figures_privacy.py"
+  ],
+  "remote": {
+    "short": {
+      "commit": "d244fe2",
+      "tracked_files": 41,
+      "byte_differences": [],
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "pages": 36,
+      "rendered_page_mismatches": []
+    },
+    "full": {
+      "commit": "1c52c83",
+      "tracked_files": 39,
+      "byte_differences": [],
+      "errors": 0,
+      "undefined": 0,
+      "overfull": 0,
+      "underfull": 2,
+      "pages": 44,
+      "rendered_page_mismatches": []
+    }
+  },
+  "paper_commit": "6213180",
+  "public_figure_commit": "627f258"
+}

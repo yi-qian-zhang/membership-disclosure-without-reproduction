@@ -5715,3 +5715,26 @@ short36/main9/appendix23; full44/main16/appendix24; errors/undefined/overfull al
 underfull2 each. All41 short and39 full tracked files are now byte-identical to local,
 including main.tex; every rendered page matches the local build. Hard-coded references
 pass4/4 and5/5. Final PDFs and checks are in work/claim_cleanup_20261102.
+
+
+## 2 November — mean linear-probe MCC and Figure A2 closeout
+
+Applied the approved reporting/layout fixes to both manuscript versions. Table A13
+distinguishes three-seed BPE MCC ranges from NT seed0; the text names mean
+linear-probe MCC, selecting round15, and individual seeds0/1 versus seed2
+(round15 versus50). Figure A2 labels the BPE mean explicitly, defines its
+mean curves and MCC min–max band, and moves the legend away from the curve.
+All raw measurements, other figures, abstract and bibliography are unchanged.
+See note33 and its validation receipt for sources, builds and remote identifiers.
+
+
+## Final synchronization receipt
+
+Paper/code commit6213180; public figure code 627f258; submission Overleaf
+d244fe2; full Overleaf 1c52c83. Fresh clones of both actual Overleaf
+remotes built successfully:36/44pages, main9/16, appendix23/24, errors0,
+undefined0, overfull0, existing underfull2 each. All41/39 tracked files are
+byte-identical to local. Every rendered page matches its local build.
+Local xref checks pass4/4 and5/5; the same source and remote aux are checked
+before final release. Both new validation notes use LF. No measurements changed.
+Final PDFs are in work/mcc_scope_20261102.
