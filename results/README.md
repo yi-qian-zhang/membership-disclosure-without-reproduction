@@ -92,3 +92,22 @@ changes none of the current 2.40-bit/nt means.
 Figure 2's whiskers still span the three seed values (minimum to maximum), not SE.
 The per-seed table includes sixteen-copy fresh-window membership,30–40% at round15
 and96–98% at the final checkpoint, distinct from the single-copy18–26% result.
+
+## Deduplicated six-task utility summaries (3 November 2026)
+
+`dnabert_gue_ds/utility_downstream.json` is the full-precision source for the
+six-task utility table; the neighboring Markdown file is its readable report.
+`pilot2.analyze_downstream` merges repeated task panels by training configuration,
+seed and checkpoint, includes historical single-task records, and rejects
+conflicting duplicate measurements. Saved strings are merged before evaluating
+the hidden 48-nucleotide target. Unsupported variable-length archival endpoints
+fail explicitly rather than silently using a different evaluation interval.
+
+Loss and canary metrics weight unique configurations equally. Each downstream
+task uses its available configurations; record and seed coverage vary by task and
+checkpoint. These are descriptive summaries rather than a complete paired panel,
+and repeated canary evaluations are not independent records. The JSON records
+configuration identities, aggregate counts, task coverage and source-file hashes;
+it contains no sequences or individual record identifiers. Selection of the
+best held-out checkpoint uses unrounded values, and recovery percentages are
+displayed to one decimal place. The original raw evaluation files are unchanged.

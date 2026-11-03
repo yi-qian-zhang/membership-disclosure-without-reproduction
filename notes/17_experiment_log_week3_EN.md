@@ -5767,3 +5767,20 @@ The controlled-sweep final record duplicates numberedepoch30 in all33 runs;
 including it changes current2.40-bit/nt means by0. Corrected the obsolete code
 comment. Initial builds: submission body10pages, appendix24; full body18pages.
 No headline data, abstracts, bibliography or figure assets changed.
+
+
+## 3 November — Consistency corrections and utility deduplication
+
+Implemented the author-approved consistency repairs in both manuscripts, preserving
+the full version. See notes/43_consistency_and_utility_dedup_20261103.md.
+The utility collector merges repeated task panels by training configuration, seed
+and checkpoint, includes legacy single-task measurements, and checks hidden48.
+238 unique checkpoint cells replace file-weighted aggregation of280 source files.
+HyenaDNA final recovery is99/120=82.5%; the prose range is0–6% to36.7–100%.
+The 69/73 site counts are retained for different400-window coordinate sets, which
+share only six starts; Hamming controls are35.4/35.7 and haplotype proportions
+36.25%/36.69%. NT schedules and figure-label wording are corrected.
+Eight focused tests and independent42-row/source checks pass; all11 public table
+fragments regenerate exactly. Final local builds: submission38pages/main10, full50
+pages/main18. No errors/undefined/Overfull; the full version retains its known F1
+float-size warning. Abstracts, bibliographies, figures and main CSV are unchanged.

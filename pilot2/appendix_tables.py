@@ -193,34 +193,26 @@ def table_kcurve(rows, out: Path):
 
 # ---------------------------------------------------------------- A6
 def table_downstream(res: Path, out: Path):
-    """Six tasks, per model, at round 0, at the held-out optimum and at the end of the run."""
-    src = res / "dnabert_gue_ds" / "utility_downstream.md"
-    text = src.read_text(encoding="utf-8")
-    lines = [head("A6: six downstream tasks, from results/dnabert_gue_ds/utility_downstream.md."),
+    """Six tasks from precise, deduplicated public aggregates; no private inputs needed."""
+    src = res / "dnabert_gue_ds" / "utility_downstream.json"
+    report = json.loads(src.read_text(encoding="utf-8"))
+    assert report["schema_version"] == 1 and report["evaluation_endpoint"] == "hidden48"
+    task_keys = ("prom_300_all", "prom_core_all", "human_tf_0", "splice_reconstructed", "emp_H3", "emp_H3K4me3")
+    lines = [head("A6: unique-checkpoint downstream aggregates, from results/dnabert_gue_ds/utility_downstream.json."),
              "\\begin{tabular}{llccrrrrrr}", "\\toprule",
              "model & round & held-out & extracted & " + " & ".join(TASKS) + " \\\\",
              "\\midrule"]
-    for block in re.split(r"\n## ", text)[1:]:
-        name = block.split("\n")[0].strip()
-        if name.startswith("What"):
-            continue
-        parsed = []
-        for row in block.split("\n"):
-            if not row.startswith("| ") or "---" in row or "round" in row:
-                continue
-            c = [x.strip() for x in row.strip("|").split("|")]
-            if len(c) < 11:
-                continue
-            pr = [float(re.search(r"\(([\d.]+)\)", x).group(1)) for x in c[5:11]]
-            parsed.append(dict(rnd=c[0], loss=float(c[1]), ext=c[4], pr=pr))
-        if not parsed:
-            continue
-        opt = min(parsed, key=lambda p: p["loss"])
-        for i, row in enumerate((parsed[0], opt, parsed[-1])):
-            tag = "" if i else esc(name)
+    for model in report["models"]:
+        rows = sorted(model["rows"], key=lambda row: row["epoch"])
+        opt = min(rows, key=lambda row: (row["heldout_bits_per_nt"], row["epoch"]))
+        assert opt["epoch"] == model["selection"]["best_heldout_epoch"]
+        for i, row in enumerate((rows[0], opt, rows[-1])):
+            tag = "" if i else esc(model["label"])
             label = {0: "first", 1: "best held-out", 2: "last"}[i]
-            lines.append(f"{tag} & {row['rnd']} ({label}) & {row['loss']:.3f} & {esc(row['ext'])} & "
-                         + " & ".join(f"{v:.3f}" for v in row["pr"]) + " \\\\")
+            extraction = f"{100 * row['canary']['exact_rate']:.1f}\\%"
+            scores = [row["tasks"][task]["linear_probe_mcc"] for task in task_keys]
+            lines.append(f"{tag} & {row['epoch']} ({label}) & {row['heldout_bits_per_nt']:.3f} & {extraction} & "
+                         + " & ".join("---" if value is None else f"{value:.3f}" for value in scores) + " \\\\")
         lines.append("\\addlinespace[2pt]")
     lines += ["\\bottomrule", "\\end{tabular}"]
     (out / "a6_downstream.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

@@ -64,6 +64,20 @@ to independently recount the saved evaluations and print their source hashes.
 The manifest also records the candidate-scorer audit with member/control counts;
 it contains no sequences or individual record identifiers.
 
+The six-task utility table uses the unrounded aggregates and source coverage in
+`results/dnabert_gue_ds/utility_downstream.json`. Repeated task panels from the same
+training configuration, seed and checkpoint are merged before averaging. Tasks use
+their available seeds; this is not a balanced panel across every task and epoch.
+The appendix-table command above regenerates this table without private outputs.
+To rebuild its aggregate manifest from the original saved evaluations:
+
+```bash
+python -m pilot2.analyze_downstream \
+  --root outputs/dnabert_gue_ds outputs/dnabert_gue_ds2 outputs/dnabert_yeast_ds \
+         outputs/hyena_gue_ds outputs/hyena_gue_ds2 outputs/hyena_yeast_ds \
+  --out-dir results/dnabert_gue_ds
+```
+
 The `paper/` directory, when included in a manuscript checkout, contains the TeX
 source and `paper/build.sh`. The public analysis checkout can regenerate plots and
 table fragments without a TeX installation or a `paper/` directory.

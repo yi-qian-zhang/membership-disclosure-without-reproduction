@@ -1,0 +1,44 @@
+{
+  "short": {
+    "physical_pages": 38,
+    "body_pages": 10,
+    "references_physical_page": 12,
+    "appendix_pages": 24,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "float_too_large": 0,
+    "literal_xrefs": {
+      "exit_code": 0,
+      "output": "check_xrefs: all 4 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\consistency_revision_20261103\\build_short\\main.aux"
+    },
+    "utility_table": {
+      "number": "A5",
+      "printed_page": "21"
+    },
+    "pdf_sha256": "9db519f6c9051afc21186ea278f146d10c684911465f5349bae1a22a1e84ae4b",
+    "last_body_content_bottom_pt": 537.1409301757812
+  },
+  "full": {
+    "physical_pages": 50,
+    "body_pages": 18,
+    "references_physical_page": 20,
+    "appendix_pages": 28,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "float_too_large": 1,
+    "literal_xrefs": {
+      "exit_code": 0,
+      "output": "check_xrefs: all 5 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\consistency_revision_20261103\\build_full\\main.aux"
+    },
+    "utility_table": {
+      "number": "A5",
+      "printed_page": "45"
+    },
+    "pdf_sha256": "8c4b368b73eaf376cade2fdd9462e610481c537b46ab2e0c3b2973b5f5c83fad",
+    "last_body_content_bottom_pt": 576.9669189453125
+  }
+}
