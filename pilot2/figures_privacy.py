@@ -301,13 +301,15 @@ def fig_blind(res: Path, out: Path):
         ax2.tick_params(axis="y", colors=C_ID)
         ax2.spines["top"].set_visible(False)
         best = max(range(n), key=lambda i: mean(mcc, i))
-        ax.annotate("best MCC", xy=(xs[best], mean(mcc, best)), xytext=(5, 4),
+        ax.annotate("best mean MCC" if len(got) > 1 else "best MCC",
+                    xy=(xs[best], mean(mcc, best)),
+                    xytext=(5, -12) if len(got) > 1 else (5, 4),
                     textcoords="offset points", fontsize=6.5, color=C_UTIL)
         if ax is axes[0]:
             h1, l1 = ax.get_legend_handles_labels()
             h2, l2 = ax2.get_legend_handles_labels()
             ax.legend(h1 + h2, l1 + l2, frameon=False, loc="upper left",
-                      bbox_to_anchor=(0.01, 0.68), handlelength=1.8)
+                      bbox_to_anchor=(0.01, 0.99), handlelength=1.8)
     _save(fig, out, "F7_blind")
 
 
