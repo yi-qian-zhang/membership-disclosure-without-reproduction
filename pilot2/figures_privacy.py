@@ -15,7 +15,7 @@ download means the figures and the tables cannot disagree, and it was checked: t
 cells recomputed here reproduce Table 3 of the paper exactly, cell for cell, including the
 window-288 replication column.
 
-Style follows `figures_paper.py`: 6.5 in text width, 8 pt serif, no LaTeX dependency.
+Typeface is Arial, matching the PowerPoint overview; existing sizes/layout are retained.
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from .figure_fonts import use_arial
 
 plt.rcParams.update({
     "font.family": "serif", "font.serif": ["Times New Roman", "DejaVu Serif"],
@@ -259,6 +260,7 @@ def _util(path: Path, own_rates):
 
 def fig_blind(res: Path, out: Path):
     """Downstream score against the leak, on the two released models fine-tuned on chr22."""
+    use_arial()
     panels = [("DNABERT-2 117M", [res / "bpe_human" / f"dnabert2bpe_human_s{s}"
                                   / "utility_at_leak.json" for s in (0, 1, 2)]),
               ("NT 250M", [res / "nt_ckpt" / "nt250m_mlm_human_s0" / "utility_at_leak.json"])]
@@ -290,6 +292,8 @@ def fig_blind(res: Path, out: Path):
         ax.set_ylabel("MCC, GUE promoters", color=C_UTIL)
         ax.tick_params(axis="y", colors=C_UTIL)
         ax.set_xlabel("fine-tuning round")
+        # Preserve the published ticks when the font changes AutoLocator's density.
+        ax.set_xticks(list(range(20, 141, 20)) if len(paths) > 1 else list(range(15, 51, 5)))
         ax.set_title(name + ", chromosome 22", color=INK)
         _style(ax)
 
@@ -388,6 +392,7 @@ def main(argv=None):
     ap.add_argument("--out", default="paper/figures")
     ap.add_argument("--only", default=None, help="slots | ident | blind")
     args = ap.parse_args(argv)
+    use_arial()
 
     res, out = Path(args.results), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)

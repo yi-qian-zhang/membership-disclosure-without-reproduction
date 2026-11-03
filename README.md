@@ -38,6 +38,11 @@ From the repository root, these commands need Python and matplotlib, without GPU
 model downloads or genomic inputs. Outputs go to a new directory, preserving the
 submitted figure and table files:
 
+Plots use Arial to match the overview figure. Install Arial locally, or set
+`GLMEXT_FONT_DIR` to a private directory containing its regular, bold, italic and
+bold-italic TTF files. Fonts are not bundled; missing Arial causes an explicit
+error rather than a silent substitution. Existing figure font sizes are retained.
+
 ```bash
 python -m pip install matplotlib
 python -m pilot2.figures_main10 --out reproduced/figures

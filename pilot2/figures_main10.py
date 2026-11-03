@@ -9,6 +9,7 @@ import argparse
 import json
 from pathlib import Path
 from . import figures_privacy as f
+from .figure_fonts import use_arial
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
@@ -177,9 +178,7 @@ def main():
     ap.add_argument('--figure',choices=('all','ident','slots'),default='all')
     ap.add_argument('--audit',type=Path)
     args=ap.parse_args();args.out.mkdir(parents=True,exist_ok=True)
-    plt.rcParams.update({'font.family':'sans-serif','font.sans-serif':['DejaVu Sans'],
-        'font.size':FONT,'axes.titlesize':FONT,'axes.labelsize':FONT,'legend.fontsize':FONT,
-        'xtick.labelsize':FONT,'ytick.labelsize':FONT,'pdf.fonttype':42,'svg.fonttype':'none'})
+    use_arial(FONT)
     rows=f.load(Path('results/figure_data.csv'))
     if args.figure in ('all','ident'):fig_ident(rows,args.out)
     if args.figure in ('all','slots'):fig_slots(rows,args.out)

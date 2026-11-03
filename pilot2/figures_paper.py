@@ -7,8 +7,7 @@ F2 mechanism   per-nucleotide against per-slot memorisation, and excess against 
 F3 variance    share of variance by factor, random against fixed canary placement
 F4 delay       150-round trajectories: the character cell only postpones extraction
 
-Every panel is drawn at the paper's text width (6.5 in) or half of it, in 8 pt serif to match 10 pt
-Times body text, with no LaTeX dependency.
+Typeface is Arial, matching the PowerPoint overview; existing sizes/layout are retained.
 """
 from __future__ import annotations
 
@@ -20,6 +19,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from .figure_fonts import use_arial
 
 from .analyze_objaxis import collect as collect_obj
 
@@ -158,7 +158,8 @@ def fig_variance(out: Path):
     """Shares from `python -m pilot2.analyze_tok --root outputs/core_all --tier 16` (random
     placement, 24 runs) and the same command on outputs/tok1 (fixed placement, 18 runs); the
     three-tokeniser subset of core_all gives 57.7 / 15.4 / 26.9 / 0.0, printed in the caption."""
-    labels = ["objective", "tokeniser", "interaction", "seed"]
+    use_arial()
+    labels = ["objective", "tokenizer", "interaction", "seed"]
     rand = [67.1, 12.0, 21.0, 0.0]
     fixed = [25.7, 59.5, 14.0, 0.8]
     cols = ["#C2410C", "#3B8686", "#D9BC8B", "#B9C0CC"]
@@ -176,13 +177,20 @@ def fig_variance(out: Path):
     ax.set_yticks([0, 1])
     ax.set_yticklabels(["drawn offsets", "fixed offsets"])
     ax.set_xlim(0, 100)
-    ax.set_xlabel("share of variance in canary memorisation (%)")
+    ax.set_xlabel("share of variance in canary memorization (%)")
     ax.legend(frameon=False, ncol=4, loc="upper center", bbox_to_anchor=(0.5, 1.42),
               handlelength=0.9, columnspacing=1.0, borderpad=0.0)
     for side in ("top", "right", "left"):
         ax.spines[side].set_visible(False)
     ax.tick_params(axis="y", length=0)
-    _save(fig, out, "F3_variance")
+    # Keep the published PDF media box, hence the same print-size font scaling.
+    # Arial has slightly different tight-bounding-box metrics from the old serif.
+    fig.canvas.draw()
+    box = fig.get_tightbbox(fig.canvas.get_renderer()).padded(.01)
+    box = box.expanded((228.27830505371094 / 72) / box.width,
+                       (77.31256866455078 / 72) / box.height)
+    fig.savefig(out / "F3_variance.pdf", bbox_inches=box, pad_inches=0)
+    fig.savefig(out / "F3_variance.png", bbox_inches=box, pad_inches=0, dpi=220)
     plt.close(fig)
     return "F3_variance.pdf"
 
@@ -237,6 +245,7 @@ def main(argv=None):
     ap.add_argument("--out", default="outputs/figures_paper")
     ap.add_argument("--only", default=None, choices=["objective", "mechanism", "variance", "delay"])
     args = ap.parse_args(argv)
+    use_arial()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     jobs = {"objective": fig_objective, "mechanism": fig_mechanism,
