@@ -67,9 +67,12 @@ def load(csv_path: Path):
 def series(rows, group, run, tier="16", host="train", drop_final=True):
     """[(held-out bits/nt, exact rate)] over a run's snapshots, loss ascending.
 
-    The final snapshot is dropped so this matches `kcurve_report.py`, which globs
-    `scores_ep*.json` only; including it would move the interpolation at 2.40 by a point or
-    two and the figure would stop agreeing with the table.
+    Use the numbered snapshots, as in `kcurve_report.py` (`scores_ep*.json`).
+    In the kcurve/kcurve300 campaigns the separately labeled final evaluation
+    duplicates epoch 30 and is counted only once. The 2026-11-03 audit verified
+    identical floors and probes in all 33 runs; including the duplicate changes
+    none of their matched-loss means at 2.40. A previous comment claiming a
+    one-to-two-point change does not describe the current data.
     """
     pts = [(float(r["heldout_bits_per_nt"]), float(r["exact_rate"])) for r in rows
            if r["group"] == group and r["run"] == run and r["tier"] == tier

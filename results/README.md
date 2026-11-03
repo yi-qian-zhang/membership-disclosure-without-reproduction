@@ -68,6 +68,27 @@ The member-control Hamming differences do not consistently exceed their within-c
 uncertainty. Do not pool repeated checkpoints/seeds as independent record samples.
 Raw score JSON and released redacted historical records remain unchanged.
 
+## Main-text evidence provenance (3 November 2026)
+
+`appendix_source_cells.json` records aggregate counts, configuration and source-file
+SHA-256 hashes for the HyenaDNA four-background epoch-30 comparison, overlapping
+DNABERT epoch-120 full-50-record evaluations, and the candidate-scorer audit.
+It includes no target sequences or per-record identifiers. The two new manuscript
+tables can be regenerated without the private raw-output directory:
+
+```bash
+python -m pilot2.appendix_source_cells --summary results/appendix_source_cells.json --tables-out reproduced/tables
+```
+
+HyenaDNA's uniform-background `scores_final.json` records actual epoch 30; the
+other three backgrounds use `scores_ep30.json`. All included runs use medium-160k
+and learning rate 2e-5. These file labels do not define different training epochs.
+For the controlled tokenizer sweeps, numbered epoch 30 and `final` contain identical
+evaluations in all 33 runs. Matched-loss interpolation retains the numbered endpoint
+once, sorts points by held-out loss, interpolates within each run without extrapolation,
+and then averages the available seed values. Including the duplicate final points
+changes none of the current 2.40-bit/nt means.
+
 Figure 2's whiskers still span the three seed values (minimum to maximum), not SE.
 The per-seed table includes sixteen-copy fresh-window membership,30–40% at round15
 and96–98% at the final checkpoint, distinct from the single-copy18–26% result.

@@ -5738,3 +5738,32 @@ byte-identical to local. Every rendered page matches its local build.
 Local xref checks pass4/4 and5/5; the same source and remote aux are checked
 before final release. Both new validation notes use LF. No measurements changed.
 Final PDFs are in work/mcc_scope_20261102.
+
+
+## 2 November — Figure 2 baseline overlap removed
+
+Separated membership and prefix-recovery endpoints; preserved seed means/ranges and
+tabulated single-copy controls. Figure34 note records the exact sources, validation
+and remote receipts. Submission remains nine main pages. No measured data changed.
+
+
+## 2 November — Final citation verification
+
+Citation-audit checked35 actual references and52 occurrences against live primary
+sources: all KEEP/SUPPORTS, no mandatory corrections. Broad published-baseline wording
+can optionally be clarified; Table9 supports it, so no false-positive correction is
+required. Notes35 and canonical audit artifacts retain evidence and limitations.
+No manuscript or bibliography edits were made by this audit.
+
+## 3 November — Main-paper self-containment and source provenance
+
+Implemented the author-approved evidence/method repairs in both manuscripts; the
+full version is not compressed. See notes/42_main_self_containment_20261103.md.
+The same-model four-background HyenaDNA epoch-30 range remains65–100%: synthetic
+scores_final.json explicitly records epoch30. Added TablesA17/A18 with raw-source
+hashes and a public aggregate manifest; scorer controls are paired with their
+headline member cells, not mixed with the pooled500-evaluation control rate.
+The controlled-sweep final record duplicates numberedepoch30 in all33 runs;
+including it changes current2.40-bit/nt means by0. Corrected the obsolete code
+comment. Initial builds: submission body10pages, appendix24; full body18pages.
+No headline data, abstracts, bibliography or figure assets changed.

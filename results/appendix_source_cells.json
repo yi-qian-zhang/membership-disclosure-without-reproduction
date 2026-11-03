@@ -1,0 +1,1380 @@
+{
+  "schema_version": 1,
+  "recovery_decoder": "one greedy prefix continuation",
+  "hyena_epoch30": [
+    {
+      "background": "uniform",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 0,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "final",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 30,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30"
+      },
+      "source": "outputs/hyena/hyena_medium-160k_s0/scores_final.json",
+      "source_sha256": "db7878e794f0286bb090547b35b33c01b7f7f72d40839a9ad72a7a33531994d1",
+      "args_sha256": "91ebf1ea1935f886d1a21c782dbe7cd1b21f4b00b4d91f74ae3c75de389f04d3",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 14,
+        "rate": 0.7,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 40,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "uniform",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 1,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "final",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 30,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30"
+      },
+      "source": "outputs/hyena/hyena_medium-160k_s1/scores_final.json",
+      "source_sha256": "021bc084594af330d6223b6ad49f3375e7e561b292ebc2519198a6a52f2c7a75",
+      "args_sha256": "cdd9d2a60c49e53dfabcf1b9642f48f5a1acd37b293fd4ee55b394bc84ddadb6",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 19,
+        "rate": 0.95,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 40,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "uniform",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 2,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "final",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 30,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30"
+      },
+      "source": "outputs/hyena/hyena_medium-160k_s2/scores_final.json",
+      "source_sha256": "f31035eaf5d7d30f92687e858c8937a9aa7056b40da633900cb431932232f539",
+      "args_sha256": "a834f540fba7880f51154ea562bd31dc9aa7fec9f7dbf9a0f3a47474edf45514",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 13,
+        "rate": 0.65,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 40,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "ecoli",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 0,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_ecoli/hyena_medium-160k_ecoli_s0/scores_ep30.json",
+      "source_sha256": "fac53ba250d2b9120314ee6069bd5f8d6bb38af05692d0f7689d0166008d996a",
+      "args_sha256": "73cfd9618669491ade62cdd0515d4ffc85297b3529f0dc573f76acb5491cd515",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 17,
+        "rate": 0.85,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "ecoli",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 1,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_ecoli/hyena_medium-160k_ecoli_s1/scores_ep30.json",
+      "source_sha256": "c223bfd9a85fe06e94281898d9ab28f61d825de19105d7626987373e781dbcea",
+      "args_sha256": "51e808bb1988fb221d442bea8d9f25d24c2d85519c970053acaeaa9c7fbd4871",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 14,
+        "rate": 0.7,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "yeast",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 0,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_yeast/hyena_medium-160k_yeast_s0/scores_ep30.json",
+      "source_sha256": "f2adac204ba8a69a6dd1ab31bd68ed99911624944328af0aab10d79f438f38ac",
+      "args_sha256": "3565dc9bd40d665e7e6cfc4dfdf9314f8215f5d4f7f2237975a270ee35e4aa69",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 18,
+        "rate": 0.9,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "yeast",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 1,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_yeast/hyena_medium-160k_yeast_s1/scores_ep30.json",
+      "source_sha256": "63dc79631845b6f466702438296c1d69966d2f5750a293d694c8d01e3f389205",
+      "args_sha256": "1199b7bb6f02ee71867946652583efd492d9ddbd0e1381e7c28656cf8c645098",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 16,
+        "rate": 0.8,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "yeast",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 2,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_yeast/hyena_medium-160k_yeast_s2/scores_ep30.json",
+      "source_sha256": "734e956565c6b2e9de142b10caa5cdfd707e5b451c7c77540ea235f32205cfd9",
+      "args_sha256": "9c28590f4648bd643bb877ec57921dbf526ff5a20609ea09b6ca31960c71bb68",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 20,
+        "rate": 1.0,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "gue",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 0,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_gue/hyena_medium-160k_gue_s0/scores_ep30.json",
+      "source_sha256": "9592d2dee7d077a52070fe97f35c5f1ba89ad7606d9abdb01c716774663dc64c",
+      "args_sha256": "a0790f9359531f3287ff118682fd8061ec7850c8e15fb66d35fa252d5bd57b70",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 16,
+        "rate": 0.8,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "gue",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 1,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_gue/hyena_medium-160k_gue_s1/scores_ep30.json",
+      "source_sha256": "f1124868c8acb843283c6b4e1ea0ad237170e5207ec4a44e6cff3f7846d3d618",
+      "args_sha256": "5a584443c0e7bce3f71a1a2f3fa1678f7b68f401f9787f55806324572738d41d",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 17,
+        "rate": 0.85,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "background": "gue",
+      "model": "hyenadna-medium-160k-seqlen-hf",
+      "seed": 2,
+      "learning_rate": 2e-05,
+      "epoch": 30,
+      "file_checkpoint_label": "ep30",
+      "canaries": "uniform iid 96-nucleotide DNA",
+      "configuration": {
+        "epochs": 50,
+        "n_train": 5000,
+        "batch": 8,
+        "accum": 2,
+        "data_seed": 1234,
+        "probe_offset": "random",
+        "save_epochs": "1,3,8,15,30,50"
+      },
+      "source": "outputs/hyena_gue/hyena_medium-160k_gue_s2/scores_ep30.json",
+      "source_sha256": "41a98c2c87d161cb13111c5bc71e6d256998a69ffa9744598646230cc1fa413b",
+      "args_sha256": "2bc5913fdab89facc7e8dcb88c1880744b617f7ea3de7bf74d307605fb35c933",
+      "member": {
+        "tier": 16,
+        "host": "train",
+        "n": 20,
+        "hits": 13,
+        "rate": 0.65,
+        "evaluation_endpoint_nt": 48
+      },
+      "never_trained_fresh": {
+        "tier": 0,
+        "host": "fresh",
+        "n": 20,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    }
+  ],
+  "overlap_epoch120_n50": [
+    {
+      "k": 3,
+      "seed": 0,
+      "epoch": 120,
+      "objective": "mlm",
+      "learning_rate": 0.0001,
+      "canaries": "human-variant-derived chromosome-22 records",
+      "source": "outputs/dnabert_long/dnabert3_nt0.05_lr0.0001_human_s0/scores_ep120_n50.json",
+      "source_sha256": "f830d9b2c3ae7c6ace95d5fc447a936e02839e05790745e37c1d1bf45e50f85d",
+      "args_sha256": "3fb137e43a08b40e725463c22066740c7f347152f3051c5f37fb11042431ed68",
+      "own": {
+        "tier": 16,
+        "host": "train",
+        "n": 50,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      },
+      "fresh": {
+        "tier": 16,
+        "host": "fresh",
+        "n": 50,
+        "hits": 0,
+        "rate": 0.0,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "k": 4,
+      "seed": 0,
+      "epoch": 120,
+      "objective": "mlm",
+      "learning_rate": 0.0001,
+      "canaries": "human-variant-derived chromosome-22 records",
+      "source": "outputs/dnabert_long/dnabert4_nt0.05_lr0.0001_human_s0/scores_ep120_n50.json",
+      "source_sha256": "249073f3d5220356f6c83b53220e51bf2e5a76f9d28b4e255e4a397b863e1bf9",
+      "args_sha256": "51c3ade288ff0eb6cf9d29644d18c922ae2bafc21564eee9e7714bc0211c88e2",
+      "own": {
+        "tier": 16,
+        "host": "train",
+        "n": 50,
+        "hits": 1,
+        "rate": 0.02,
+        "evaluation_endpoint_nt": 48
+      },
+      "fresh": {
+        "tier": 16,
+        "host": "fresh",
+        "n": 50,
+        "hits": 1,
+        "rate": 0.02,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "k": 5,
+      "seed": 0,
+      "epoch": 120,
+      "objective": "mlm",
+      "learning_rate": 0.0001,
+      "canaries": "human-variant-derived chromosome-22 records",
+      "source": "outputs/dnabert_long/dnabert5_nt0.05_lr0.0001_human_s0/scores_ep120_n50.json",
+      "source_sha256": "6bbd84ea4e442405200e7c04a188904629ea430ac677ff298f4d0cb9ebf2a7bf",
+      "args_sha256": "3551549d4493afa9f409cf386186175c608ecbcafb293ef71a773c187fcf40e7",
+      "own": {
+        "tier": 16,
+        "host": "train",
+        "n": 50,
+        "hits": 3,
+        "rate": 0.06,
+        "evaluation_endpoint_nt": 48
+      },
+      "fresh": {
+        "tier": 16,
+        "host": "fresh",
+        "n": 50,
+        "hits": 1,
+        "rate": 0.02,
+        "evaluation_endpoint_nt": 48
+      }
+    },
+    {
+      "k": 6,
+      "seed": 0,
+      "epoch": 120,
+      "objective": "mlm",
+      "learning_rate": 0.0001,
+      "canaries": "human-variant-derived chromosome-22 records",
+      "source": "outputs/dnabert_long/dnabert6_nt0.05_lr0.0001_human_s0/scores_ep120_n50.json",
+      "source_sha256": "69a13a2c589cd6b61e026f54d1b6e516b935658cde5917430f41f141b47d60c4",
+      "args_sha256": "83e76bfc43720eec0c408377dba430be31addb022869dc044c6d98237cd2cd25",
+      "own": {
+        "tier": 16,
+        "host": "train",
+        "n": 50,
+        "hits": 25,
+        "rate": 0.5,
+        "evaluation_endpoint_nt": 48
+      },
+      "fresh": {
+        "tier": 16,
+        "host": "fresh",
+        "n": 50,
+        "hits": 18,
+        "rate": 0.36,
+        "evaluation_endpoint_nt": 48
+      }
+    }
+  ],
+  "candidate_scorer_audit": {
+    "rules": [
+      "current",
+      "span_matched",
+      "raw_total"
+    ],
+    "files": [
+      {
+        "source": "outputs/bpe_human/dnabert2bpe_human_s0/bpe_divisor_final.json",
+        "source_sha256": "ad5d732095af0c7c695094d062a49619235d8a91d88eac120c490ab694ea48ce",
+        "args_sha256": "8f857ca4bbaf6ec41ab07d13c17766ba3ac7454a2a12eb5f72df583f810b7ae7",
+        "seed": 0,
+        "epoch": 150,
+        "file_checkpoint_label": "final",
+        "n": 400,
+        "tiers": [
+          0,
+          1,
+          4,
+          16
+        ],
+        "hosts": [
+          "fresh",
+          "train"
+        ],
+        "rank1_differences_from_current": {
+          "span_matched": 10,
+          "raw_total": 0
+        },
+        "cells": [
+          {
+            "tier": 0,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 0,
+              "span_matched": 1,
+              "raw_total": 0
+            },
+            "rates": {
+              "current": 0.0,
+              "span_matched": 0.02,
+              "raw_total": 0.0
+            }
+          },
+          {
+            "tier": 0,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 2,
+              "span_matched": 1,
+              "raw_total": 2
+            },
+            "rates": {
+              "current": 0.04,
+              "span_matched": 0.02,
+              "raw_total": 0.04
+            }
+          },
+          {
+            "tier": 1,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 9,
+              "span_matched": 11,
+              "raw_total": 9
+            },
+            "rates": {
+              "current": 0.18,
+              "span_matched": 0.22,
+              "raw_total": 0.18
+            }
+          },
+          {
+            "tier": 1,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 47,
+              "span_matched": 47,
+              "raw_total": 47
+            },
+            "rates": {
+              "current": 0.94,
+              "span_matched": 0.94,
+              "raw_total": 0.94
+            }
+          },
+          {
+            "tier": 4,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 43,
+              "span_matched": 44,
+              "raw_total": 43
+            },
+            "rates": {
+              "current": 0.86,
+              "span_matched": 0.88,
+              "raw_total": 0.86
+            }
+          },
+          {
+            "tier": 4,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 48,
+              "span_matched": 49,
+              "raw_total": 48
+            },
+            "rates": {
+              "current": 0.96,
+              "span_matched": 0.98,
+              "raw_total": 0.96
+            }
+          },
+          {
+            "tier": 16,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          }
+        ]
+      },
+      {
+        "source": "outputs/bpe_human/dnabert2bpe_human_s1/bpe_divisor_final.json",
+        "source_sha256": "b40073d324c8da816b4a68f8fa9e2016ca7c04818e489e31fea2f087f866d0f5",
+        "args_sha256": "54af901d2a705c269a3c9a43b19f0b4c38219e41a17486cc05e6c5201e89750b",
+        "seed": 1,
+        "epoch": 150,
+        "file_checkpoint_label": "final",
+        "n": 400,
+        "tiers": [
+          0,
+          1,
+          4,
+          16
+        ],
+        "hosts": [
+          "fresh",
+          "train"
+        ],
+        "rank1_differences_from_current": {
+          "span_matched": 9,
+          "raw_total": 2
+        },
+        "cells": [
+          {
+            "tier": 0,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 0,
+              "span_matched": 0,
+              "raw_total": 0
+            },
+            "rates": {
+              "current": 0.0,
+              "span_matched": 0.0,
+              "raw_total": 0.0
+            }
+          },
+          {
+            "tier": 0,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 0,
+              "span_matched": 0,
+              "raw_total": 0
+            },
+            "rates": {
+              "current": 0.0,
+              "span_matched": 0.0,
+              "raw_total": 0.0
+            }
+          },
+          {
+            "tier": 1,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 11,
+              "span_matched": 11,
+              "raw_total": 10
+            },
+            "rates": {
+              "current": 0.22,
+              "span_matched": 0.22,
+              "raw_total": 0.2
+            }
+          },
+          {
+            "tier": 1,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 46,
+              "span_matched": 45,
+              "raw_total": 46
+            },
+            "rates": {
+              "current": 0.92,
+              "span_matched": 0.9,
+              "raw_total": 0.92
+            }
+          },
+          {
+            "tier": 4,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 38,
+              "span_matched": 44,
+              "raw_total": 38
+            },
+            "rates": {
+              "current": 0.76,
+              "span_matched": 0.88,
+              "raw_total": 0.76
+            }
+          },
+          {
+            "tier": 4,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 48,
+              "span_matched": 50,
+              "raw_total": 47
+            },
+            "rates": {
+              "current": 0.96,
+              "span_matched": 1.0,
+              "raw_total": 0.94
+            }
+          },
+          {
+            "tier": 16,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          }
+        ]
+      },
+      {
+        "source": "outputs/bpe_human/dnabert2bpe_human_s2/bpe_divisor_final.json",
+        "source_sha256": "a15c11bbb47bd373faaec5bd2ed342e2698d7296e0262dd4d1ad5364f9885888",
+        "args_sha256": "09c5505899a127baf81ffb38ba47188499097f0ec8c5d2eedbd2fee8f5913151",
+        "seed": 2,
+        "epoch": 150,
+        "file_checkpoint_label": "final",
+        "n": 400,
+        "tiers": [
+          0,
+          1,
+          4,
+          16
+        ],
+        "hosts": [
+          "fresh",
+          "train"
+        ],
+        "rank1_differences_from_current": {
+          "span_matched": 8,
+          "raw_total": 3
+        },
+        "cells": [
+          {
+            "tier": 0,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 0,
+              "span_matched": 0,
+              "raw_total": 0
+            },
+            "rates": {
+              "current": 0.0,
+              "span_matched": 0.0,
+              "raw_total": 0.0
+            }
+          },
+          {
+            "tier": 0,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 1,
+              "span_matched": 1,
+              "raw_total": 1
+            },
+            "rates": {
+              "current": 0.02,
+              "span_matched": 0.02,
+              "raw_total": 0.02
+            }
+          },
+          {
+            "tier": 1,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 13,
+              "span_matched": 14,
+              "raw_total": 13
+            },
+            "rates": {
+              "current": 0.26,
+              "span_matched": 0.28,
+              "raw_total": 0.26
+            }
+          },
+          {
+            "tier": 1,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 48,
+              "span_matched": 46,
+              "raw_total": 49
+            },
+            "rates": {
+              "current": 0.96,
+              "span_matched": 0.92,
+              "raw_total": 0.98
+            }
+          },
+          {
+            "tier": 4,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 42,
+              "span_matched": 47,
+              "raw_total": 40
+            },
+            "rates": {
+              "current": 0.84,
+              "span_matched": 0.94,
+              "raw_total": 0.8
+            }
+          },
+          {
+            "tier": 4,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 49,
+              "span_matched": 49,
+              "raw_total": 49
+            },
+            "rates": {
+              "current": 0.98,
+              "span_matched": 0.98,
+              "raw_total": 0.98
+            }
+          },
+          {
+            "tier": 16,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          }
+        ]
+      },
+      {
+        "source": "outputs/dnabert_long/dnabert2bpe_ecoli_s0/bpe_divisor_ep30.json",
+        "source_sha256": "54b1c7bfc440142f88e3278f33fcfa77e96c15a30a54c891ca50884f43332cb9",
+        "args_sha256": "fa4546a22b3e6c893148e01c759ac2c27ea0f5a9fa40ea49ac310633434afeaf",
+        "seed": 0,
+        "epoch": 30,
+        "file_checkpoint_label": "ep30",
+        "n": 400,
+        "tiers": [
+          0,
+          1,
+          4,
+          16
+        ],
+        "hosts": [
+          "fresh",
+          "train"
+        ],
+        "rank1_differences_from_current": {
+          "span_matched": 6,
+          "raw_total": 13
+        },
+        "cells": [
+          {
+            "tier": 0,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 2,
+              "span_matched": 2,
+              "raw_total": 2
+            },
+            "rates": {
+              "current": 0.04,
+              "span_matched": 0.04,
+              "raw_total": 0.04
+            }
+          },
+          {
+            "tier": 0,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 0,
+              "span_matched": 0,
+              "raw_total": 1
+            },
+            "rates": {
+              "current": 0.0,
+              "span_matched": 0.0,
+              "raw_total": 0.02
+            }
+          },
+          {
+            "tier": 1,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 13,
+              "span_matched": 14,
+              "raw_total": 13
+            },
+            "rates": {
+              "current": 0.26,
+              "span_matched": 0.28,
+              "raw_total": 0.26
+            }
+          },
+          {
+            "tier": 1,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 15,
+              "span_matched": 16,
+              "raw_total": 12
+            },
+            "rates": {
+              "current": 0.3,
+              "span_matched": 0.32,
+              "raw_total": 0.24
+            }
+          },
+          {
+            "tier": 4,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 4,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 49,
+              "span_matched": 49,
+              "raw_total": 48
+            },
+            "rates": {
+              "current": 0.98,
+              "span_matched": 0.98,
+              "raw_total": 0.96
+            }
+          },
+          {
+            "tier": 16,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          }
+        ]
+      },
+      {
+        "source": "outputs/dnabert_long/dnabert2bpe_ecoli_s0/bpe_divisor_final.json",
+        "source_sha256": "efe07ddaa263a24557118fe3c1906ca3d941d35c82cfad9cee1acdfb81472de8",
+        "args_sha256": "fa4546a22b3e6c893148e01c759ac2c27ea0f5a9fa40ea49ac310633434afeaf",
+        "seed": 0,
+        "epoch": 150,
+        "file_checkpoint_label": "final",
+        "n": 400,
+        "tiers": [
+          0,
+          1,
+          4,
+          16
+        ],
+        "hosts": [
+          "fresh",
+          "train"
+        ],
+        "rank1_differences_from_current": {
+          "span_matched": 0,
+          "raw_total": 2
+        },
+        "cells": [
+          {
+            "tier": 0,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 1,
+              "span_matched": 1,
+              "raw_total": 1
+            },
+            "rates": {
+              "current": 0.02,
+              "span_matched": 0.02,
+              "raw_total": 0.02
+            }
+          },
+          {
+            "tier": 0,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 1,
+              "span_matched": 1,
+              "raw_total": 1
+            },
+            "rates": {
+              "current": 0.02,
+              "span_matched": 0.02,
+              "raw_total": 0.02
+            }
+          },
+          {
+            "tier": 1,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 1,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 4,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 4,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "fresh",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          },
+          {
+            "tier": 16,
+            "host": "train",
+            "n": 50,
+            "hits": {
+              "current": 50,
+              "span_matched": 50,
+              "raw_total": 50
+            },
+            "rates": {
+              "current": 1.0,
+              "span_matched": 1.0,
+              "raw_total": 1.0
+            }
+          }
+        ]
+      }
+    ],
+    "totals": {
+      "n": 2000,
+      "span_matched_differences": 33,
+      "raw_total_differences": 20
+    },
+    "pooled_controls_all_files_both_hosts": {
+      "n": 500,
+      "hits": {
+        "current": 7,
+        "span_matched": 7,
+        "raw_total": 8
+      },
+      "rates": {
+        "current": 0.014,
+        "span_matched": 0.014,
+        "raw_total": 0.016
+      }
+    },
+    "chr22_final_single_copy_fresh": [
+      {
+        "seed": 0,
+        "epoch": 150,
+        "member": {
+          "tier": 1,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 9,
+            "span_matched": 11,
+            "raw_total": 9
+          },
+          "rates": {
+            "current": 0.18,
+            "span_matched": 0.22,
+            "raw_total": 0.18
+          }
+        },
+        "control": {
+          "tier": 0,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 0,
+            "span_matched": 1,
+            "raw_total": 0
+          },
+          "rates": {
+            "current": 0.0,
+            "span_matched": 0.02,
+            "raw_total": 0.0
+          }
+        }
+      },
+      {
+        "seed": 1,
+        "epoch": 150,
+        "member": {
+          "tier": 1,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 11,
+            "span_matched": 11,
+            "raw_total": 10
+          },
+          "rates": {
+            "current": 0.22,
+            "span_matched": 0.22,
+            "raw_total": 0.2
+          }
+        },
+        "control": {
+          "tier": 0,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 0,
+            "span_matched": 0,
+            "raw_total": 0
+          },
+          "rates": {
+            "current": 0.0,
+            "span_matched": 0.0,
+            "raw_total": 0.0
+          }
+        }
+      },
+      {
+        "seed": 2,
+        "epoch": 150,
+        "member": {
+          "tier": 1,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 13,
+            "span_matched": 14,
+            "raw_total": 13
+          },
+          "rates": {
+            "current": 0.26,
+            "span_matched": 0.28,
+            "raw_total": 0.26
+          }
+        },
+        "control": {
+          "tier": 0,
+          "host": "fresh",
+          "n": 50,
+          "hits": {
+            "current": 0,
+            "span_matched": 0,
+            "raw_total": 0
+          },
+          "rates": {
+            "current": 0.0,
+            "span_matched": 0.0,
+            "raw_total": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "scope": "Saved evaluation cells; no training or model inference performed."
+}

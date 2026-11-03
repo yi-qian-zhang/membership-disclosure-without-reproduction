@@ -1,0 +1,90 @@
+{
+  "short": {
+    "pages": 38,
+    "main_pages": 10,
+    "references_physical_page": 12,
+    "appendix_pages": 24,
+    "appendix_physical_page": 15,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "float_too_large": 0,
+    "figures": {
+      "Figure 1:": [
+        3
+      ],
+      "Figure 2:": [
+        7
+      ],
+      "Figure 3:": [
+        9
+      ],
+      "Figure A1:": [
+        24
+      ],
+      "Figure A2:": [
+        31
+      ]
+    },
+    "new_tables": {
+      "tab:hyena30": {
+        "number": "A17",
+        "printed_page": "37"
+      },
+      "tab:overlap50": {
+        "number": "A18",
+        "printed_page": "37"
+      }
+    },
+    "new_table_text_present": true,
+    "literal_xref_check": {
+      "exit_code": 0,
+      "output": "check_xrefs: all 4 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\self_containment_20261103\\build_short\\main.aux"
+    }
+  },
+  "full": {
+    "pages": 49,
+    "main_pages": 18,
+    "references_physical_page": 20,
+    "appendix_pages": 27,
+    "appendix_physical_page": 23,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "float_too_large": 1,
+    "figures": {
+      "Figure 1:": [
+        17
+      ],
+      "Figure 2:": [
+        18
+      ],
+      "Figure 3:": [
+        19
+      ],
+      "Figure A1:": [
+        32
+      ],
+      "Figure A2:": [
+        40
+      ]
+    },
+    "new_tables": {
+      "tab:hyena30": {
+        "number": "A17",
+        "printed_page": "48"
+      },
+      "tab:overlap50": {
+        "number": "A18",
+        "printed_page": "48"
+      }
+    },
+    "new_table_text_present": true,
+    "literal_xref_check": {
+      "exit_code": 0,
+      "output": "check_xrefs: all 5 spelled-out references agree with E:\\OneDrive - Case Western Reserve University\\PhD\\Research\\GLM Collaboration Extensions\\work\\self_containment_20261103\\build_full\\main.aux"
+    }
+  }
+}
