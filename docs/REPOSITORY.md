@@ -3,8 +3,8 @@
 [English home](../README.md) · [简体中文首页](../README.zh-CN.md)
 
 This is the public analysis artifact, not the private collaboration checkout.
-The main README is the starting point; detailed procedures live in
-[REPRODUCING.md](REPRODUCING.md).
+The main [README](../README.md#contents) combines the overview, setup, commands
+and evidence map. A complete [simplified-Chinese version](../README.zh-CN.md) is available.
 
 | Material | Decision | Reason |
 | --- | --- | --- |
@@ -14,7 +14,7 @@ The main README is the starting point; detailed procedures live in
 | `paper/figures/`, PPTX/PDF and source archive | Keep | Editable current Figure 1 and preserved original |
 | `notes/` dated logs and `notes/figures/` | Keep, improve index | Historical reasoning and corrections; not all entries are current claims |
 | `pilot/`, old plotting modules, dated queues | Keep as historical | Referenced by notebooks; moving them can break paths or imports |
-| Long setup/protocol text in README | Move to guide | Keep the landing page readable without losing conditions |
+| Setup, commands and paper protocols | Merge into bilingual READMEs | One maintained entry point, with contents links; old guide URLs remain as forwarding pages |
 | Identical model requirement lists | One source, compatibility wrapper | `requirements.txt` includes `requirements-paper.txt` |
 | Lightweight plotting requirements | Separate file | No GPU/model stack needed to rebuild public figures |
 | Missing entries in notebook index | Remove from index | Do not advertise unpublished files |

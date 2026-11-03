@@ -1,6 +1,6 @@
 # Implementation map
 
-[Repository home](../README.md) · [Reproduction guide](../docs/REPRODUCING.md)
+[Repository home](../README.md) · [Reproduction guide](../README.md#reproduce-model-measurements)
 
 Run modules from the repository root with `python -m pilot2.<module>`.
 
