@@ -1,0 +1,1039 @@
+% The appendix, now part of main.tex and printed after the references so that reviewers
+% get one PDF and so that every reference between it and the body is a live \ref instead
+% of a hard-coded number. It was a second standalone document until 28 Oct; the two-way
+% hard-coded numbering that cost is recorded in notes/17 and was the reason for
+% paper/check_xrefs.py.
+%
+% The 2027 call allows an appendix either appended to the main paper or uploaded
+% separately, with no page limit on it; the ten-page limit is on the body, and the
+% bibliography is excluded from that count.
+%
+% The data tables are GENERATED: `python -m pilot2.appendix_tables` writes paper/tables/a*.tex
+% from results/figure_data.csv and the reports beside it. Do not edit those by hand, and
+% regenerate after any re-measurement, so an appendix cell cannot disagree with the main
+% text by transcription.
+\noindent
+The main text refers to the appendix using the section numbers below. \texttt{pilot2/appendix\_tables.py} writes every table marked \emph{generated}
+directly from the published measurements rather than transcribing them.
+Numbers from the earlier measurement campaign, whose analyses \S\ref{sec:basis} lists one by one,
+have not all been re-measured on the current numerical basis. Main-text comparisons
+using those controls retain the campaign and placement qualifications stated below.
+
+\section{What was measured when, and on what}
+\label{sec:basis}
+The host's floating-point behavior changed after a reboot on 18~October. Re-masking
+is numerically sensitive (\S\ref{sec:repro}); we therefore report three measurement campaigns separately:
+\begin{itemize}\itemsep2pt
+\item \textbf{Common-basis remeasurement:} nineteen chromosome-22 cells on 23~October
+and seven \emph{E.~coli} cells on 19~October, with 50 records per tier. The controlled
+tokenizer sweep was also completed after the reboot as one campaign.
+\item \textbf{Membership scoring:} each run's saved scoring passes. In the paired
+numerical comparison, rank-1 rates reproduced to the reported precision; this does
+not estimate their numerical variance.
+\item \textbf{Earlier controls:} the 8--16~October objective grid, placement,
+edge-conditioned and downstream audits, and the 28~September capacity/parameterization
+controls. These were not rerun on the current basis. Main-text comparisons using them
+retain their campaign and placement qualifications; fixed-offset rates are not directly
+comparable with drawn-offset rates.
+\end{itemize}
+
+\section{Probe geometry and canary construction}
+
+\paragraph{Geometry.}
+A canary is 96\nt. The first 48\nt{} form the nominal prefix and the last 48\nt{} are the target.
+The BPE prefix protocol uses the preceding complete-token boundary, as detailed in \S\ref{app:measurement}.
+Exact-recovery rates count records with all 48 target nucleotides correct. The canary is planted inside a
+longer host window of 288\nt{}, everywhere except the tokenizer sweep, which uses 300\nt{} because
+300 is divisible by every $k$ from 1 to 6, at an offset drawn independently for each copy.
+Repetition tiers are 1, 4 and 16 copies; tier~0 is a never-trained canary of identical construction,
+scored in the same run by the same decoder to supply the never-trained control.
+
+\paragraph{Why offsets are sampled rather than fixed.}
+With every copy at the same offset, a model with learned absolute positions can score a record from
+its position, and coarse tokenizers align to that offset. For a comparable analysis of the three tokenizers shared by both arms, the same variance
+decomposition moves the tokenizer's share
+from \NUM{15.4\%} under drawn placement to \NUM{59.5\%} under fixed placement, with the
+objective's share moving the other way, \NUM{57.7\%} to \NUM{25.7\%} (\S\ref{sec:placement}). Fixed
+placement manufactures a tokenizer effect. Every number in the main text uses drawn offsets, with
+one exception that is stated wherever it is read: the capacity and parameterization controls of
+Table~\ref{tab:capacity}, and the spaced-tokenizer rows inside it, were run on 28 September,
+nine days before the offset became an option, and are at fixed placement throughout. These results support within-table comparisons under a common placement condition. Their absolute
+extraction rates are not directly comparable to those in the drawn-offset tables, and the character model reaching 100\% at
+$2.20$\,\bits{} there is the placement effect, not a counterexample to \S\ref{sec:slots}.
+
+\paragraph{Human-variant-derived canaries.}
+For the human arm a canary is a chromosome-22 reference window with rare alternate alleles
+substituted, anchored on a variant carried by at most five of the 2{,}548 samples of the
+GRCh38 call set. The positional builder does not guarantee that neighboring alleles occur
+on the anchor carrier's chromosome; the audit below distinguishes haplotypes and composites.
+Ranking candidates use the same construction, while fresh hosts are independently sampled
+reference windows. Matched candidate construction helps distinguish training membership
+from a generic preference for genomic over uniform-random sequences. Allele frequency is computed from AC/AN because the INFO AF field is rounded
+to two decimals; the carrier-count filter uses sample genotypes, not that allele-frequency ratio.
+Table~\ref{tab:census} is the set as built. One row is particularly relevant: 248 of the 400
+segments are anchored on a variant carried by exactly \emph{one} of the 2{,}548 samples. ``At
+most five carriers'' is the filter; a clear majority of these windows are built around a variant
+unique to one person in this panel. Linkage would additionally require a recovered sequence
+compatible with an observed haplotype and an external identifying panel. Anchor uniqueness
+alone does not establish that a composite sequence identifies a person; we measure no
+such linkage.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} The human canary set, from the metadata stored beside the sequences in
+\texttt{canaries\_chr22.npz}. \emph{Anchor} is the variant the window is centered on; segments also
+contain whatever other rare variants fall inside the 96\nt.}
+\label{tab:census}
+\input{tables/t_census}
+\end{table}
+
+\section{Which planted windows match a chromosome in the cohort}
+\label{app:haplo}
+
+\paragraph{Why this needed auditing.}
+The builder takes the 96\nt{} window centered on a rare anchor variant and substitutes every rare
+alternate allele that falls inside it, from a position-keyed table of rare variants shared across
+all anchors. The builder does not check whether the anchor's carrier also carries the neighboring alleles or
+which of that individual's two chromosomes carries each allele. With 619{,}639 rare biallelic SNVs on
+chromosome~22 the density is about 1.2 per 96\nt{}, so most windows pick up a neighbor: 237 of the
+400 carry more than one rare allele (Table~\ref{tab:census}). A window assembled that way can be a
+sequence that no chromosome in the cohort has.
+
+\paragraph{What the phased genotypes say.}
+For every variant inside a planted window (not only the rare ones), we recorded the exact set
+of (sample, chromosome copy) pairs carrying the alternate allele. A window is then the sequence a
+given chromosome reads only if that chromosome carries every substituted allele \emph{and} reads
+reference at every other variant site inside the window. The first version of this audit tested
+only the first half of that condition and reported 164 real haplotypes; requiring the second half
+removes 19 of them, because the builder leaves the window's common variant sites at the reference
+base and a carrier of one of those reads the window differently. The corrected counts: of the 400
+windows, \textbf{145 are chromosome-compatible at the audited sites}, 144 of them single-variant windows plus one composite.
+Among the 145 the number of carrying chromosomes is 1 for 86 windows, 2 for 23, 3 for 18, 4 for 10
+and 5 for 8; never more than five, so ``carried by at most five'' is exact for this subset.
+Twenty more are real \emph{genotypes}, whose alleles all belong to one person but sit on both of
+their chromosomes, and \textbf{235 are carried by no chromosome in the cohort}. These are constructed variant combinations, not observed chromosome sequences.
+
+One ambiguity remains: 69 indel or multi-allelic sites fall inside 62 of the 400 windows, and neither pass
+can say what a chromosome reads there. Restricted to the 338 windows with none, the classification
+is 124 haplotypes, 20 genotypes and 194 chimeras, so the haplotype share changes only from 36.25\% (145/400) to 36.69\% (124/338).
+
+\paragraph{What it changes and what it does not.}
+The record-membership question asks whether the model has seen a particular string,
+not whose string it is; that question is well posed for all 400 records. The classification defines the interpretations supported by the results. We therefore split
+every rate by subset (\path{pilot2/analyze_canary_status.py}) and report the stratification wherever it changes a result. One result changes: single-copy identification in a fresh window, $5/21$, $5/21$ and
+$8/21$ per seed on the audited haplotypes against $1/23$, $3/23$ and $0/23$ on windows carried by no chromosome in the cohort (\S\ref{sec:ident}). Identification in the record's own window, verbatim recovery, and the
+never-trained controls do not separate.
+
+Two qualifications accompany this stratification in \S\ref{sec:ident} and also apply here. It is
+nearly collinear with the number of substituted alleles: every chimera is composite and 144 of
+145 haplotypes are single-variant. The allele-count split instead contains 26 one-allele and
+24 multi-allele records: across their three repeated seed evaluations, rank-1 counts are
+$27/78$ and $6/72$ ($0.35$ and $0.08$). These are descriptive averages over repeated records,
+not independent-trial sample sizes; this design cannot attribute the contrast to one description rather than the other. And
+the subsets hold 21 and 23 \emph{records}, not 63 and 69 scorings: all three training seeds share
+\texttt{data\_seed = 1234} and therefore the same member/control/pool split, so the three seeds
+re-score the same records. Rates in \S\ref{sec:ident} are therefore given one seed at a time, where
+each record contributes one evaluation and the corresponding rate has a binomial interval. The generated tables keep
+the pooled rate with a Wilson interval taken on the record count, which accompanies the pooled rate but is not a confidence interval for that pooled estimate. This
+design does not estimate the across-seed component of uncertainty.
+
+\paragraph{The construction we would use again.}
+\texttt{pilot2/human\_canary.py --phased} chooses a carrier chromosome first and writes the window
+as that chromosome reads it. Doing this correctly needs a second pass over the VCF, because a
+window also holds variants too common to pass the rare filter, and leaving those sites at the reference base can produce a sequence absent from the cohort. The phased build uses a separately generated set of 400 window coordinates, only six of which overlap the original set. On the 38{,}400 positions inside these
+windows the full carrier sets fit in memory, and the phased set is 400 windows that are each one
+real chromosome's own sequence, 252 of them unique to a single chromosome among the cohort's
+5{,}096 and none shared by more than five. Thirty-seven common alleles are written in across the
+400 windows, a step the original construction did not perform. In this phased set, seventy-three
+sites inside 67 windows are indels or not biallelic SNVs and are left at the reference base, so
+even the rebuilt windows are each one chromosome's sequence at its SNV sites rather than its every
+base. The measurements in this paper use the original set, which stays reproducible; the rebuilt
+set is what any extension of this work should plant.
+
+\section{The matched control for the own-window identification rate}
+\label{app:bh}
+
+\paragraph{Why a matched control is needed.}
+An own-window member and a fresh-window non-member differ in both membership and
+contextual access. Their contrast alone cannot distinguish record-specific learning
+from a generic advantage of memorized flanks. We therefore evaluate never-trained
+records in both borrowed training windows and fresh windows.
+
+\paragraph{The control.}
+A non-member has no training row, so it borrows one (\texttt{pilot2/data.py},
+\texttt{borrowed\_hosts}): each control is assigned a member's training row and that member's own
+offset, and the probe region is overwritten by each candidate exactly as it is for a member. The
+conditioning is then identical: the same memorized flanks, the same offset, the same hundred
+real rare segments in the pool. The only difference is whether the model has seen the 96
+nucleotides now sitting between those flanks. The donor is drawn from the \emph{single-copy}
+members without replacement, because the single-copy own-window rate is the one the main text
+quotes and that is the host condition the control has to match. \texttt{--donor\_tier} selects the
+tier instead, so the four- and sixteen-copy own-window rates, which had no control of their own
+when this paragraph was first written, have one now: two further scoring passes over the same 18
+cells (\texttt{pilot2/queue\_1028.sh}).
+
+An earlier draft incorrectly described this control as ``the harder case because the memorized
+record is competing.'' The control does not create such competition. The ranking pass overwrites
+the probe region with each candidate before scoring, so the string the model memorized at that
+offset is not among the hundred and one candidates and cannot compete with them. The low control rates
+argue against a generic training-window advantage as the sole explanation for the member rates.
+What it cannot separate is a model whose conditional distribution at that offset is sharp on a
+string absent from the candidate list: that would also drive the control to chance. The claim the
+own-window column carries is the first of those, and only the first.
+
+\paragraph{What it says.}
+We re-scored every cell of Table~\ref{tab:ident} (\texttt{pilot2/rescore.py},
+\texttt{pilot2/queue\_1027\_gen.sh}), retraining nothing and overwriting nothing already on
+disk. Re-scoring reproduces every member number to the digit and every held-out loss to four decimals.
+The borrowed-host control reads $0.00$ to $0.04$ across all 18 cells against members at $0.04$ to
+$0.96$ in the same condition, and $0.04 / 0.00 / 0.02$ at the final checkpoint against
+$0.94 / 0.92 / 0.96$. The own-window advantage is specific to the trained record in its trained context,
+rather than a generic advantage from familiar flanks. This does not separate record learning
+from memorization of a record--host association; fresh-window results address a different access condition.
+
+Matched controls were subsequently added for the two remaining tiers using the same procedure. At four copies the control reads
+$0.00$--$0.04$ against members at $0.06$ to $1.00$, and at sixteen it reads $0.00$ in every one of
+the 18 cells against members at $0.34$ to $1.00$; at the final checkpoint the members are at
+$1.00$ in all three seeds under both tiers. The control therefore does not weaken where the record
+was planted more often, which is what it has to do to be one: more copies make the host window
+more familiar to the model, and a never-trained record placed in that window still ranks at
+chance.
+
+We extended the same control to the other three architectures, which previously lacked it. Nucleotide
+Transformer was re-scored from saved weights and reads $0.00$ in all three seeds at both sizes,
+against members at $0.64 / 0.66 / 0.60$ on the 250M and $0.74 / 0.90 / 0.86$ on the 500M.
+HyenaDNA had to be retrained instead, because that script deleted every checkpoint it saved; the
+retrain reproduced the original run's member rates ($0.40 / 0.44 / 0.50$), its fresh-window rates
+($0.02$ in all three) and its held-out losses ($2.221 / 2.221 / 2.247$), and its borrowed-host
+control is $0.00$ in all three seeds.
+
+The overlapping $k$-mer family is the fourth, and it had no own-window control at all. Its human
+runs predate \texttt{--drop\_ckpt} and kept no weights either, so like HyenaDNA they were
+retrained rather than re-scored: twelve runs, $k=3$ to $6$ over three seeds, with the control in
+place and the checkpoints kept this time. The retrain reproduces the originals \emph{exactly}:
+every member own-window and fresh-window rate to the digit and every held-out loss to three
+decimals, in all twelve. Its own-window control reads $0.00$--$0.04$ against members at
+$0.04$--$0.10$ for $k=3$ to $5$ and $0.24$--$0.26$ at $k=6$, so only the coarsest cut of this
+family separates from its control by a margin this many records can carry: four of fifty against
+one of fifty is not a separation, and twelve of fifty against one is. In the fresh window none of
+them establishes a separation under the tested scorer, candidate pool and sample size: members
+read $0.02$--$0.04$ and controls $0.00$--$0.04$. This negative assay does not establish
+absence of other membership signals. The stronger fresh-window result in \S\ref{sec:ident}
+is established here for DNABERT-2, not for every released genomic family. Verbatim recovery in the own window is zero for $k=3$
+to $5$ and $0.06$ at $k=6$.
+
+The evaluation comprised thirty-three cells on 27 October, followed on 28 October by 36 additional
+scoring passes and twelve retraining runs (\path{pilot2/queue_1028.sh}). All runs completed without failure.
+
+\paragraph{How to count a control.}
+Each row of 900 is 50 records re-scored in 18 cells, not 900 trials, and the two must not be
+confused: an earlier version of this paper reported ``3 of 900 never-trained controls ranked
+first, below chance'' when all three were one record in one seed at three consecutive rounds.
+Under the corrected donor draw the 900 own-window scorings contain 11 rank-1 hits from
+\emph{four} distinct records and the 900 fresh-window scorings 3 hits from \emph{one}, and the
+two sets overlap: probe~175 ranks first at every one of the six checkpoints of seed~2 in the
+own-window condition and at three of them in the fresh-window condition. One control record in
+fifty that the candidate pool happens to favor, in one seed, is what that looks like; it is not
+a membership signal, and a pooled rate over the row would have hidden it inside a small number.
+The interpretable figure is the per-cell count, 0 to 2 of 50, and
+\texttt{pilot2/count\_control\_hits.py} prints the distinct records behind any total so that a
+total is never quoted without one.
+
+\section{The BPE decoder's normalization was a prior over letters}
+\label{app:bpenorm}
+
+\paragraph{What the division did.}
+The byte-pair decoder scores candidate letter $a$ at nucleotide $j$ by writing $a$ in,
+re-tokenizing, masking every token whose span covers $j$, and reading the log-probability of those
+tokens' true identities. Candidates re-segment the window differently, so they mask different
+numbers of tokens covering different numbers of nucleotides, and our first version divided by the
+nucleotides covered to make the numbers comparable. That divisor depends on the candidate, and a
+log-probability is negative, so the letter whose tokens happen to span more nucleotides is pulled toward zero, increasing its likelihood of selection.
+
+\paragraph{How large it is.}
+We measure the divisor itself on the released DNABERT-2 vocabulary with no model involved, over 1{,}920 positions in real
+planted windows (\texttt{pilot2/diag\_bpe\_denominator.py}): the covering span averages 5.3\nt{} and
+the spread across the four candidates averages 1.79\nt{}, reaching 11. At the 1{,}435 positions
+where the four divisors differ, the largest falls on A 707 times against 359 expected, with C 312,
+T 229 and G 187. ``Continues the run to the left'' accounts for only $0.291$ of those, barely above
+chance, so this is a property of the vocabulary and the division, not of homopolymer merging.
+
+\paragraph{What it cost.}
+Iterated over 48 positions the prior decides the output. Under the divided score, one letter covers
+three quarters or more of the decoded string in \textbf{95\% of 16-copy cells, 85\% of single-copy
+cells and 75\% of controls}; the decoded Hamming distance is 34.9, 32.1 and 34.6 of 48 against a
+uniform-letter baseline of 36. All three groups retain large reconstruction errors. One cell is worth
+naming: seed~0, probe~102 is reported as 48 A's at Hamming 32, chosen by the truth-free selection
+step over a restart at Hamming 26, while the leave-one-out diagnostic for that same record reads top-1
+$1.00$ at $0.001$\,\bits.
+
+\paragraph{The replacement, and what it changes.}
+\texttt{nt\_dist\_bpe\_fixed} picks a nucleotide interval around $j$ that is token-boundary aligned
+under all four candidates, scores exactly those nucleotides for each, and divides by nothing: the
+masked event is ``this interval reads thus'', the conditioning is the identical remainder of the
+window, and the four events differ only at $j$. On the same 60 cells the degenerate fraction falls
+to \textbf{0\%, 5\% and 0\%}, and the Hamming distance to \textbf{30.1, 30.6 and 35.8}, so members
+have lower mean reconstruction error than controls, whose 35.8 errors are near the uniform-letter baseline of 36. \textbf{Exact recovery
+is still zero on both sides.} Removing this measured letter-prior artifact does not produce exact
+recovery under the tested search. The leave-one-out diagnostic uses additional true target
+context and does not establish that whole-record recovery is possible. The comparison isolates
+one scoring defect; it does not attribute the remaining failures to search alone.
+
+One limitation remains unresolved: candidates still decompose the
+interval into different numbers of masked tokens, and a product of masked-token marginals is not the
+joint, so a segmentation with fewer factors remains mildly favored. The old path is kept as
+\texttt{--score pernt} so the submitted numbers stay reproducible. The leave-one-out
+\emph{bits} figure is not comparable between the two scorers, because one scores a nucleotide and
+the other an interval; only the top-1 accuracy and the Hamming distances are.
+
+\section{The four decoders, and the leave-one-out probe}
+\label{sec:decoders}
+The protocols differ in conditioning and update unit as well as search strategy.
+Methods gives the update equations; \S\ref{app:measurement} supplies implementation details.
+\begin{description}\itemsep2pt
+\item[Prefix-conditioned:] generate one greedy continuation per record and context,
+taking the argmax over admissible content tokens and feeding back predictions. There is
+no sampling, beam search, refinement or restart. For masked models,
+the unrevealed suffix, including the host beyond the target, stays masked.
+\item[Token re-masking:] for NT and non-overlapping masked backbones, update covering
+tokens given the surrounding host. Leading revealed letters are constrained; trailing
+host letters within the final covering token remain latent. Use 128 restarts and at most
+six sweeps, then select by truth-free PLL. Float64 accumulation avoids near-tie reordering
+from relative summation changes of about $10^{-7}$.
+\item[Nucleotide re-masking:] for overlapping $k$-mers, mask all tokens covering a
+position and update one nucleotide consistently with its neighbors.
+\item[Span-aware re-masking:] for BPE, re-tokenize each letter candidate. The historical
+per-nucleotide-divided scorer and common-interval correction are distinguished in
+\S\ref{app:bpenorm}; both give zero exact recovery in their reported evaluations.
+\end{description}
+The last two searches use four passes, with 16 restarts in the chromosome-22 remeasurement
+and 32 in earlier runs. LOO supplies every other true target position. Its accuracy and
+per-record power summary are conditional-prediction diagnostics in all arms, not recovery
+bounds; \S\ref{app:measurement} explains the endpoint and numerical mismatch. Table~\ref{tab:loo}
+reports both summaries alongside measured recovery.
+
+\section{Per-seed cells behind the identification table}
+
+All reported DNABERT-2 prefix exactness and Hamming distances use the hidden-48
+coordinate crop, implemented by \texttt{pilot2.target48};\newline
+\texttt{results/target48\_audit.json} records changed cells and within-cell errors.
+Historical raw score files remain unchanged. Early archival CSV rows without
+prediction strings are marked \texttt{legacy\_variable} and are not used for the
+reported 48\nt{} evaluations; they cannot be recropped from summary counts alone.
+
+
+Table~\ref{tab:a4} gives every DNABERT-2 chromosome-22 trajectory behind Figure~\ref{fig:ident}, per seed, including sixteen-copy fresh-window identification and the single-copy-matched controls. It consolidates the former main-text summary table with the complete per-seed data. Table~\ref{tab:target48} gives the corresponding cropped Hamming distances and uncertainties. Every row is 50 records per tier:
+rounds 15--120 were scored with 10 during the run, which put the single-copy trajectory two
+checkpoints late, and were re-scored at 50 for this table.
+
+\begin{table}[p]
+\centering
+\captionsetup{skip=2pt}
+\renewcommand{\arraystretch}{0.93}\small
+\caption{\emph{Generated.} Per-seed DNABERT-2 on chromosome~22. \emph{id} is rank-1 against 100
+real rare segments, chance $0.0099$; \emph{own} is the window the record was trained in and
+\emph{fresh} one the model never saw. The two control columns are the never-trained records in
+those same two conditions: \emph{own} is the borrowed-host control of \S\ref{app:bh},
+which did not exist before 27 October. Fresh controls are independently drawn;
+only own-window contexts are matched pairwise. \emph{verbatim} is all 48 target nucleotides exact under the
+prefix-conditioned protocol, which is the extraction the scoring pass records; the span-aware
+decoder reads $0\%$ on this model at both tiers (Table~\ref{tab:loo}), so the 16-copy column here
+is the protocol the field uses and not ours.}
+\label{tab:a4}\label{tab:ident}
+% Ten columns, the widest generated table here, and the only wide one that was not scaled: it ran
+% 45pt past the right margin. tabcolsep is already 4pt for this document. Scaled like its two
+% neighbours instead.
+\resizebox{\textwidth}{!}{\input{tables/a4_ident_perseed}}
+\par\vspace{3pt}
+\normalsize
+\caption{Coordinate-cropped Hamming errors out of 48 for single-copy DNABERT-2
+records in fresh windows, 50 members and 50 never-trained controls per cell.
+SE is the sample standard deviation divided by $\sqrt{50}$; the difference is
+control minus member, with SE $\sqrt{s_m^2/50+s_c^2/50}$ for the separately drawn
+groups. These are descriptive within-cell uncertainties; repeated checkpoints
+and seeds are not pooled as independent trials. Short predictions count missing
+letters as errors. Original token-boundary inputs are unchanged.}
+\label{tab:target48}
+\input{tables/a4_target48}
+\end{table}
+
+
+\clearpage
+
+\section{The tokenizer sweep, per seed and at both windows}
+Table~\ref{tab:a5} links the former main-text means to their per-seed source:
+averaging the 300\nt{} rows gives Figure~\ref{fig:slots}. Never-trained controls recover
+zero records at every tokenizer snapshot. Nominal slots are $48/k$; the actual
+drawn-offset means are given in \S\ref{sec:measure}.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} Extraction at matched held-out loss, records planted $16\times$, per seed,
+at both host-window lengths. The main text averages the three seeds of the 300\nt{} block; the
+288\nt{} block is the replication. A dash means the run never reaches that loss; \emph{never} in the
+last column means extraction never reaches 100\%.}
+\label{tab:a5}\label{tab:slots}
+\input{tables/a5_kcurve_perseed}
+\end{table}
+
+\section{The downstream probe}
+\label{sec:downstream}
+
+Table~\ref{tab:a6} reports frozen linear-probe scores and canary recovery at the selected checkpoints.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} Frozen linear-probe MCC on six tasks across two organisms, at the first
+checkpoint, at each model's own held-out optimum and at the end of its run, alongside the $16\times$ canary extraction rate over the same interval.
+Each summary gives equal weight to distinct (corpus, model, training seed, checkpoint) configurations after merging task panels; each task uses its available seeds.
+Coverage varies by task and checkpoint, so these are descriptive summaries, not a fully paired task panel.}
+\label{tab:a6}
+\resizebox{\textwidth}{!}{\input{tables/a6_downstream}}
+\end{table}
+
+The generated report \path{results/dnabert_gue_ds/utility_downstream.json} records the contributing configuration counts and task coverage.
+
+\paragraph{Separate fine-tuned-head evaluation.}
+In addition to the frozen probes in Table~\ref{tab:a6}, we evaluate fine-tuned classification heads
+using a scaled-down version of the published recipe (two rounds over up to 20{,}000
+labeled sequences, where the published recipe uses three to five rounds, depending on the task,
+over the full split). Absolute fine-tuned-head scores are below the corresponding published values;
+we interpret changes within each task under this recipe. On
+five tasks they land in the published range: promoter \NUM{0.79}--\NUM{0.86}, core promoter
+\NUM{0.59}--\NUM{0.66}, TF binding \NUM{0.61}--\NUM{0.68}, splice \NUM{0.60}--\NUM{0.80}, H3
+\NUM{0.68}--\NUM{0.74}. Comparing like with like (our DNABERT-2 fine-tuned head at its best
+round per task, against the \textsc{DNABERT-2} row of \citet{zhou2024dnabert2} for the same
+dataset), we sit below
+the published value on all six tasks, by $0.039$ (H3), $0.049$ (promoter), $0.057$ (TF binding),
+$0.069$ (H3K4me3), $0.085$ (core promoter) and $0.095$ (splice). The published H3K4me3 figure is
+itself only $0.363$, so absolute MCC is low on that task under both recipes; we read it as such.
+(Published values re-checked on 31~Oct~2026 against the arXiv HTML of v2: promoter
+$0.8677$, core promoter $0.6937$, splice $0.8499$, H3 $0.7827$ and H3K4me3 $0.3627$, all from its
+Table~6, and MCC confirmed as the metric in its Table~12. TF binding is $0.7199$, the Table~6
+column for human TF dataset~0, which is the dataset we train on; Table~4's $0.7010$ is the mean
+over its five human TF datasets and is not the like-for-like comparator. A draft of 27~October
+compared against that mean and printed a $0.038$ gap. The comparison is against the plain
+\textsc{DNABERT-2} row and not the further-pre-trained one, whose figures differ by up to $0.05$
+and in both directions.)
+
+\paragraph{Aggregation and inclusion.}
+The \NUM{252} (model, round, task) cells summarize \NUM{476} individual fine-tuned-head
+evaluations. All available MCC values, including zeros, enter the task means; no low-MCC
+results are excluded. We calculate frozen-probe and fine-tuned-head changes separately,
+comparing their available configuration means at each model's selected held-out optimum
+and final checkpoint.
+
+\section{The nineteen single-basis chromosome-22 cells}
+\label{sec:rerun}
+
+The table below reports every cell in the 23~October batch directly from the measurement reports. \texttt{standard} is the
+prefix-conditioned protocol, which the overlapping-$k$-mer and BPE reports do not run;
+\texttt{ours} is the decoder matched to that vocabulary. The three tiers of each checkpoint appear
+together, and $r{=}0$ is the never-trained control. The \emph{Power diag.} column is the mean
+of $p_i^{s_i}$, while \emph{LOO top-1} is the mean of $p_i$. These are conditional-prediction
+diagnostics, not recovery bounds (\S\ref{sec:decoders}). Exponentiating the rounded adjacent
+accuracy does not reproduce the mean power: the single-copy DNABERT-2 row displays
+$0.94$ and $0.268$, while $0.94^{48}=0.05$. Definitions use unrounded per-record values.
+
+\Needspace{125pt}
+{\small\input{tables/a7_rerun}}
+
+\section{Numerical reproducibility}
+\label{sec:repro}
+
+\paragraph{What moved and what did not.}
+Re-scoring a saved checkpoint after the host's floating-point behavior changed
+(\texttt{pilot2/rescore.py}) reproduces identification \emph{to the digit} (rank-1 $0.800$ before
+and after, held-out loss identical to four decimals) while the extraction rate on the same
+checkpoint moves by six points. Small numerical changes can flip near-tied candidate ranks;
+a re-masking decode is a discrete iteration in which one argmax resolving differently sends a
+restart to a different fixed point. Six points is the same order as the binomial standard error on
+50 records, so record-count uncertainty alone does not account for this observed numerical sensitivity.
+A single comparison does not estimate its variance or justify a wider numerical interval.
+The main text distinguishes the six-point reproducibility observation
+from the unchanged identification rates.
+
+\paragraph{Decoder optimization provides a 41$\times$ speedup.}
+Batching the 128 restarts into one forward pass per (position, sweep, chunk) and removing about two
+million host synchronizations took the audit from 141\,s to 3.4\,s per probe, and the optimized code
+reproduces the original bitwise on a full cell (\texttt{--chunk 1}, 8/8 identical). The
+re-measurement of nineteen cells took 2\,h43 in total where the original code would have needed
+roughly 28 GPU-hours, enabling the rerun on a common numerical basis within the available computation.
+
+\section{Canary placement and position encoding}
+\label{sec:placement}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/F3_variance.pdf}
+\caption{Share of the variance in canary memorization by factor over the controlled grid (24 runs).
+With independently drawn canary offsets the objective dominates; with every copy at the same offset
+the tokenizer appears to, because a model with learned absolute positions can score a record from
+its position. Restricted to the three tokenizers both arms share, the drawn-offset shares are
+\NUM{57.7}, \NUM{15.4}, \NUM{26.9} and \NUM{0.0}\,\%.}
+\label{fig:variance}
+\end{figure}
+
+Figure~\ref{fig:variance} reports both decompositions because their difference is larger than most effects that would be
+considered substantial within either analysis. This finding concerns the measurement protocol rather
+than the models themselves.
+Table~\ref{tab:placement} separates the two explanations. If fixed placement inflated memorization
+only because the model has learned absolute positions, then a position encoding without them should
+remove the effect. It does not: with RoPE, fixed offsets still permit extraction that drawn offsets do not at the same matched loss. The placement effect therefore persists without learned absolute position embeddings.
+This control supports the drawn-offset comparison; other
+interactions with positional encoding remain possible.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} Extraction of records planted $16\times$ at matched held-out loss, under
+absolute and rotary position encodings and under drawn and fixed canary offsets. 20 records per
+tier; a dash means the run never reaches that loss.}
+\label{tab:placement}
+\input{tables/t_placement}
+\end{table}
+
+\section{Capacity and parameterization controls}
+\label{app:capacity}
+
+In the main 300\nt{} non-overlapping tokenizer sweep, all 18 runs record exactly
+12,610,560 non-embedding parameters in \texttt{train\_summary.json}.
+Total parameter counts for character, 2-, 3-, 4-, 5- and 6-mer tokenizers are
+12,768,256; 12,697,600; 12,696,576; 12,782,080; 13,167,616; and 14,735,360,
+respectively, identical across the three seeds for each tokenizer. Token and position
+embedding tables vary, so this sweep holds the non-embedding backbone fixed rather
+than total parameter count. Three controls test whether the tokenizer effect is attributable to
+the token embedding table: factorizing the embedding to rank~512 is a pure
+reparameterization ($E' = EW^{\!\top}$ with the same tie between input and output, hence the same
+function class), yet it moves the \kmer{6} from \NUM{0.61} to \NUM{1.44}\,\bits{} at matched
+held-out loss, roughly the \kmer{3} level, and ranks 27 to 256 behave the same, so there is no
+dose--response in embedding parameters. It is also not a learning-rate artifact of the embedding
+rows: lowering only the embedding learning rate increases measured \kmer{6}
+memorization per unit of overfitting in these controls. The character-to-\kmer{3}
+difference in the main sweep also occurs without a larger total parameter count.
+In the 300\nt{} sweep, they differ by 0.56\%, with the character model slightly larger.
+
+\paragraph{HyenaDNA parameter accounting.}
+The released medium-160k model has 6,554,624 trainable parameters, including
+its filter biases, matching our training metadata. Its checkpoint stores
+14,236,768 values: the remaining 7,682,144 are registered buffers, comprising
+7,680,096 positional-grid values (\texttt{pos\_emb.t} and \texttt{pos\_emb.z})
+and 2,048 fixed modulation-decay values (\texttt{modulation.deltas}). Counting
+all stored values therefore overstates trainable model size; we report 6.55M.
+
+\paragraph{Scaling beyond an extrapolated capacity estimate.}
+At $20\times$ data (100{,}000 windows, about 57.6M bits, against roughly 45M bits obtained by
+applying the 3.6 bits per parameter of \citet{morris2025capacity} to 12.6M parameters,
+an extrapolation from GPT-style models rather than a measurement of ours), exact
+recovery and membership scoring separate. At the final checkpoint, the character
+model has zero own-window rank-1 and exact-recovery rates at each planted tier in
+both seeds. The \kmer{3} also has zero exact recovery, but its sixteen-copy
+own-window rank-1 rates are 0\% and 20\% in seeds 0 and 1, respectively.
+The \kmer{6} ranks every planted member first in its training window at the final
+checkpoint and extracts every sixteen-copy target from round~8 in both seeds.
+These measurements are recorded in \path{results/big20x/gate1_report_final.md}
+and \path{results/big20x/trajectory.md}. At a fixed round count, $20\times$ data also
+means $20\times$ more updates between canary exposures, leaving capacity and
+interference confounded. These results do not establish an absence of learning in
+the models with zero exact recovery.
+
+Table~\ref{tab:capacity} instead reports the embedding and parameterization controls.
+Its experimental conditions require explicit qualification: these runs
+predate the placement fix of \S\ref{sec:placement}, so every canary copy sits at a fixed offset, and
+they use 20 records per tier rather than 50. Fixed placement substantially increases recovery in these controls, including
+saturation across the tested 6-mer variants. The column to read is therefore the last one, the held-out loss at
+which extraction first reaches 100\%: every 6-mer variant pays between $2.02$ and $2.08$ whatever
+its embedding rank, feed-forward width or embedding learning rate, while the 3-mer pays $2.44$ and
+the character model $2.15$. The loss at which full extraction occurs changes with the tokenizer, but not with the
+parameterization.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} Capacity and parameterization controls, extraction of records planted
+$16\times$ at matched held-out loss, seed means. A dash means the run never reaches that loss.
+Fixed canary placement, 20 records per tier; see the caution above.}
+\label{tab:capacity}
+\input{tables/t_capacity}
+\end{table}
+
+\section{Edge-conditioned extraction audit}
+
+A masked model does not have to be read left to right, and prefix-only probing is the weak way to
+ask it: on diffusion language models, edge-conditioned masks recover up to three times more verbatim
+sequences than prefix-conditioned ones \cite{wang2026infilling}. We therefore re-ran every masked
+cell of the controlled grid with the sequence after the record left visible and the 48 masked
+nucleotides decoded in confidence order. The audit covers five datasets, four tokenizers, both mask rates and two to three seeds,
+evaluating never-trained controls and records inserted once or sixteen times
+(88 configurations, 264 tier rows, 20 canaries each). Edge-conditioned
+extraction recovers \textbf{no} record (Table~\ref{tab:a10}): \NUM{0\%} under both protocols, with
+\NUM{34.9} wrong nucleotides out of 48 under the standard protocol and \NUM{35.2} under infilling,
+against \NUM{35.4} and \NUM{35.7}, respectively, for non-members. This establishes the from-scratch zero-recovery observation of \S\ref{sec:blind}
+under a second tested decoding protocol as well. It does not generalize to all masked models:
+the released NT checkpoints yield exact recovery (Table~\ref{tab:human}).
+{\small\input{tables/t_infill_summary}}
+
+\section{Re-drawing the member/non-member canary split}
+
+Which canaries are members and which are matched controls is fixed by one data seed, so within an
+arm it is the same split for every model. With the mixed variant-derived canary set, the two groups of 50 records
+differ by chance, and before any fine-tuning the released checkpoints already read the member group
+as easier, by up to \NUM{0.9}\,\bits{} on a single draw. It is tempting to treat that as a fixed
+offset and subtract it. Re-drawing the split four times shows that this is the wrong correction: the
+offset is gone after a single epoch (\excess{} at round~1 is \NUM{0.00}$\pm$\NUM{0.05} on every
+draw), a regression of each draw's round-50 \excess{} on its own round-0 offset has slope
+\NUM{0.05}--\NUM{0.19}, and subtracting it in full inflates the across-draw spread. We therefore
+retain the uncorrected statistic and use the round-0 reading as a diagnostic: it measures the
+instability of a pretrained model's prior over two sets of variant-derived records, not a fixed property of the
+canaries.
+
+Table~\ref{tab:draws} gives the draws side by side, and the spread in it is not small: across the
+three draws that admit a matched comparison, the same model's \excess{} moves by $0.06$--$0.27$\,
+\bits{} at a single copy and by $0.07$--$0.64$ at sixteen, with the 5-mer the least stable. The
+fourth draw admits none at all: its models' overfitting branches do not overlap, so there is no
+common held-out loss to read them at. This is the reason the human arm of the main text is reported
+with a never-trained control in every cell rather than with a single-draw error bar.
+
+\begin{table}[htbp]
+\centering\small
+\caption{\emph{Generated.} The same matched-loss measurement under four member/non-member splits,
+\excess{} \bits{} at the highest matched loss of each draw.}
+\label{tab:draws}
+\input{tables/t_draws}
+\end{table}
+
+% ---- The two sections moved out of the main text on 28 October for the ten-page
+% limit. They are input from sections/, which holds the only copy of their text.
+\input{sections/p04_leak}
+
+\input{sections/p07_practice}
+
+\section{Measurement provenance and corrections}
+\label{app:prov}
+The following corrections determine which measurements the paper reports; detailed
+development history is retained in \path{notes/17_experiment_log_week3_EN.md}.
+\begin{itemize}\itemsep2pt
+\item \textbf{Record count:} the DNABERT-2 trajectory and overlapping-family prefix
+trend were rescored at 50 records per cell rather than the original ten. The former
+had appeared two checkpoints late; the latter initially read $0/0/10/40\%$.
+Tables~\ref{tab:ident} and \ref{tab:loo} and \S\ref{sec:slots} use the full-count results.
+\item \textbf{Controls and replication:} the 18 DNABERT-2 cells reuse 50 records across
+six checkpoints and three seeds, so no pooled independent-trial rate is reported.
+We retrained the HyenaDNA and overlapping-DNABERT controls because the original
+weights were unavailable; \S\ref{app:bh} checks the reproduced member/loss values.
+\item \textbf{Protocol and access:} NT~500M's single-copy zero applies to prefix
+decoding, while re-masking yields $0.12$--$0.18$. Table~\ref{tab:blind} uses own-window
+membership rather than an average of own and fresh conditions.
+\item \textbf{Diagnostic interpretation:} legacy \texttt{loo\_bound} values are retained,
+but no longer claimed to certify recovery bounds (\S\ref{app:measurement}). The
+BPE normalization audit and corrected-scorer coverage remain separate
+(\S\ref{app:bpenorm}).
+\end{itemize}
+
+\section{Experimental configurations and table interpretation}
+\label{app:config}
+
+Table~\ref{tab:config} reports each arm's settings directly from the run's recorded
+\texttt{args.json}, rather than from the manuscript text.
+
+\begin{table}[htbp]
+\centering\small
+\caption{One row per arm. The masked arms differ in scheme as well as rate: DNABERT-2 and
+Nucleotide Transformer mask tokens independently, while the overlapping family masks spans of $k$
+consecutive tokens with starts drawn at rate$/k$, at 0.15, 0.20, 0.25 and 0.30 for $k=3,4,5,6$.
+\emph{Checkpoints} lists the union of principal reported snapshots across runs; supplementary
+experiments retain their separately stated configurations. The released checkpoints are fine-tuned,
+not trained from scratch; the last row is the only backbone we train.}
+\label{tab:config}
+\begin{tabular}{llllll}
+\toprule
+arm & tokenizer & objective & lr & epochs & checkpoints \\
+\midrule
+DNABERT-2, 117M      & byte-pair          & masked, 0.15 & \num{2e-5} & 150 & 15, 30, 50, 80, 120, 150 \\
+DNABERT, masked arm & overlapping \kmer{k} & span, 0.15--0.30 & \num{1e-4} & 150 & 15, 30, 50, 80, 120, 150 \\
+DNABERT, causal arm & overlapping \kmer{k} & causal & \num{2e-5} & 50 & 1, 3, 8, 15, 30, 50 \\
+NT 250M and 500M     & fixed-width 6-mer  & masked, 0.15 & \num{2e-5} & 50  & 3, 15, 30, 50 \\
+HyenaDNA medium-160k & single nucleotide  & causal       & \num{2e-5} & 50  & 1, 3, 8, 15, 30, 50 \\
+controlled backbone  & $k=1$--6, spaced   & next-token   & \num{3e-4} & 30  & 1, 2, 3, 5, 8, 12, 20, 30 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Principal campaign settings and supplementary exceptions.}
+On chromosome~22, NT~250M saves rounds 15, 30 and 50, while NT~500M saves rounds 3, 15 and 50.
+On \emph{E.~coli}, NT~250M seed~0 saves rounds 15, 30 and 50, seeds~1 and~2 save rounds 3, 15 and 50, and NT~500M seed~0 saves rounds 3, 15 and 50.
+The principal released-model campaigns use five thousand host windows, canaries planted
+1, 4 and 16 times with 50 records per tier, each copy
+at an independently drawn offset; 50 never-trained control records; a candidate pool of 100 real
+segments; \texttt{data\_seed} 1234, so all seeds of an arm share one member, control and pool
+split and re-score the same records; batch 8 with gradient accumulation 2. The from-scratch sweep is an exception, using larger evaluation sets and batches where
+computationally affordable: 100 records per tier, 100 controls, a pool
+of 500, batch 64, on uniform rather than human sequence. Supplementary controls use
+their stated settings: Table~\ref{tab:capacity} has fixed placement and 20 records
+per tier, and the edge-conditioned audit (Table~\ref{tab:a10}) also uses 20 records
+per tier. The large-corpus experiment above uses 100{,}000 windows.
+
+\paragraph{Decoders and their budgets.}
+\S\ref{sec:decoders} lists the update units, conditioning and restart/pass budgets.
+We report both applicable protocols, identifying the stronger measured result; LOO
+diagnostics are reported separately because they use additional true target context.
+
+\paragraph{Reading at matched loss.}
+Within each seed, rates are linearly interpolated between neighboring checkpoints in held-out-loss
+order that bracket the target; available seed estimates are then averaged. The controlled sweeps
+use numbered epochs 1, 2, 3, 5, 8, 12, 20 and 30. The separately labeled \texttt{final}
+evaluation duplicates epoch 30 and is counted only once. A cell is left blank where the target
+lies outside that run's range; there is no extrapolation. Where a leak is priced
+in \bits{}, the baseline is that run's own best saved checkpoint, so no price is comparable across
+arms except through this rule.
+
+\paragraph{A release check a group can run, and what it does not certify.}
+The inputs are ones the releasing group already holds and an outside adversary does not: the
+fine-tuning corpus, the manifest of which windows went into it, and the weights at each saved
+checkpoint. From those it assembles a candidate pool of real segments drawn from the same
+distribution and absent from the corpus, and a set of never-trained control records placed in the
+members' host windows and offsets for own-window controls; fresh controls use independent
+background and offset draws. Then, at each checkpoint, it reads two
+numbers in each of two access conditions (the record's own training window, and a window the
+model never saw) and the exact-recovery rate of the decoder matched to that model's vocabulary.
+What it reports is the member rate beside the control rate on the same cells, per condition, per
+decoder, with the record count beside each. Our code runs exactly that
+(\S\ref{sec:commands}).
+
+Three limitations accompany these measurements. The own-window numbers are a privileged-context diagnostic:
+an adversary holding the corpus could search the corpus and would not need the weights, so only
+the fresh-window pair speaks to what a released checkpoint gives up. The statistic is a ranking
+against a candidate set: rank~1 defines a decision rule, but does not supply a
+transferable low-false-positive-rate threshold or a calibrated per-record error rate
+(\S\ref{sec:ident}). And a checkpoint that reads clean has been shown clean against these
+decoders, these budgets and this pool, which is a statement about the tested modes and not a
+safety certificate.
+
+\section{Exact commands}
+\label{sec:commands}
+
+Every command runs from the repository root. The commands reproduce the reported
+measurements, figures and appendix tables. Each restart count below is the value
+recorded in the result file that command writes; the earlier \texttt{recon\_bpe\_*} and
+\texttt{recon\_*r32*} runs these supersede used 32 restarts.
+
+\begin{footnotesize}
+\begin{verbatim}
+# One cell of the 23 Oct batch, per vocabulary (Tables A12, A13 and A6 of this
+# appendix). The batch is these three commands over 19 (run, checkpoint) pairs,
+# one GPU each, logged to outputs/chr22_rerun. DB5 is the 5-mer run directory.
+NT=outputs/nt_ckpt/nt250m_mlm_human_s0
+DB5=outputs/dnabert_long/dnabert5_nt0.05_lr0.0001_human_s0
+BPE=outputs/bpe_human/dnabert2bpe_human_s0
+
+python -m pilot2.recon_audit   --root $NT  --ckpt ckpt_ep50.pt \
+    --restarts 128 --max_probes 50 --name rb_ep50
+python -m pilot2.recon_overlap --root $DB5 --ckpt ep120.pt \
+    --restarts 16  --max_probes 50 --name rb_ep120
+python -m pilot2.recon_bpe     --root $BPE --ckpt ep120.pt \
+    --restarts 16 --max_probes 50 --score pernt --name rb_ep120
+
+# the tokenizer sweep, k = 1..6, three seeds, window 300 (per-seed Table A4)
+# sweep.sh activates the recorded conda environment glm.
+EXTRA="--epochs 30 --tiers 1,4,16 --probe_offset random"
+EXTRA="$EXTRA --probes_per_tier 100 --n_nonmember 100"
+EXTRA="$EXTRA --save_epochs 1,2,3,5,8,12,20,30 --score_snapshots"
+PILOT2_WINDOW=300 bash pilot2/sweep.sh outputs/kcurve300 "ar" "0 1 2" \
+    "$EXTRA" "char 2mer 3mer 4mer 5mer 6mer"
+python -m pilot2.kcurve_report --root outputs/kcurve300
+
+
+# re-score a saved checkpoint and compare with its original scores
+python -m pilot2.rescore --root outputs/bpe_human/dnabert2bpe_human_s0 \
+    --ckpt ep120.pt --name scores_ep120_rb --compare scores_ep120.json
+
+# the published derived table, the figures, and this appendix's tables
+python -m pilot2.export_figure_data --root outputs --out results/figure_data.csv
+python -m pilot2.figures_privacy --out paper/figures
+python -m pilot2.figures_main10 --out paper/figures
+python -m pilot2.appendix_tables --out paper/tables
+\end{verbatim}
+\end{footnotesize}
+
+\noindent
+\texttt{GLMEXT\_DATA} must be exported in the shell that runs these: it is set in \texttt{.bashrc},
+which a non-interactive SSH session does not read, and a batch that inherits it from an interactive
+shell will fail instantly in every cell when it is re-run from a script.
+
+
+\section{Measurement definitions and decoder diagnostics}
+\label{app:measurement}
+This section expands the definitions in \S\ref{sec:measure}; the score, rank,
+re-masking update and common-interval construction remain in the main text.
+The historical BPE
+search files for the main chromosome-22 remeasurement are \texttt{rb\_ep30.json},
+\texttt{rb\_ep120.json} and \texttt{rb\_epfinal.json} for each of three seeds,
+with 16 restarts and 50 records per evaluated tier. The separate corrected scorer
+audit is seed 0's \texttt{rbfix\_epfinal.json}: 60 cells in total, with 16 restarts.
+It documents zero exact recovery after correcting the divisor in those audited cells,
+not a corrected-scorer sweep over all seeds, contexts or checkpoints.
+\paragraph{The held-out loss scale.}
+We express the cost of each leak in \bits{} above the lowest held-out loss among that run's saved
+checkpoints. For token-based scorers, held-out loss is the teacher-forced surprise of a held-out window divided by its
+nucleotide count. This normalization removes the reduction in reported loss that coarser tokenization
+would obtain simply from fewer predicted slots:
+%
+\begin{equation}
+\label{eq:heldout}
+\ell(M)=\frac{1}{N}\sum_{i=1}^{N}\frac{-1}{W}
+\sum_{j\in\mathcal{J}(h^{(i)})}\log_{2}P_{M}\bigl(u_{j}\mid c_{j}\bigr),
+\qquad
+\ell^{\star}=\min_{M'\in\mathcal{K}}\ell(M'),
+\end{equation}
+%
+over the first $N$ windows of a held-out split with no inserted canaries, where $\mathcal{K}$ is the
+set of snapshots the run saved and $c_{j}$ is the scoring context: the prefix
+for a next-token model, and every other slot for DNABERT-2 and NT.
+The DNABERT-2 chromosome-22 arm evaluates all 200 test windows;
+the controlled synthetic sweeps evaluate all 500 test windows. Overlapping DNABERT
+uses a different estimator: \texttt{heldout\_floor} in \texttt{pilot2/dnabert.py} averages
+nucleotide surprise at positions $k,k+7,\ldots<W-k$, then averages windows.
+Its ranking score uses positions $o,o+3,\ldots<o+96$. The 50-epoch
+\texttt{human\_real3} causal runs supply the cross-family membership rates; their
+\texttt{human\_bh} control retraining uses the same objective.
+\texttt{nt\_logprobs\_causal} applies causal attention and predicts the token starting
+at $j-k+1$, restricting its preceding $k-1$ letters and normalizing over four continuations
+(positions $j<k-1$ are excluded). The separate 150-epoch \texttt{dnabert\_long}
+masked runs supply the decoder/LOO comparison. There \texttt{nt\_logprobs} masks
+every covering token and reads token $\min(j,W-k)$; consistent $k$-mer logits are
+marginalized onto the letter and normalized over A/C/G/T. These nucleotide scores
+replace the token sum for this family; the two campaigns do not share weights.
+Weighting each window equally
+rather than pooling slots is what makes $\ell$ an axis on which a \kmer{6} cell and a character
+cell can be compared at all, and $\ell(M)-\ell^{\star}$ is the price every later table quotes.
+
+\paragraph{The matched own-window control.}
+A never-trained record has no training row. We therefore assign each control a member's row and
+offset, and the ranking pass overwrites $[o,o+2L)$ with \emph{every} candidate in turn. The memorized string is therefore not itself in $C$, and the two conditions
+%
+\begin{equation}
+\label{eq:control}
+\bigl(x\in\mathcal{R}_{\rho>0},\ h_{\mathrm{own}},\,o\bigr)
+\quad\text{against}\quad
+\bigl(x'\in\mathcal{R}_{0},\ h_{\mathrm{own}},\,o\bigr)
+\end{equation}
+%
+differ in membership alone. A control near chance argues against a generic training-window advantage as the sole
+explanation for the member rates; it does not separate a model whose
+conditional at that offset is sharp on a string absent from $C$, which would drive the control to
+chance as well.
+
+\paragraph{Conditional-prediction diagnostics.}
+The leave-one-out (LOO) probe supplies every other target slot at its true value and
+takes the argmax at one. For record $i$, let $p_i$ be its per-slot top-1 rate and $s_i$
+the number of probed slots. We report both the mean accuracy and a per-record power summary:
+\begin{equation}
+\label{eq:ceiling}
+\widehat b=\frac{1}{n}\sum_{i=1}^{n}p_i^{\,s_i},
+\qquad \widehat p=\frac{1}{n}\sum_{i=1}^{n}p_i,
+\qquad s_i\equiv s\ \Longrightarrow\ \widehat b\ge\widehat p^{\,s}.
+\end{equation}
+The inequality is Jensen's inequality. Neither summary is a recovery probability:
+$p_i$ measures prediction given the other true target positions, not the probability of
+a correct step during free decoding. The probe is token-level for NT and the non-overlapping
+masked backbone, and nucleotide-level ($s_i=48$) for DNABERT-2 and overlapping DNABERT.
+
+A limited abstract implication holds for \emph{complete-state reconstruction}: if a decoder
+returns a fixed point of exactly the probe's update map, with identical constraints,
+tie-breaking and numerical evaluation, then recovery of the full true state requires
+$p_i=1$, and its indicator is at most $\mathbf1[p_i=1]\le p_i^{s_i}$. This implication
+does not certify the reported experiments. In \texttt{recon\_audit.py}, covering tokens
+can extend beyond the hidden 48\nt{}; leading revealed letters are constrained but
+trailing host letters within the final token are not. Exact recovery scores only the
+48\nt{} crop, whereas LOO checks the original full tokens. This mismatch affects NT
+and masked-backbone runs using that routine. In addition, search and LOO use batched
+and single-row forward passes, respectively, which need not produce identical argmaxes.
+
+Saved outputs include exact recovery after early stopping with $p_i<1$: the NT~500M
+human seed-0 round-50 single-copy probe~33 has $p_i=8/9$ and $p_i^9=0.346$.
+Aligned counterexamples also occur, so boundary mismatch cannot explain every case;
+the numerical cause has not been isolated by replay. Early stopping under the search
+computation therefore does not certify the probe's necessary condition. The $95.8\%$
+sub-cap statistic below describes selected-output stopping, not a verified bound.
+No aggregate exceedance was observed in the six human seed-0 NT files checked, but
+that ordering does not validate the failed recordwise premise. We use $\widehat b$
+as a conditional-prediction diagnostic for \emph{all} reported arms. Historical JSON
+keys named \texttt{loo\_bound} retain their values for reproducibility.
+
+For single-copy DNABERT-2, $\widehat p=0.945$ and $\widehat b=0.268$, which exceeds
+$\widehat p^{48}=0.065$ by a factor of $4.1$.
+The BPE values refer to the historical scorer, with the common-interval correction
+audited separately. Its zero exact recoveries do not validate a recovery bound.
+The $93$--$95\%$ LOO accuracy establishes conditional predictive ability with true
+target context; neither it nor the power summary establishes whole-record recoverability.
+
+\paragraph{Teacher-forced covering-token surprise.}
+Teacher-forced surprise sums log probabilities of the true covering tokens,
+with revealed leading letters constrained, and divides by 48 target nucleotides.
+Trailing host letters within the final token remain in the scored event. This is
+a covering-token diagnostic normalized by target length, not the marginalized
+probability of the hidden 48\nt{} alone.
+Writing $c_j^{\mathrm{TF}}$ for the prefix with preceding target tokens supplied
+at their true values, the diagnostic is
+$T_{48}=-\frac{1}{48}\sum_{j\in\mathcal S}\log_2Q_{M,j}(u_j\mid c_j^{\mathrm{TF}})$,
+with the content and revealed-prefix constraints used by the decoder.
+This differs from the bidirectional LOO context and from a strict 48\nt{} event.
+
+\paragraph{Slots.}
+A decoder predicts complete slots. We therefore determine how many slots the $L$ hidden nucleotides
+occupy, accounting for the record's offset within its host. Widening the target
+to slot boundaries gives
+%
+\begin{equation}
+\label{eq:slots}
+s=\Bigl\lceil\frac{L+\varphi}{k}\Bigr\rceil
+\;\overset{k\,\mid\,L}{=}\;\frac{L}{k}+\mathbf{1}\bigl[k\nmid o\bigr],
+\qquad \varphi=(o+L)\bmod k,
+\end{equation}
+%
+for a non-overlapping \kmer{k}; $s=L$ for the overlapping family and for single nucleotides, since
+there a slot is a nucleotide. The diagnostic power $p^s$ in \eqref{eq:ceiling} decreases with
+$s$ at fixed $0<p<1$. This mathematical comparison is not a recovery law and does not
+establish equal target predictability across tokenizers. For a straddling token, exactness
+requires only its hidden letters, whereas the token-level probe tests its full identity.
+That is the account \S\ref{sec:slots} tests: whether recoverability tracks $s$ alongside a separate measurement of target surprise. A controlled sweep can show that it does; it cannot by itself exclude every other
+way the tokenizer changes the fit, and we do not claim it has. The $L/k$ column of Table~\ref{tab:slots} is a nominal ratio, not an integer slot count.
+Equation~\eqref{eq:slots} attains that ratio when $k$ divides both $L$ and $o$;
+under the drawn placement those runs use,
+the mean slot count is $48.0$, $24.5$, $16.7$, $12.8$, $10.4$ and $8.8$ for $k=1\ldots6$.
+
+\paragraph{The decoders.}
+The decoder implements the extraction attack. Consequently, the measured exposure of a checkpoint
+depends on the decoder used for its vocabulary. The DNABERT-2 prefix protocol rolls the nominal 48\nt{} prefix back to the
+preceding BPE boundary (41--48 revealed nucleotides in the chromosome-22 audit)
+and retains the token-slot layout of the true window before masking identities.
+We crop its saved predictions by nucleotide coordinates to the hidden 48\nt{}
+for exactness and Hamming distance, counting missing letters as errors. This
+uses a boundary-aligned input and a fixed 48\nt{} evaluation interval.
+The \emph{standard} protocol generates one greedy continuation left to right from the
+revealed half, taking the admissible-token argmax and feeding back its predictions, with no
+sampling, beam search, refinement or restart. This entails one forward evaluation per generated
+token (per nucleotide for overlapping DNABERT), not one forward pass per record. On a masked model it masks everything right
+of the revealed prefix, the host suffix beyond the target included, and fills the target slots
+sequentially while that suffix stays masked. This differs from the independent per-token masking
+used to train DNABERT-2 and Nucleotide Transformer and the $k$-token span masking of the overlapping
+family. Our \emph{re-masking} decoder instead treats the target's slots
+$\mathcal{S}$ as latent. Writing $z=(z_{j})_{j\in\mathcal{S}}$ for the tokens placed on them,
+$w(z)$ for the window carrying $z$ with everything outside $\mathcal{S}$ at its true value, and
+$\mathcal{A}_{j}$ for the valid content tokens consistent with the revealed prefix letters straddled by slot $j$,
+one sweep re-masks a single slot and takes the restricted argmax with every other slot held:
+%
+\noindent See \eqref{eq:remask} in the main text.
+
+%
+The sweep uses Gauss--Seidel rather than Jacobi updates: each slot conditions on its predecessors'
+updated values. The iteration is therefore a deterministic map on $\prod_{j}\mathcal{A}_{j}$,
+whereas parallel updates can oscillate. It runs for at most six sweeps from each of $R=128$
+restarts, stopping when a sweep makes no changes. The attack must then pick a final state
+\emph{without} the answer, which it does by the pseudo-log-likelihood of the state under the same
+single-slot conditional used for its updates \citep{mireshghallah2022mlm}.
+Here admissible content tokens are explicitly renormalized:
+$Q_{M,j}(v\mid c)=\mathbf{1}[v\in\mathcal A_j]P_M(v\mid c)/
+\sum_{a\in\mathcal A_j}P_M(a\mid c)$.
+The denominator does not change a within-slot argmax but can change the ranking
+of restart states; raw $P_M$ remains the probability used for membership scoring:
+%
+\begin{equation}
+\label{eq:select}
+\Lambda(z)=\sum_{j\in\mathcal{S}}\log_{2}Q_{M,j}\bigl(z_{j}\mid\operatorname{mask}_{\{j\}}(w(z))\bigr),
+\qquad
+\hat z=\hat z^{(m^{\star})},\quad
+m^{\star}=\min\Bigl(\operatorname*{arg\,max}_{0\le m<R}\Lambda\bigl(\hat z^{(m)}\bigr)\Bigr).
+\end{equation}
+%
+A sweep is one pass over $\mathcal{S}$ in increasing order, a restart is settled when a whole pass
+changes nothing, and the budget is six passes for \eqref{eq:remask} and four for the two
+vocabularies below. A restart that has not settled when the budget runs out is \emph{not}
+discarded: its last state is scored like any other, so the budget is part of the reported rate.
+Selected-output sweep counts differ sharply across vocabularies. Of $22{,}714$
+reported re-masking probe/context outputs, $950$ selected states use all six sweeps;
+$95.8\%$ therefore stopped before the cap. These are not counts of every random restart.
+A six-sweep count alone does not distinguish convergence on the final pass from
+budget exhaustion, so we do not certify that remainder as fixed points. The
+historical BPE selected state uses all four passes in each of its $1{,}750$ outputs,
+so those records do not establish that its output is a fixed point. This count
+belongs to the historical search campaign, not to the separate 60-cell
+common-interval correction audit of \eqref{eq:bpespan}. These stopping counts describe the
+search outputs; they do not certify a recovery bound under the separately evaluated LOO probe.
+
+Because $\Lambda$ uses only information available to the adversary, the reported rate measures an
+attack rather than oracle-assisted selection. We also record the oracle's best-of-$R$ result. The
+difference quantifies the cost of selecting an output without knowing the answer. $\Lambda$ is a sum over slots and, alone among the scores here,
+is not divided by nucleotides, which is admissible only because $\mathcal{S}$ is identical
+across the $R$ restarts being compared.
+
+We adapt \eqref{eq:remask} for two vocabularies that do not admit it as written. For overlapping \kmer{k}s, independently updating a token can violate consistency
+with its overlapping neighbors; the latent variable is therefore the nucleotide, and to re-mask position $j$ we
+mask the $k$ tokens covering it and marginalize their predictions onto the letter there,
+%
+\begin{equation}
+\label{eq:ntmarg}
+P_{M}\bigl(h_{j}=a\mid\cdot\bigr)\propto
+\exp\log\!\!\sum_{v\in K_{j,a}}\!\!\exp\eta_{j,v},
+\qquad a\in\Sigma,
+\end{equation}
+%
+with $\eta_{j,\cdot}$ the logits at that slot and $K_{j,a}$ the $k$-mers consistent with the
+visible letters that spell $a$ at $j$. Under byte-pair encoding, a nucleotide substitution can change the slot grid because it re-segments
+the window. We therefore score the
+four candidates on a common interval, grown until it is stable under all of them,
+%
+\noindent See \eqref{eq:bpespan} in the main text.
+
+%
+starting from $I^{(0)}_{j}=[j,j+1)$, where $w^{\,j\leftarrow a}$ is the window with its $j$-th
+nucleotide overwritten by $a$. The interval $I_{j}$ depends on $j$ and on the window away from $j$,
+never on which letter is written there, so all four candidates are scored on the same nucleotides
+and $\Psi_{j}$ divides by nothing. Our initial implementation instead divided by the nucleotide span covered by each candidate's own
+tokens. This introduces a prior over letters rather than a normalization,
+and on this vocabulary it is large enough to decide the output (appendix~\S\ref{app:bpenorm}).
+
+
+\paragraph{Candidate-score sensitivity.}
+The rescaling $2L/n_{y}(o)$ is a shared constant under a
+fixed-width tokenizer but a \emph{per-candidate} divisor under byte-pair encoding, where the covered
+span ranges over $96$ to $107$ nucleotides across the $101$ candidates of a cell; it is the divisor
+appendix~\S\ref{app:bpenorm} shows to be a prior rather than a normalization, acting here on real segments rather
+than single letters. The planted records and pool candidates have mean covered spans of $100.2$ and $99.7$, respectively. The never-trained control uses the same scorer, but this alone does not rule out an interaction between the divisor and membership. This remains a defect of the scoring rule, so we quantified its effect directly: from one forward pass per cell we re-ranked every candidate under the divided
+score above, the undivided total, and a \emph{span-matched} score that attributes each token's
+surprise across the nucleotides it covers and sums over $[o,o+2L)$ alone, scoring every candidate on
+exactly the target's nucleotides. Across 2{,}000 record evaluations (five run/checkpoint pairs,
+the never-trained controls and the 1-, 4- and 16-copy tiers, both host conditions, fifty records
+each), the span-matched score moves the rank-1 verdict in 33 cells
+and the undivided total in 20, $1.7\%$ and $1.0\%$; the single-copy fresh-window rate of
+\S\ref{sec:ident} reads $0.18$--$0.26$ across seeds under the rule we report and $0.22$--$0.28$
+span-matched. At the final chromosome-22 checkpoint, the three seeds give member rates
+$18/22/26\%$ under the reported scorer and $22/22/28\%$ span-matched; matched fresh-window
+controls give $0/0/0\%$ and $2/0/0\%$, respectively (50 records per cell). Separately, pooling
+the 500 control evaluations across all five run/checkpoint pairs and both hosts gives
+$0.014$ under the reported scorer, $0.014$ span-matched and $0.016$ without the divisor.
+The five pairs are chromosome-22 seeds 0--2 at final and \emph{E.~coli} seed~0 at rounds~30
+and~150 (final). Where the rules disagree, the span-matched rule reports \emph{more} leakage.
+The tested cells retain positive membership signal under these alternative scores; the numerical rates remain scorer-dependent.
+
+\section{Public input release identifiers}
+\label{app:resources}
+The IGSR GRCh38 phased call set was announced on 12 March 2019. The chromosome-22
+file, \path{ALL.chr22.GRCh38.phased.vcf.gz}, is dated 27 February 2019 and declares
+\texttt{source=IGSRpipeline} and reference
+\path{GRCh38_full_analysis_set_plus_decoy_hla.fa}. Its header lists the 2{,}548
+samples used for cohort counts. The recall is described by
+\citet{lowygallego2019grch38}; the phase-3 study is \citet{thousandgenomes2015}.
+
+\section{Source cells for cross-family recovery comparisons}
+\label{app:sourcecells}
+Tables~\ref{tab:hyena30} and~\ref{tab:overlap50} supply the cells cited in
+\S\ref{sec:slots} and the Discussion. The source paths, configurations and file hashes
+are in \path{results/appendix_source_cells.json}; \path{pilot2/appendix_source_cells.py}
+reproduces the counts from saved outputs without model inference.
+For the uniform-background HyenaDNA runs, \texttt{scores\_final.json} records epoch~30;
+for the other backgrounds, the matching file is \texttt{scores\_ep30.json}.
+Thus Table~\ref{tab:hyena30} compares one actual training epoch, not one shared filename.
+The chromosome-22 single-copy HyenaDNA result in \S\ref{sec:ident} is a separate
+human-record campaign with 50 records per tier.
+
+\input{tables/a17_hyena_epoch30}
+\input{tables/a18_overlap_prefix50}

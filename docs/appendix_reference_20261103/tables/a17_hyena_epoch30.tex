@@ -1,0 +1,20 @@
+% Verified by pilot2.appendix_source_cells; source hashes in results/appendix_source_cells.json.
+\begin{table}[tbp]
+\centering
+\caption{HyenaDNA medium-160k at epoch 30, learning rate $2\times10^{-5}$.
+Exact recovery of the hidden 48\nt{} by one greedy prefix continuation.
+Canaries are uniform synthetic 96\nt{} DNA; members are planted sixteen times at random offsets.
+Member results use the own window, with 20 records
+per seed. Counts follow the listed seed order; fresh-window controls are never trained.}
+\label{tab:hyena30}
+\begin{tabular}{lllc}
+\toprule
+Background & Seeds & Member hits/evaluated & Control hits/evaluated \\
+\midrule
+Uniform DNA & 0, 1, 2 & 14/20, 19/20, 13/20 & 0/40 in each seed \\
+\emph{E.~coli} & 0, 1 & 17/20, 14/20 & 0/20 in each seed \\
+Yeast & 0, 1, 2 & 18/20, 16/20, 20/20 & 0/20 in each seed \\
+GUE promoters & 0, 1, 2 & 16/20, 17/20, 13/20 & 0/20 in each seed \\
+\bottomrule
+\end{tabular}
+\end{table}

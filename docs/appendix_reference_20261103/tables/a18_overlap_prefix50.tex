@@ -1,0 +1,19 @@
+% Verified by pilot2.appendix_source_cells; source hashes in results/appendix_source_cells.json.
+\begin{table}[tbp]
+\centering
+\caption{Overlapping DNABERT, masked fine-tuning on chromosome 22, epoch 120,
+seed 0: one greedy prefix continuation, with exactness evaluated on the hidden 48\nt{}.
+Each tokenizer evaluates the same 50 sixteen-copy human-variant-derived records in both
+access conditions. These are the full \texttt{scores\_ep120\_n50.json} evaluations.}
+\label{tab:overlap50}
+\begin{tabular}{ccccc}
+\toprule
+$k$ & Own hits/evaluated & Own rate & Fresh hits/evaluated & Fresh rate \\
+\midrule
+3 & 0/50 & 0\% & 0/50 & 0\% \\
+4 & 1/50 & 2\% & 1/50 & 2\% \\
+5 & 3/50 & 6\% & 1/50 & 2\% \\
+6 & 25/50 & 50\% & 18/50 & 36\% \\
+\bottomrule
+\end{tabular}
+\end{table}

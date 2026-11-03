@@ -146,3 +146,8 @@ checkpoints. Both the manuscript and its configuration table distinguish these a
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## Detailed paper protocols
+
+The [paper protocol guide](PAPER_PROTOCOLS.md) contains the commands, artifact map,
+decoder compatibility notes and archived detailed supplement relocated from the PDF.

@@ -38,6 +38,7 @@ python -m pip install -r requirements-analysis.txt
 python -m pilot2.figures_main10 --out reproduced/figures
 python -m pilot2.appendix_tables --results results --out reproduced/tables
 python -m pilot2.appendix_source_cells --summary results/appendix_source_cells.json --tables-out reproduced/tables
+python -m pilot2.compact_appendix --tables reproduced/tables --out reproduced/tables
 ```
 
 **Fonts:** the plotting command requires Arial. Install it, or set
@@ -76,3 +77,5 @@ Built on Alexander Nemecek's GLM-Memorization framework and released genomic-mod
 backends. The predecessor is Nemecek et al., *Quantifying memorization and privacy
 risks in genomic language models*, ACM-BCB 2026.
 Licensed under [Apache License 2.0](LICENSE).
+
+See [paper protocols and the evidence map](docs/PAPER_PROTOCOLS.md) for commands and details relocated from the appendix, with a preserved long-appendix snapshot.

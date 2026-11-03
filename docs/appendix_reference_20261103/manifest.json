@@ -1,0 +1,23 @@
+{
+  "source_commit": "2f46ddfaa85f4cd5d31dd6daa524a45785c3a489",
+  "sha256": {
+    "README.md": "71a861cea8f09340f02e63fc444aeda8a8c77379a831a75283b9723990171f64",
+    "sections/p04_leak.tex": "57508d0faeafc08363ae3ed378300603934269eb17b3f24173e0a1a3d0167105",
+    "sections/p07_practice.tex": "54aaf0316c25664972368ac12c23f72844bfa207d3727382e246cc3f0e74a381",
+    "sections/p11_appendix.tex": "f51b656ee113bf7eca9989733dc91b8abf6207af8c315bc3319c2ba16c5e64b2",
+    "tables/a17_hyena_epoch30.tex": "930f8c259a6b5847331f598745dbf25b98e248cb54bd3178402e27701f180d07",
+    "tables/a18_overlap_prefix50.tex": "43325327c69c0a8c0bdc2228b665fcb02dc90a4ce073e5198b91136adcef0953",
+    "tables/a4_ident_perseed.tex": "b0e28d54146c44d6fe0ffcad2dca8cf6b88157de3aafe9ddb0ef8e73072ddcd9",
+    "tables/a4_target48.tex": "0073b97db6a42ab5399cde627f87f52cf45e58e3c1c77f79d142b0e23aaea86d",
+    "tables/a5_kcurve_perseed.tex": "cf9e3c0b549533bf2a1a82e56955199a1dea914bf67d25389f75ee0364272751",
+    "tables/a6_downstream.tex": "54b444afb4fb123a41e917a79fb5451efd72d3f2f4777b41c730a862ab9ffa47",
+    "tables/a7_rerun.tex": "b3dbe2d6c5b5e2d5d5780c5b7a111a46ef4d5b19837b31334c1c33ae4d0b822a",
+    "tables/t_capacity.tex": "834b4ebebb2dda3da7e8ba8ec457a2efca48ff8eddbb9a8e91fe34658cf4aca8",
+    "tables/t_census.tex": "a5cfe9b76ce40ab7ca505fa8a3a5a099430a3ddebe7cb4c11c5750cda1d84508",
+    "tables/t_draws.tex": "537c3a8ec868d9f69c420527fc78be56745a7122305c80b085b4fb9f8f6f05ee",
+    "tables/t_infill.tex": "b49364c64d906af08e977882d24ce6f1674a29b16f106b4723387e7f4b558784",
+    "tables/t_infill_cells.csv": "0183fdb2c0be86374a1591af47cf5ecdc4d02def823e96d19b5d8c275573d5ea",
+    "tables/t_infill_summary.tex": "f4b7e323d4a0248b5cd5cbdb84d6a09758aea0f031bcde8ee8d1716cc88431e1",
+    "tables/t_placement.tex": "ee345102cc27e05336bdb8702ae0f5ad394e2aa3c808bb588e714af8e905afab"
+  }
+}

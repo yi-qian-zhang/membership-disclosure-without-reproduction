@@ -35,6 +35,7 @@ python -m pip install -r requirements-analysis.txt
 python -m pilot2.figures_main10 --out reproduced/figures
 python -m pilot2.appendix_tables --results results --out reproduced/tables
 python -m pilot2.appendix_source_cells --summary results/appendix_source_cells.json --tables-out reproduced/tables
+python -m pilot2.compact_appendix --tables reproduced/tables --out reproduced/tables
 ```
 
 **字体：**绘图需要 Arial。可以安装该字体，或将环境变量 `GLMEXT_FONT_DIR`
@@ -71,3 +72,5 @@ python -m pilot2.appendix_source_cells --summary results/appendix_source_cells.j
 本工作基于 Alexander Nemecek 的 GLM-Memorization 框架及公开的基因组模型实现。
 前作为 Nemecek 等人的 *Quantifying memorization and privacy risks in genomic language models*
 （ACM-BCB 2026）。本仓库采用 [Apache License 2.0](LICENSE)。
+
+附录迁出的命令、文件映射及详细实验说明见[论文复现与证据索引](docs/PAPER_PROTOCOLS.md)，其中也保留了精简前的长附录快照。
