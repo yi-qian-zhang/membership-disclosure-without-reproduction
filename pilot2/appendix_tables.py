@@ -254,10 +254,14 @@ def table_rerun(res: Path, out: Path):
              "run; \\texttt{ours} is the decoder matched to that vocabulary; $r{=}0$ is the "
              "never-trained control.}\\label{tab:a7}\\\\",
              "\\toprule", hdr, "\\midrule", "\\endfirsthead",
+             r"\multicolumn{7}{l}{\tablename~\thetable\ (continued)}\\",
              "\\toprule", hdr, "\\midrule", "\\endhead",
              "\\bottomrule", "\\endlastfoot"]
-    for r in sorted(rows):
-        lines.append(" & ".join(esc(x) for x in r) + " \\\\")
+    ordered = sorted(rows)
+    for i, r in enumerate(ordered):
+        # Keep every checkpoint's repetition tiers together across page breaks.
+        ending = r' \\*' if i + 1 < len(ordered) and ordered[i + 1][0] == r[0] else r' \\'
+        lines.append(" & ".join(esc(x) for x in r) + ending)
     lines += ["\\end{longtable}"]
     (out / "a7_rerun.tex").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(f"  a7_rerun.tex ({len(rows)} rows)")
