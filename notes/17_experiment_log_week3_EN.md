@@ -5800,3 +5800,9 @@ reproduction setup are repaired. Public manuscript/old appendix sources are remo
 from the latest tree at author request, with Git history retained by explicit choice.
 Archive-independent table generation preserves all reported cells. See note52 for
 validation and final synchronization receipts.
+
+Final receipt: publica11c0d3, manuscript8374552, submission Overleaf32a1ebd,
+full Overleaf7fdf390. Clean remote builds22/50 pages; submission main10/appendix8,
+full main18/appendix28. Source parity53/53 and42/42; references28/28 and44/44;
+no errors/undefined/Overfull, full keeps its existing oversized-F1 float warning.
+See note52 and its JSON receipt.

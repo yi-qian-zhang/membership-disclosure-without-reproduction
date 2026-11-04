@@ -40,3 +40,27 @@ build remains title1 + main10 + references3 + appendix8 = 22 pages, with zero er
 undefined references or Overfull warnings and one existing bibliography Underfull.
 Full version remains 50 pages and is not compressed; the pre-existing oversized-F1
 float warning is retained. Final remote receipt will be appended after synchronization.
+
+## Final remote verification
+
+Implementation: collaboration glmex8374552; public releasea11c0d3. Submission Overleaf
+32a1ebd; full Overleaf7fdf390. Both were freshly cloned from the actual Overleaf remotes
+with checkout line-ending conversion disabled, then recompiled from clean sources.
+
+- Submission:22 pages = title1 + main10 + references3 + appendix8;0 errors,
+  0 undefined,0 Overfull,1 existing bibliography Underfull.28/28 active reference
+  targets resolve.53/53 tracked source files match local bytes; all page text matches
+  the local build. All3 rendered README links pin the repaired publica11c0d3 snapshot.
+- Full:50 pages = title1 + main18 + references3 + appendix28;0 errors,
+  0 undefined,0 Overfull,2 Underfull.44/44 active reference targets resolve;
+  42/42 source files and all page text match local. The existing oversized-F1 float
+  warning remains (146.94266pt); the full manuscript was not compressed.
+- Live GitHub rendering of the pinned README confirms normal headings/tables after
+  the repaired fence. A regenerated public Figure3 has identical text and dimensions
+  to the manuscript figure; PDF byte differences reflect export metadata.
+- Only the new aggregate display manifest was added under results/; all existing
+  result files remain unchanged. No training run or fresh dependency installation
+  was performed. The published aggregate-only reproduction path and8 existing
+  regression checks passed in a separate server snapshot without manuscript sources.
+
+Machine-readable receipt:52_access_scope_remote_validation_20261103.json.

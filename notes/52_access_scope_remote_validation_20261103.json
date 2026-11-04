@@ -1,0 +1,60 @@
+{
+  "short": {
+    "commit": "32a1ebdb43891cd0d07807cb3f172c8644692ba5",
+    "total": 22,
+    "main": 10,
+    "references": 3,
+    "appendix": 8,
+    "reference_start": 12,
+    "appendix_start": 15,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 1,
+    "warnings": [],
+    "source_count": 53,
+    "source_mismatch": [],
+    "page_text_matches_local": true,
+    "readme_links": [
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/a11c0d3/README.md#measurement-campaigns-and-conditional-diagnostics",
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/a11c0d3/README.md#quick-start-regenerate-figures-and-tables",
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/a11c0d3/README.md"
+    ],
+    "sha256": "09087f7f8f4a9144bc60930c5d656b25f83ef6ac60f1e86d7e9a4b699e965ce7",
+    "xref": "check_xrefs: 28/28 active reference targets resolve"
+  },
+  "full": {
+    "commit": "7fdf390a736eaa3cbb98776ec6ca233ecd128aa0",
+    "total": 50,
+    "main": 18,
+    "references": 3,
+    "appendix": 28,
+    "reference_start": 20,
+    "appendix_start": 23,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "warnings": [
+      "LaTeX Warning: Float too large for page by 146.94266pt on input line 147."
+    ],
+    "source_count": 42,
+    "source_mismatch": [],
+    "page_text_matches_local": true,
+    "readme_links": [],
+    "sha256": "567e7d83783132b0df37f016bb8ab44a83185a44550bd75065a41596fc1adf6b",
+    "xref": "check_xrefs: 44/44 active reference targets resolve"
+  },
+  "public": {
+    "implementation_commit": "a11c0d38f23bc907104cf8ffd6176cb376e13650",
+    "standalone_reproduction": "2 figures, 22 TeX fragments and one 264-row CSV; all table cells/formatting match after whitespace normalization",
+    "regression_tests": 8,
+    "paper_removed_latest_only": true,
+    "old_appendix_source_removed_latest_only": true,
+    "history_rewritten": false,
+    "readme_code_blocks_equal": 10,
+    "fresh_model_training_run": false,
+    "fresh_dependency_install_tested": false
+  },
+  "figure3_public_vs_manuscript_text_match": true
+}
