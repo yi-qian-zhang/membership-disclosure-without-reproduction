@@ -1,0 +1,62 @@
+{
+  "short": {
+    "total": 22,
+    "main": 10,
+    "references": 3,
+    "appendix": 8,
+    "reference_start": 12,
+    "appendix_start": 15,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 1,
+    "warnings": [],
+    "sha256": "8248a41b0c1607f9e9dfd7f72b540551811cece66ac7dbd19e4c7a8ad7d8e95b",
+    "unresolved_text": false,
+    "readme_links": [
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/f1f63aa/README.md",
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/f1f63aa/README.md#measurement-campaigns-and-conditional-diagnostics",
+      "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/f1f63aa/README.md#quick-start-regenerate-figures-and-tables"
+    ],
+    "xref": "28/28 active references resolve",
+    "xref_exit": 0,
+    "overleaf_commit": "64d18113c097e0ddb7e553fcd495c627b6dfadfb",
+    "tracked_source_files": 53,
+    "all_sources_byte_equal": true,
+    "text_files_with_CR": [],
+    "all_page_text_matches_local_build": true,
+    "all_fonts_embedded": true
+  },
+  "full": {
+    "total": 51,
+    "main": 19,
+    "references": 3,
+    "appendix": 28,
+    "reference_start": 21,
+    "appendix_start": 24,
+    "errors": 0,
+    "undefined": 0,
+    "overfull": 0,
+    "underfull": 2,
+    "warnings": [],
+    "sha256": "989883a6ad0167806967c3483eaf106708c73f31b7519036f9ce12dc3bf73a32",
+    "unresolved_text": false,
+    "readme_links": [],
+    "xref": "5/5 spelled-out references agree",
+    "xref_exit": 0,
+    "overleaf_commit": "3a7a8b0c356a1fffc357f90cd2e07d985cd3ea8c",
+    "tracked_source_files": 42,
+    "all_sources_byte_equal": true,
+    "text_files_with_CR": [],
+    "all_page_text_matches_local_build": true,
+    "all_fonts_embedded": true
+  },
+  "publication": {
+    "private_implementation": "ee1e8f3a5ee4dce66242a370cf109bc932b96b86",
+    "public_implementation": "f1f63aaf9e38b43ae8ec84d5e5ca01e67bb02f5f",
+    "public_latest_manuscript_sources": [],
+    "core_data_tables_abstracts_bibliography_unchanged": true,
+    "fresh_environment_existing_tests_passed": 8,
+    "readme_pin": "f1f63aa"
+  }
+}

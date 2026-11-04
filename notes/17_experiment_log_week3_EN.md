@@ -5806,3 +5806,24 @@ full Overleaf7fdf390. Clean remote builds22/50 pages; submission main10/appendix
 full main18/appendix28. Source parity53/53 and42/42; references28/28 and44/44;
 no errors/undefined/Overfull, full keeps its existing oversized-F1 float warning.
 See note52 and its JSON receipt.
+
+## 3 November - Scientific scope and reproduction closeout
+
+Qualified endpoint surprise as own-window planted versus fresh-window control;
+aligned the native F1 labels, utility/scale protocol captions and site-audited
+chromosome-compatibility terminology in both manuscripts. Core values, tables,
+abstracts and measured data are unchanged. Public plotting now defaults to the
+utility appendix figure, uses a separate directory and no longer emits the old
+recovery-bound claim. Main figures/tables remain identical; eight tests pass.
+Public implementation f1f63aa is pinned by the submission. Main10/appendix8 is
+preserved. Full manuscript is not compressed; its cropped long F1 caption is now
+continued without lost text (51 pages), eliminating the old float warning.
+See note53 for source scope and final remote verification.
+
+Remote receipt for note 53: collaboration implementation ee1e8f3, public code/docs
+f1f63aa, submission Overleaf 64d1811, full Overleaf 3a7a8b0. Fresh remote clones
+match 53/53 and 42/42 files, respectively; builds confirm submission 10 main +
+8 appendix pages (22 total), full 51 pages without compression. Both builds have
+zero errors/undefined/Overfull/oversized floats and embedded fonts. Final public
+tree contains no manuscript/old appendix TeX or PPTX. Validation JSON accompanies
+note 53; these receipts do not change the pinned README implementation snapshot.
