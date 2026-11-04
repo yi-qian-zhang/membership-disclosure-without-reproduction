@@ -1,0 +1,16 @@
+{
+  "overleaf": "ab92453",
+  "manuscript_commit": "62f34df",
+  "total_pages": 22,
+  "main_pages": 10,
+  "appendix_pages": 8,
+  "main_to_appendix_reference_occurrences": 28,
+  "distinct_appendix_targets": 17,
+  "errors": 0,
+  "undefined": 0,
+  "overfull": 0,
+  "existing_underfull": 1,
+  "source_files_equal": 53,
+  "full_files_unchanged": 42,
+  "bibliography_and_appendix_page_text_unchanged": true
+}
