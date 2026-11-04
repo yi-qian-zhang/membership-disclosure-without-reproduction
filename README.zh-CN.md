@@ -29,6 +29,7 @@ Privacy Leakage from Fine-Tuned Genomic Language Models* 的代码与测量结�
 - [受控分词器扫描](#tokenizer-sweep)
 - [论文证据索引](#evidence-map)
 - [发布范围与解释边界](#release-boundaries)
+- [补充审计细节](#supplementary-details)
 - [长附录归档](#appendix-archive)
 - [仓库导航与检查](#navigation)
 
@@ -55,7 +56,7 @@ python -m pilot2.compact_appendix --tables reproduced/tables --out reproduced/ta
 斜体和粗斜体 TTF 文件的本地目录。仓库不分发字体；缺失时会明确报错，不会静默替换。
 只生成表格不需要 Arial。
 
-上述命令从公开测量生成 **Figure 2–3 和 20 个 TeX 表格片段**（13 个原表及 7 个精简版），
+上述命令从公开测量生成 **Figure 2–3 和 22 个 TeX 表格片段**（13 个原表及 9 个精简排版片段），
 输出到 Git 忽略的 `reproduced/`。Figure 1 是独立的可编辑 PowerPoint 图，参见
 [源文件和导出说明](paper/figures/F1_source.md)。本仓库的 `paper/` 包含图件资源，
 不是完整 LaTeX 稿件；重生成图表不需要 TeX。
@@ -237,6 +238,65 @@ BPE 的零恢复也不能验证它。历史附录中的完整状态命题要求�
 
 重叠 DNABERT 的 50 轮 causal 微调提供跨模型成员比较，150 轮 masked 微调提供解码及 LOO 诊断。
 两批次不共享检查点。
+
+<a id="supplementary-details"></a>
+## 补充审计细节
+
+这些细节对应进一步精简的附录。论文保留主要轨迹、误差及对照；精简效用表只列最佳 held-out
+与最终检查点，`appendix_tables` 生成的完整 `a6_downstream.tex` 仍保留六个初始检查点行。
+`compact_appendix` 只选择并复制数值行，不重新计算均值。
+此外，300 nt 与 288 nt 分词器实验分成同一张续表的两个片段，保留全部种子和数值，字号不变。
+
+### 测量批次与条件预测诊断
+
+统一数值基础的解码重测包括 10 月 23 日的 19 个 chr22 运行/检查点组合及 10 月 19 日的
+7 个 E. coli 组合。更早的目标函数、位置、edge-conditioned、下游与容量对照，并未全部在
+10 月 18 日服务器重启后重跑。一次配对重放使抽取率改变六个百分点，而 rank-1 和 held-out loss
+保持报告精度一致；这不构成数值方差估计。
+
+DNABERT-2 最终检查点、seed 0、单拷贝的平均 LOO 准确率为 0.945，逐记录幂值的均值为 0.268；
+先平均准确率再取 48 次幂则是 0.065。这是不同的聚合方式，不是恢复概率，仍受检查点、种子、
+裁剪终点以及 LOO 提供其余真实目标位置等条件限制。
+
+正文保留的人类单拷贝子集结果为：兼容记录 fresh-window 命中 5/21、5/21、8/21，
+未观测复合记录为 1/23、3/23、0/23。按等位数量分组则为 27/78 对 6/72 次评分：
+26 条单变异与 24 条多变异记录各重复用于三个训练种子，不是独立参与者样本。
+
+### 单独的微调分类头比较
+
+该实验不同于效用表的冻结探针：最多 20,000 条标注序列训练两轮，而已发表方案按任务训练
+三至五轮并使用完整划分。包含零值的所有可用 MCC，共 476 次评估进入 252 个模型/轮次/任务汇总。
+从最佳 held-out 到最终检查点，DNABERT-2 的微调头在六个任务中的四个上升。
+其各任务最佳分数仍低于同数据集已发表 DNABERT-2 分数，差值如下：
+
+| 任务 | MCC 差值 |
+| --- | ---: |
+| H3 | 0.039 |
+| Promoter | 0.049 |
+| TF dataset 0 | 0.057 |
+| H3K4me3 | 0.069 |
+| Core promoter | 0.085 |
+| Splice | 0.095 |
+
+比较使用同数据集的普通 DNABERT-2 行，来源见[归档下游段落](docs/appendix_reference_20261103/sections/p11_appendix.tex)
+及 `results/dnabert_gue_ds/utility_downstream.json`。TF 比较 dataset 0，而不是五个数据集均值。
+这些缩减 recipe 下的比较不能宣称 benchmark parity。
+
+### 成员/对照划分重抽样
+
+这里的 **excess 定义为同一检查点下，非成员 surprise 减去成员 surprise，单位 bits/nt**，
+对应 `pilot2/analyze_matched.py`。它不是参与者识别率，也不能证明全部分数差都由训练成员身份造成。
+
+四次划分重抽样显示，预训练时的初始偏移不是可固定扣除的量。报告中各划分的 round-1 excess
+为 0.00 +/- 0.05，round-50 excess 对初始偏移的回归斜率为 0.05--0.19。
+其中三个划分可做 matched-loss 比较，第四个的损失分支没有共同范围。
+可比较划分中，单拷贝 excess 的变化范围为 0.06--0.27 bits/nt，十六拷贝为 0.07--0.64。
+完整结果保留在[划分表](docs/appendix_reference_20261103/tables/t_draws.tex)及
+`results/human_ds2345/`、`results/human_ds3456/`、`results/human_ds4567/` 的报告中。
+这支持在各评估条件内设置对照，不证明对新参与者样本稳定。
+
+语料规模扫描中的 matched loss 只是在同一预测损失水平比较，**不能独立控制优化更新次数**：
+更新次数仍与语料规模混杂，参与者构成也不是被操纵的变量。
 
 <a id="appendix-archive"></a>
 ## 长附录归档
