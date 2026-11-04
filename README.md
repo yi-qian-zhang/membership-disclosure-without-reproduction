@@ -122,6 +122,12 @@ export GLMEXT_DATA=/path/to/genomic-inputs
 Place the IGSR GRCh38 recall file `ALL.chr22.GRCh38.phased.vcf.gz` and the matching
 chromosome-22 reference FASTA `chr22.fa` under `$GLMEXT_DATA/human/`. The VCF contains
 2,548 samples; this count belongs to the GRCh38 recall, not the 2015 phase-3 publication.
+The phased call set was announced on 12 March 2019. Its chromosome-22 VCF is dated
+27 February 2019 and names `GRCh38_full_analysis_set_plus_decoy_hla.fa` as its
+reference: the GRCh38 assembly with decoy and HLA sequences. These are upstream
+data filenames, not scripts. `chr22.fa` is the local chromosome-specific input
+expected by the builder. Exact filenames and file dates are documented here;
+the paper supplement retains the scientific dataset and reference-assembly names.
 The main experiment uses the builder's historical positional construction:
 
 ```bash

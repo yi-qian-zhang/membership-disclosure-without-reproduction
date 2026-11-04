@@ -109,7 +109,12 @@ export GLMEXT_DATA=/path/to/genomic-inputs
 
 将 IGSR GRCh38 recall 的 `ALL.chr22.GRCh38.phased.vcf.gz` 与匹配的 chr22 参考
 FASTA `chr22.fa` 放到 `$GLMEXT_DATA/human/`。VCF 的 2,548 个样本属于 GRCh38 recall，
-不是 2015 年 phase-3 论文的样本数。论文实验使用历史的按位置替换构造：
+不是 2015 年 phase-3 论文的样本数。该相位化调用集于 2019 年 3 月 12 日公告，
+染色体 22 的 VCF 文件日期为 2019 年 2 月 27 日，其参考序列标识为
+`GRCh38_full_analysis_set_plus_decoy_hla.fa`，即包含 decoy 和 HLA 序列的 GRCh38 组装。
+这些是上游数据文件名，不是脚本；`chr22.fa` 则是构造程序要求的本地染色体输入文件名。
+具体文件名和文件日期在此记录，论文附录只保留科学数据集和参考组装名称。
+论文实验使用历史的按位置替换构造：
 
 ```bash
 python -m pilot2.human_canary
