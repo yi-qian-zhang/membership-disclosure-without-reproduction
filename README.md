@@ -93,11 +93,15 @@ python -m pilot2.analyze_downstream \
   --out-dir reproduced/utility
 ```
 
-To rebuild the additional quantitative appendix plots from published aggregates:
+To rebuild the quantitative utility appendix plot from published aggregates:
 
 ```bash
-python -m pilot2.figures_privacy --out reproduced/figures
+python -m pilot2.figures_privacy --only blind --out reproduced/appendix_figures
 ```
+
+This writes `F7_blind` separately from the main figures. The generator defaults to
+this utility plot; `--only slots` and `--only ident` explicitly select historical
+layouts, and `--only probe` selects the record-and-measurement schematic.
 
 The compact-table formatter copies numeric cells, adjusts presentation labels, and
 removes code filenames from table notes. It does not recompute estimates or change
@@ -137,9 +141,11 @@ python -m pilot2.canary_census --npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
 ```
 
 Do not add `--phased` when reproducing the reported record set. The historical builder
-does not guarantee a phased haplotype: of 400 windows, the audit identifies 145 observed
-haplotypes, 20 within-person genotype composites and 235 unobserved composites. The
-rare-carrier criterion applies to the anchor variant, not automatically to the window.
+does not guarantee a phased haplotype: of 400 windows, the audit classifies 145 as
+chromosome-compatible at the audited sites, 20 as within-person genotype composites
+and 235 as unobserved composites. Compatibility at audited sites does not establish
+full-sequence haplotype authenticity, because non-SNV sites can remain unresolved.
+The rare-carrier criterion applies to the anchor variant, not automatically to the window.
 
 Before the NT example, use a separate environment: the recorded NT jobs load
 Transformers 4.44.2 and tokenizers 0.19.1, whereas the DNABERT-2 environment above
@@ -304,10 +310,13 @@ the corresponding seed-mean interpolated rates are 0% and 0.33% (6-mer seeds:
 1%, 0%, 0%). This access-condition comparison is specific to these synthetic,
 sixteen-copy runs. The experiment holds the backbone, objective and corpus fixed. It does not establish
 equal target predictability or slot count as the sole explanation. At the end of training,
-planted covering-token surprise is 0.824 versus 0.0052 bits per target nucleotide.
+own-training-window covering-token surprise is 0.824 versus 0.0052 bits per target nucleotide.
 It scores complete covering tokens (including trailing host letters), normalized
 by 48 target nucleotides, rather than marginalizing a strict 48-nt event. These are
-different checkpoints from the matched-loss comparison.
+different checkpoints from the matched-loss comparison. Planted records are scored
+in their own training windows, while never-trained controls are scored in fresh
+windows. Their surprise gap therefore combines membership and host-access
+conditions, as well as tokenizer-specific covering events.
 
 The overlapping DNABERT family uses two separate campaigns: the 50-epoch causal
 fine-tuning arm supplies the cross-family membership comparison; the 150-epoch masked

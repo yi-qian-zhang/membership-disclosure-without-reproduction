@@ -1,12 +1,14 @@
-"""The privacy-first paper's figures, built from the published derived table.
+"""Appendix utility plot and explicitly selected measurement schematics/layouts.
 
-    python -m pilot2.figures_privacy --out paper/figures
+    python -m pilot2.figures_privacy --only blind --out reproduced/appendix_figures
 
-F5 slots   extraction against the slot count at matched held-out loss, and what full
-           extraction costs; the window-288 sweep overlaid as a replication
-F6 ident   DNABERT-2 on chromosome 22: identification of a single-copy haplotype rises to
-           0.94 while verbatim recovery of the same records stays at zero
-F7 blind   the number practitioners select on, beside the leak from the same weights
+F7 blind   default: utility and leakage measurements from published aggregates
+F4 probe   explicit schematic: variant-derived records and measurement conditions
+F5 slots   explicit historical layout: own-window recovery at matched held-out loss
+F6 ident   explicit historical layout: candidate-record ranking and exact recovery
+
+Use pilot2.figures_main10 for the main paper figures. The historical slots/ident
+layouts share their output stems, so select a separate directory when using them.
 
 WHY THE INPUT IS A CSV. The score files these numbers come from are 725 MB and are not in
 the repository; `results/figure_data.csv` is the flattened table that is (27k rows, 2.3 MB,
@@ -323,7 +325,7 @@ def fig_blind(res: Path, out: Path):
 
 # ---------------------------------------------------------------- the probe, as a picture
 def fig_probe(out: Path):
-    """What is planted in the corpus, and what each of the three rulers reads off it."""
+    """Variant-derived record geometry and the scope of three measurements."""
     from matplotlib.patches import Ellipse, Rectangle
 
     W, H = 6.5, 3.5
@@ -344,36 +346,33 @@ def fig_probe(out: Path):
 
     # ---------------------------------------------------------------- what is planted
     HX, HW, HY, HH = 3, 94, 86, 11
-    txt(HX, HY + HH + 3.5, "host window, 288\u2009nt of real chromosome 22", ha="left", size=7.5)
+    txt(HX, HY + HH + 3.5, "host window, 288\u2009nt of chromosome 22 (schematic)", ha="left", size=7.5)
     box(HX, HY, HW, HH, "#F2F4F7")
 
     CX, CW = 36, 31.3                       # 96 of 288 nt, to scale
     box(CX, HY, CW / 2, HH, "#FBE3CF", lw=0.8)
     box(CX + CW / 2, HY, CW / 2, HH, "#F6C89A", lw=0.8)
-    txt(CX + CW / 4, HY + HH / 2, "48\u2009nt revealed", size=6.6)
-    txt(CX + 3 * CW / 4, HY + HH / 2, "48\u2009nt target", size=6.6)
+    txt(CX + CW / 4, HY + HH / 2, "nominal prefix\n48\u2009nt", size=6.6)
+    txt(CX + 3 * CW / 4, HY + HH / 2, "48\u2009nt scored target", size=6.6)
     ax.annotate("", xy=(CX, HY - 2.6), xytext=(HX, HY - 2.6),
                 arrowprops=dict(arrowstyle="<->", color=C_REF, lw=0.7))
-    txt(CX + CW / 2, HY - 6.4, "canary: 96\u2009nt of one person's rare haplotype",
+    txt(CX + CW / 2, HY - 6.4, "96\u2009nt variant-derived record; offset drawn per copy",
         size=7.2, color="#9A3412")
-    txt(HX, HY - 11.6, "offset drawn per copy", size=6.3, color=C_REF, ha="left")
+    txt(HX, HY - 11.6, "prefix input follows token boundaries", size=6.3, color=C_REF, ha="left")
     txt(97, HY - 11.6, "planted 1, 4 or 16 times  \u00b7  tier 0: same construction, never trained",
         size=6.8, ha="right")
 
     # ---------------------------------------------------------------- what is read off it
     rows = [
-        (68, "1", C_UTIL, "surprise", [
-            "teacher-forced bits/nt of the true 48, the currency every leak in this paper is "
-            "priced in"]),
-        (47, "2", C_ID, "identification", [
-            "rank the record against 100 other real rare segments: first?    chance $0.0099$",
-            "read twice: in the training window the record was planted in, and in another "
-            "window from the same unused pool"]),
-        (23, "3", C_VERB, "verbatim extraction", [
-            "do all 48 target nucleotides come back exactly?",
-            "prefix protocol  |  re-masking ICM  |  nucleotide-level (overlapping $k$-mers)  |  "
-            "span-aware (BPE)",
-            "leave-one-out ceiling $p^s$ bounds any decoder of that kind, so a zero can be read"]),
+        (68, "1", C_UTIL, "contextual surprise", [
+            "teacher-forced covering-token surprise / 48 nt; depends on host access and tokenization"]),
+        (47, "2", C_ID, "candidate-record ranking", [
+            "rank one candidate record against 100 alternatives; nominal chance $1/101$",
+            "evaluate in its own training window or a fresh window; not personal identification"]),
+        (23, "3", C_VERB, "exact sequence recovery", [
+            "are all 48 target nucleotides recovered exactly after coordinate cropping?",
+            "prefix  |  token re-masking  |  overlapping-$k$-mer updates  |  BPE nucleotide proposals",
+            "LOO conditional-power summary is a diagnostic, not a recovery bound"]),
     ]
     for y, num, col, name, lines in rows:
         circle(5.5, y, 5.0, col)
@@ -385,15 +384,16 @@ def fig_probe(out: Path):
 
     # ---------------------------------------------------------------- why the figure is here
     ax.plot([3, 97], [5.5, 5.5], color="#D7DCE3", lw=0.8)
-    txt(3, 1.5, "Rulers 2 and 3 read the same weights at the same checkpoint. They come apart, "
-        "and only one of them is usually reported.", size=7.2, ha="left", style="italic")
+    txt(3, 1.5, "Ranking and exact recovery use different tests; report their host access and checkpoint coverage.",
+        size=7.2, ha="left", style="italic")
 
     _save(fig, out, "F4_probe")
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="results", help="directory holding figure_data.csv")
-    ap.add_argument("--out", default="paper/figures")
-    ap.add_argument("--only", default=None, help="slots | ident | blind")
+    ap.add_argument("--out", default="reproduced/appendix_figures")
+    ap.add_argument("--only", default="blind", choices=("blind", "probe", "slots", "ident"),
+                    help="utility appendix plot by default; slots/ident select historical layouts")
     args = ap.parse_args(argv)
     use_arial()
 
@@ -401,13 +401,13 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
     rows = load(res / "figure_data.csv")
     print(f"{len(rows)} rows from {res / 'figure_data.csv'}")
-    if args.only in (None, "probe"):
+    if args.only == "probe":
         fig_probe(out)
-    if args.only in (None, "slots"):
+    if args.only == "slots":
         fig_slots(rows, out)
-    if args.only in (None, "ident"):
+    if args.only == "ident":
         fig_ident(rows, out)
-    if args.only in (None, "blind"):
+    if args.only == "blind":
         fig_blind(res, out)
     return 0
 

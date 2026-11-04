@@ -84,11 +84,14 @@ python -m pilot2.analyze_downstream \
   --out-dir reproduced/utility
 ```
 
-其他附录定量图也可从公开聚合结果重建：
+效用附录定量图也可从公开聚合结果重建：
 
 ```bash
-python -m pilot2.figures_privacy --out reproduced/figures
+python -m pilot2.figures_privacy --only blind --out reproduced/appendix_figures
 ```
+
+该命令将 `F7_blind` 写入独立目录。生成器默认只绘制这张效用图；
+`--only slots` 和 `--only ident` 显式选择历史排版，`--only probe` 选择记录与测量示意图。
 
 精简表格式化程序复制数值单元，仅调整展示标签和移除表注中的程序文件名；
 不重新加权或计算统计量。`results/compact_table_cells.json` 保存解码代价、条件诊断及
@@ -123,7 +126,9 @@ python -m pilot2.canary_census --npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
 ```
 
 复现论文记录集时**不要加 `--phased`**。原构造不能保证真实的相位单倍型：400 个窗口中，
-审计分类为 145 个已观测单倍型、20 个个体内基因型复合记录、235 个未观测复合记录。
+审计分类为 145 个在已审计位点上与某条染色体兼容的记录、20 个个体内基因型复合记录、
+235 个未观测复合记录。已审计位点上的兼容性不证明完整序列是真实单倍型，
+因为非 SNV 位点仍可能未被解析。
 稀有携带者筛选针对锚定位点，不自动适用于整段窗口。
 
 运行 NT 示例前请使用单独环境：原 NT 任务实际使用 Transformers 4.44.2 和 tokenizers 0.19.1，
@@ -271,9 +276,11 @@ BPE 的零恢复也不能验证它。历史附录中的完整状态命题要求�
 逐种子插值均值分别为 0% / 0.33%（6-mer 三种子为 1%、0%、0%）。
 该访问条件比较限于这组十六拷贝合成实验。实验固定主干、目标函数与语料，
 但不证明目标可预测性相同或 slot 数是唯一原因。
-训练终点的 planted covering-token surprise 为 0.824 / 0.0052 bits/目标核苷酸：
+训练终点在原训练窗口中的 covering-token surprise 为 0.824 / 0.0052 bits/目标核苷酸：
 计算包含最后一个 token 内的宿主后缀，并按 48 nt 归一化，不是严格 48 nt 事件的边缘概率。
-这些训练终点也不是 matched-loss 检查点。
+这些训练终点也不是 matched-loss 检查点。植入记录在原训练窗口中评分，
+未训练对照在 fresh-window 中评分；两者的 surprise 差异同时包含成员身份与宿主访问条件，
+并依赖各分词器的覆盖事件。
 
 重叠 DNABERT 的 50 轮 causal 微调提供跨模型成员比较，150 轮 masked 微调提供解码及 LOO 诊断。
 两批次不共享检查点。
