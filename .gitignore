@@ -49,3 +49,11 @@ CLAUDE.md
 
 # Local regeneration of published figures and tables
 reproduced/
+
+# Manuscript sources and author-owned figures are not part of the public release.
+/paper/
+/paper_full/
+/docs/appendix_reference_20261103/
+
+# Separate NT reproduction environment
+/.venv-nt/

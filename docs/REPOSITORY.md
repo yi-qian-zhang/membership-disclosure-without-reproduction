@@ -11,7 +11,7 @@ and evidence map. A complete [simplified-Chinese version](../README.zh-CN.md) is
 | `pilot2/` current analysis, training and decoder code | Keep paths | Importable implementations and reproducibility entry points |
 | `results/` CSV, aggregate manifests and redacted evaluations | Keep all | Measurement provenance, controls, negative results and sensitivity checks |
 | `tests/` | Keep | Regression checks for utility merging and endpoint handling |
-| `paper/figures/`, PPTX/PDF and source archive | Keep | Editable current Figure 1 and preserved original |
+| Manuscript sources, author-owned figure assets and old appendix source archive | Exclude from current release | Retained in the private collaboration checkout; quantitative data and plot/table generators remain public |
 | `notes/` dated logs and `notes/figures/` | Keep, improve index | Historical reasoning and corrections; not all entries are current claims |
 | `pilot/`, old plotting modules, dated queues | Keep as historical | Referenced by notebooks; moving them can break paths or imports |
 | Setup, commands and paper protocols | Merge into bilingual READMEs | One maintained entry point, with contents links; old guide URLs remain as forwarding pages |
@@ -21,6 +21,8 @@ and evidence map. A complete [simplified-Chinese version](../README.zh-CN.md) is
 | Generated `reproduced/` output | Ignore in Git | Avoid accidental commits or overwriting the released measurements |
 
 No source measurements, historical experiments or negative results were removed.
+Manuscript and old appendix source files were removed from the current release at
+the author's request; prior Git history was retained.
 No Git history was rewritten. This is navigation and documentation cleanup rather
 than a claim that every archived script is portable or every historical claim current.
 

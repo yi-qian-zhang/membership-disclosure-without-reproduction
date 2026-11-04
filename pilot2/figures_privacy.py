@@ -119,7 +119,7 @@ def matched(rows, group, seeds=(0, 1, 2)):
 
 
 def fig_slots(rows, out: Path):
-    """(a) extraction against slot count at four matched losses; (b) what 100% costs."""
+    """Own-window prefix recovery: (a) matched losses; (b) loss at 100%."""
     main, repl = matched(rows, "kcurve300"), matched(rows, "kcurve")
     fig, (axa, axb) = plt.subplots(1, 2, figsize=(6.5, 2.25), constrained_layout=True,
                                    gridspec_kw={"width_ratios": [1.35, 1.0]})
@@ -143,7 +143,7 @@ def fig_slots(rows, out: Path):
     axa.set_xticks(x)
     axa.set_xticklabels([f"{TOKLAB[t]}\n{SLOTS[t]:g}" for t in toks])
     axa.set_xlabel("tokenizer, and token slots the hidden 48 nt occupy")
-    axa.set_ylabel("records returned verbatim")
+    axa.set_ylabel("own-window exact recovery")
     axa.set_ylim(-0.03, 1.0)
     axa.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
     axa.set_yticklabels(["0", "25%", "50%", "75%", "100%"])
@@ -166,7 +166,7 @@ def fig_slots(rows, out: Path):
     axb.set_xticks(x)
     axb.set_xticklabels([TOKLAB[t] for t in toks])
     axb.set_xlabel("tokenizer")
-    axb.set_ylabel("bits/nt at 100% extraction")
+    axb.set_ylabel("bits/nt at full recovery (own)")
     axb.set_ylim(2.3, 4.5)
     axb.legend(frameon=False, loc="upper right", handlelength=1.6)
     _style(axb)

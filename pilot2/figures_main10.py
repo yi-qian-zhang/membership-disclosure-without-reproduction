@@ -137,7 +137,7 @@ def fig_slots(rows,out):
         valid=[(i,main[t][0][ti]) for i,t in enumerate(toks) if main[t][0][ti] is not None]
         handles.append(trajectory(ax,[i for i,y in valid],[y for i,y in valid],color,
                                   f'{target:.2f}',f'F3/matched/{target:.2f}',ls))
-    ax.set_title('(a) Matched-loss recovery',fontweight='bold',pad=6)
+    ax.set_title('(a) Own-window recovery',fontweight='bold',pad=6)
     ax.set_ylabel('Exact recovery',labelpad=5)
     ax.set_xticks(x,[f'{i+1}\n{f.SLOTS[t]:g}' for i,t in enumerate(toks)])
     ax.set_xlabel('k / nominal slots',labelpad=3)
@@ -150,7 +150,7 @@ def fig_slots(rows,out):
                             color,label,f'F3/full/{label}',ls))
         AUDIT[f'F3/full/{label}']['display_offset']=offset
         AUDIT[f'F3/full/{label}']['token_widths']=[i+1 for i,y in valid]
-    bx.set_title('(b) Full-recovery loss',fontweight='bold',pad=6)
+    bx.set_title('(b) Full recovery (own)',fontweight='bold',pad=6)
     bx.set_ylabel('Held-out bits/nt',labelpad=5);bx.set_xticks(x,[str(i+1) for i in x])
     bx.set_xlabel('Token width k',labelpad=3);bx.set_xlim(-.3,5.3);bx.set_ylim(2.3,4.5)
     bx.set_yticks([2.5,3.5,4.5]);bx.text(0,2.58,'Not reached',ha='left',color=GRAY)
@@ -165,7 +165,7 @@ def fig_slots(rows,out):
     cells=[['Host window / k']+[str(f.TOKS.index(t)+1) for t in shared]]
     for data,label in [(main,'300 nt'),(repl,'288 nt')]:
         cells.append([label]+[f'{100*data[t][0][-1]:.0f}%' for t in shared])
-    fig.text(.55,.18,'Replication at 2.40 bits/nt: exact recovery',ha='center',va='center')
+    fig.text(.55,.18,'Own-window replication at 2.40 bits/nt',ha='center',va='center')
     table_panel(fig,[.11,.015,.875,.13],cells,[.32]+[.68/len(shared)]*len(shared))
     AUDIT['F3/replication_table']=cells
     AUDIT['F3/replication_exact']={label:{t:data[t][0][-1] for t in shared}

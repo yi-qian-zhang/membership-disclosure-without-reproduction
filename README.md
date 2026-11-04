@@ -14,7 +14,7 @@ and tokenization across eight released checkpoints and a controlled transformer.
 | Experiment | Reported result | Scope |
 | --- | --- | --- |
 | DNABERT-2, chr22, single-copy records | Fresh-window rank-1: **18–26%**; matched controls: **0%** | Final checkpoint, three training seeds, 50 records per seed, 100 alternatives |
-| Controlled synthetic canaries | 2-mer / 6-mer exact recovery: **0% / 92%** | Sixteen insertions, matched held-out loss **2.40 bits/nt** |
+| Controlled synthetic canaries | 2-mer / 6-mer exact recovery: **0% / 92%** | Own-training-window prefix decoding, sixteen insertions, matched held-out loss **2.40 bits/nt** |
 
 In the reported DNABERT-2 single-copy evaluations, neither tested decoder recovers
 the hidden 48-nt target; their checkpoint coverage differs. This is not a universal
@@ -33,7 +33,7 @@ loss does not establish equal target predictability or slot count as the sole me
 - [Evidence map](#evidence-map)
 - [Release boundaries and interpretation](#release-boundaries-and-interpretation)
 - [Supplementary audit details](#supplementary-audit-details)
-- [Long-appendix archive](#long-appendix-archive)
+- [Manuscript and public artifacts](#manuscript-and-public-artifacts)
 - [Repository navigation and checks](#repository-navigation-and-checks)
 
 ## Quick start: regenerate figures and tables
@@ -59,10 +59,9 @@ python -m pilot2.compact_appendix --tables reproduced/tables --out reproduced/ta
 bold-italic TTF files. Fonts are not bundled. Table generation does not require Arial.
 
 The commands regenerate **Figures 2–3 and 22 TeX table fragments** (13 source tables plus nine compact fragments) from committed
-measurements, writing to ignored `reproduced/`. Figure 1 is a separate editable
-PowerPoint figure; its [source and export instructions](paper/figures/F1_source.md)
-are included. This repository's `paper/` contains figure assets, not a complete
-LaTeX manuscript.
+measurements, writing to ignored `reproduced/`. The public checkout does not include
+the manuscript or its editable figure assets. Figure 1 is an author-prepared
+illustration; the quantitative figure and table generators remain available here.
 
 ## Figure and table provenance
 
@@ -102,8 +101,9 @@ python -m pilot2.figures_privacy --out reproduced/figures
 
 The compact-table formatter copies numeric cells, adjusts presentation labels, and
 removes code filenames from table notes. It does not recompute estimates or change
-weighting. Its two cross-family tables can fall back to the verified archive if their
-canonical generated fragments are absent.
+weighting. `results/compact_table_cells.json` supplies the preserved decoder-cost,
+conditional-diagnostic and corpus-size cells with their scientific conditions;
+no manuscript or archived TeX sources are required.
 
 ## Reproduce model measurements
 
@@ -132,13 +132,46 @@ The main experiment uses the builder's historical positional construction:
 
 ```bash
 python -m pilot2.human_canary
-python -m pilot2.canary_census
+python -m pilot2.canary_census --npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
+  --out reproduced/human_canary_census.json
 ```
 
 Do not add `--phased` when reproducing the reported record set. The historical builder
 does not guarantee a phased haplotype: of 400 windows, the audit identifies 145 observed
 haplotypes, 20 within-person genotype composites and 235 unobserved composites. The
 rare-carrier criterion applies to the anchor variant, not automatically to the window.
+
+Before the NT example, use a separate environment: the recorded NT jobs load
+Transformers 4.44.2 and tokenizers 0.19.1, whereas the DNABERT-2 environment above
+uses 4.29.2 and 0.13.3. Download the upstream
+[NT v2 250M checkpoint](https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-250m-multi-species)
+into the directory layout consumed by `pilot2.nt`:
+
+```bash
+python -m venv .venv-nt
+source .venv-nt/bin/activate
+python -m pip install "numpy==1.24.3" "torch==2.1.1" "transformers==4.44.2" \
+  "tokenizers==0.19.1" "huggingface_hub==0.24.6"
+export NT_ROOT=/path/to/pretrained-nt
+python - <<'PY'
+import os
+from pathlib import Path
+from huggingface_hub import snapshot_download
+name = "nucleotide-transformer-v2-250m-multi-species"
+snapshot_download(repo_id=f"InstaDeepAI/{name}",
+                  local_dir=str(Path(os.environ["NT_ROOT"]) / name),
+                  ignore_patterns=["jax_model/*"])
+PY
+```
+
+`NT_ROOT` must be exported in every shell running NT training or decoding. Its
+250M subdirectory is `nucleotide-transformer-v2-250m-multi-species`, containing
+`config.json`, `vocab.txt`, weights and the model's Python files. For the
+[500M checkpoint](https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-500m-multi-species),
+replace `250m` with `500m` in the download name and use `--size 500m`.
+The loader uses the local files with `trust_remote_code=True`; it does not download
+a missing model automatically. The download command retrieves the upstream current
+snapshot, not a guarantee of the historical weight revision.
 
 For example, one NT 250M fine-tuning run is:
 
@@ -210,7 +243,8 @@ python -m pilot2.rescore --root outputs/bpe_human/dnabert2bpe_human_s0 \
     --ckpt ep120.pt --name reproduction_ep120 --compare scores_ep120.json
 
 # Requires original reconstructed run artifacts; do not replace published CSVs blindly.
-python -m pilot2.export_figure_data --root outputs --out reproduced/figure_data.csv```
+python -m pilot2.export_figure_data --root outputs --out reproduced/figure_data.csv
+```
 
 `sweep.sh` activates the recorded `glm` environment; adapt that environment setup
 for another installation. Training and checkpoint rescoring require reconstructed
@@ -222,26 +256,26 @@ export above goes to `reproduced/`; plotting commands otherwise read the committ
 
 | Paper topic / persistent label | Measured artifacts and generators | Scope |
 | --- | --- | --- |
-| Principal configurations (`app:config`, `sec:basis`) | `outputs/*/args.json`, `train_summary.json`; archived configuration section | Do not merge the 50-epoch causal and 150-epoch masked overlapping-DNABERT campaigns. |
-| Variant-derived construction (`app:haplo`, `app:resources`) | `pilot2/human_canary.py`, `canary_census.py`, `carrier_audit.py`; `results/human_canary_haplotype_audit.json` | The original 400 windows are not the later phased reconstruction; 69 and 73 non-SNV sites refer to different collections. |
-| Matched hosts (`app:bh`) | original borrowed-host runs and their exported control rows in `results/figure_data.csv`; archived matched-control section | Own controls borrow tier-matched training hosts; fresh controls have independently drawn hosts and offsets. |
+| Principal configurations (`app:config`, `sec:basis`) | `outputs/*/args.json`, `train_summary.json`; model entry points and dated launch scripts | Do not merge the 50-epoch causal and 150-epoch masked overlapping-DNABERT campaigns. |
+| Variant-derived construction (`app:haplo`, `app:resources`) | `pilot2/human_canary.py`, `canary_census.py`, `pilot2/canary_haplotype_audit.py`; `results/human_canary_haplotype_audit.json` | The original 400 windows are not the later phased reconstruction; 69 and 73 non-SNV sites refer to different collections. |
+| Matched hosts (`app:bh`) | original borrowed-host runs and their exported control rows in `results/figure_data.csv`; paired control rows | Own controls borrow tier-matched training hosts; fresh controls have independently drawn hosts and offsets. |
 | DNABERT-2 trajectories (`tab:ident`) | `results/figure_data.csv`; `pilot2/appendix_tables.py`, `figures_main10.py` | Six checkpoints, three seeds, 50 records per tier; include sixteen-copy fresh-window ranks. |
 | Hidden-48 errors (`tab:target48`) | `results/target48_audit.json`; `pilot2/target48.py`, `export_figure_data.py` | Crop saved predictions by nucleotide coordinates. `legacy_variable` rows without predictions cannot be recropped. |
 | Tokenizer sweep (`tab:slots`) | `results/kcurve300/`, `results/kcurve/`; `pilot2/kcurve_report.py`, `figures_privacy.py` | Main 300-nt and replication 288-nt windows are separate. Matched loss is interpolated in loss order per run. |
-| Parameter and placement controls (`tab:capacity`, `tab:placement`) | `results/figure_data.csv`; archived `t_capacity.tex`, `t_placement.tex`; `pilot2/appendix_tables.py` | Fixed placement, 20 records per tier and one or two seeds; not an equal-capacity drawn-offset experiment. |
-| Decoder cost and diagnostics (`tab:cost`, `tab:loo`) | Archived released-model tables; original `outputs/chr22_rerun/` campaign, `results/nt_ckpt/`, `results/nt_seeds/` | Report decoder, target, copy tier, record count and access condition together. |
+| Parameter and placement controls (`tab:capacity`, `tab:placement`) | `results/figure_data.csv`; generated `t_capacity.tex`, `t_placement.tex`; `pilot2/appendix_tables.py` | Fixed placement, 20 records per tier and one or two seeds; not an equal-capacity drawn-offset experiment. |
+| Decoder cost and diagnostics (`tab:cost`, `tab:loo`) | `results/compact_table_cells.json`, `pilot2/compact_appendix.py`; original `outputs/chr22_rerun/` campaign, `results/nt_ckpt/`, `results/nt_seeds/` | Report decoder, target, copy tier, record count and access condition together. |
 | HyenaDNA and overlap source cells (`tab:hyena30`, `tab:overlap50`) | `results/appendix_source_cells.json`; `pilot2/appendix_source_cells.py` | Hashes and source paths are in the JSON. Uniform-background HyenaDNA `scores_final.json` records actual epoch 30. |
-| Scorer audit (`app:measurement`, `app:bpenorm`) | `bpe_divisor_final.json`, corresponding E. coli reports; archived measurement definitions | 2,000 evaluations include tier 0. Pooled 500-control rates are not the three headline 50-record controls. |
+| Scorer audit (`app:measurement`, `app:bpenorm`) | `bpe_divisor_final.json`, corresponding E. coli reports; scorer definitions in `pilot2/score.py` | 2,000 evaluations include tier 0. Pooled 500-control rates are not the three headline 50-record controls. |
 | Utility (`tab:a6`, `sec:blind`) | `results/dnabert_gue_ds/utility_downstream.json`, `utility_at_leak.json`; `pilot2/appendix_tables.py`, `figures_privacy.py` | Deduplicate configuration/checkpoint rows before combining task panels; retain zero MCC. Frozen and fine-tuned heads are different probes. |
-| Edge-conditioned decoding | `results/human_mlm/infill_audit.md`; archived `t_infill_summary.tex`, `t_infill_cells.csv` | 88 configurations, 264 tier rows, 20 records each. Full grouped rows moved to this repository. |
-| Split redraw / corpus size | Archived `t_draws.tex`, practitioner section; `results/scale22/`, `results/big20x/` | More windows are not more independently sampled participants. The 20-fold dataset also changes update count. |
+| Edge-conditioned decoding | `results/human_mlm/infill_audit.md`; generated `t_infill_summary.tex`, `t_infill_cells.csv` | 88 configurations, 264 tier rows, 20 records each. Full grouped rows can be regenerated from the published audit report. |
+| Split redraw / corpus size | Generated `t_draws.tex`; `results/scale22/`, `results/big20x/` | More windows are not more independently sampled participants. The 20-fold dataset also changes update count. |
 
 `outputs/` denotes original run directories and checkpoints, not files promised in
 this public checkout. The consolidated rare-record collection and fine-tuned weights
 are withheld as described under [release boundaries](#release-boundaries-and-interpretation). Published aggregate reports remain in
 `results/`; source-path manifests identify the original run artifacts without claiming
-they are distributed. See the [long snapshot](docs/appendix_reference_20261103/README.md) for exact original paths and campaign
-exceptions rather than inferring a command from a paper table number.
+they are distributed. Use the source manifests and the campaign details below
+rather than inferring a command from a paper table number.
 
 ## Release boundaries and interpretation
 
@@ -264,9 +298,12 @@ update maps, constraints, arithmetic and tie-breaking and does not certify the
 reported outputs.
 
 In a separate synthetic-canary experiment with sixteen copies, 2-mer and 6-mer
-tokenizers recover 0% and 92% at matched held-out loss 2.40 bits/nt. This comparison
-holds the backbone, objective and corpus fixed. It does not establish equal target
-predictability or slot count as the sole explanation. At the end of training,
+tokenizers recover 0% and 92% by prefix decoding in their own training windows
+at matched held-out loss 2.40 bits/nt. With fresh windows at the same matched loss,
+the corresponding seed-mean interpolated rates are 0% and 0.33% (6-mer seeds:
+1%, 0%, 0%). This access-condition comparison is specific to these synthetic,
+sixteen-copy runs. The experiment holds the backbone, objective and corpus fixed. It does not establish
+equal target predictability or slot count as the sole explanation. At the end of training,
 planted covering-token surprise is 0.824 versus 0.0052 bits per target nucleotide.
 It scores complete covering tokens (including trailing host letters), normalized
 by 48 target nucleotides, rather than marginalizing a strict 48-nt event. These are
@@ -327,8 +364,7 @@ published DNABERT-2 score by:
 | Splice | 0.095 |
 
 The comparator is the plain DNABERT-2 row for the same datasets, as documented in
-the [archived downstream section](docs/appendix_reference_20261103/sections/p11_appendix.tex)
-and `results/dnabert_gue_ds/utility_downstream.json`. TF uses dataset 0, not the
+`results/dnabert_gue_ds/utility_downstream.json`. TF uses dataset 0, not the
 five-dataset average. These reduced-recipe comparisons do not establish benchmark parity.
 
 ### Redrawing the member/control split
@@ -344,33 +380,26 @@ regression slopes of round-50 excess on the initial offset were 0.05--0.19.
 Three draws permit matched-loss comparisons; the fourth has nonoverlapping loss
 branches. Across the comparable draws, single-copy excess varies by 0.06--0.27
 bits/nt and sixteen-copy excess by 0.07--0.64. Full rows remain in the
-[split table](docs/appendix_reference_20261103/tables/t_draws.tex) and reports under
+`t_draws.tex` regenerated by `pilot2.appendix_tables` and reports under
 `results/human_ds2345/`, `results/human_ds3456/` and `results/human_ds4567/`.
 The observed sensitivity motivates within-condition controls; it does not establish
 stability under new participant samples.
 
-For the corpus-size sweep, matching held-out loss compares a common predictive-loss
-level. It **does not independently control optimization updates**: update count remains
+For the corpus-size table, interpolation uses only each run's best-held-out-loss
+checkpoint and subsequent checkpoints, sorted by loss; this is a table-specific
+restriction to the post-optimum branch. Matching held-out loss compares a common
+predictive-loss level. It **does not independently control optimization updates**: update count remains
 confounded with corpus size, and participant composition is not manipulated.
 
-## Long-appendix archive
+## Manuscript and public artifacts
 
-The [pre-compression supplement](docs/appendix_reference_20261103/README.md) preserves
-the full source and original tables with a SHA-256 manifest. Its table numbers belong
-to the old layout; use scientific names and persistent labels in the evidence map.
-
-- **Stayed:** all main-text sources and main figures; full DNABERT-2 seed trajectories
-  and hidden-48 SEs; both tokenizer-window sweeps; matched-control design and ranges;
-  decoder budgets and conditional-prediction limitations; scorer sensitivity; release
-  identifiers; capacity/placement controls; released-model comparisons; downstream
-  utility tables/visualization; scientific summaries of remaining robustness checks.
-- **Moved here:** shell commands; JSON/CSV/script names; file-level provenance;
-  operational details, numerical optimization history and correction chronology;
-  redundant prose; full 19-cell decoder audit, grouped infilling cells, split-draw
-  and census tables; placement variance visualization duplicated by direct controls.
-- **Preserved separately:** the full-length manuscript was not shortened. The long
-  submission appendix is archived verbatim at the archive link above. Historical
-  prose is labeled as such; the compact supplement governs the submitted narrative.
+The current public checkout excludes manuscript sources, editable figure assets and
+historical appendix sources. The full-length manuscript and its backups are retained
+separately. This README contains the reproduction commands, campaign qualifications
+and audit details; `results/` contains the released measurements and source manifests.
+The quick-start commands regenerate the quantitative figures and table fragments.
+Historical notes remain a record of the experiments; superseded interpretations in
+those notes are not current claims.
 
 ## Repository navigation and checks
 

@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "description": "Preserved rounded aggregate cells for the cost, conditional-prediction and corpus-size tables. These are display measurements, not new estimates; no manuscript source, sequences or record identifiers are included.",
+  "tables": {
+    "cost": {
+      "metadata": {
+        "scope": "Released masked checkpoints on E. coli; records inserted sixteen times; own-window evaluation.",
+        "units": {
+          "cost": "held-out bits per nucleotide above the best saved loss",
+          "standard": "prefix exact recovery, percent",
+          "ours": "re-masking exact recovery, percent"
+        },
+        "note": "Slash-separated cells report individual seeds in their original order."
+      },
+      "display_source_sha256": "5e2a46630c04f214298f7230ea6b90811886a81021397348cb1b1c9b118e9a42",
+      "headers": [
+        "checkpoint",
+        "corpus",
+        "cost",
+        "standard",
+        "ours"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "DNABERT-2 117M",
+            "E. coli",
+            "+0.007",
+            "30%",
+            "0%"
+          ],
+          "emphasize": [
+            2,
+            3
+          ]
+        },
+        {
+          "cells": [
+            "NT 250M (3 seeds)",
+            "E. coli",
+            "+0.03",
+            "4 / 8 / 4%",
+            "8 / 8 / 14%"
+          ],
+          "emphasize": [
+            2,
+            4
+          ]
+        },
+        {
+          "cells": [
+            "NT 250M (3 seeds)",
+            "E. coli",
+            "+0.44",
+            "26 / 26 / 30%",
+            "66 / 68 / 76%"
+          ],
+          "emphasize": [
+            4
+          ]
+        },
+        {
+          "cells": [
+            "NT 500M",
+            "E. coli",
+            "+0.46",
+            "36%",
+            "78%"
+          ],
+          "emphasize": [
+            4
+          ]
+        },
+        {
+          "cells": [
+            "never-trained control",
+            null,
+            null,
+            "0%",
+            "0%"
+          ],
+          "rule_before": true
+        }
+      ]
+    },
+    "loo": {
+      "metadata": {
+        "scope": "Human-variant-derived chromosome-22 records, own-window evaluation, checkpoints and repetition tiers listed per row.",
+        "units": {
+          "LOO top-1": "mean conditional top-1 accuracy",
+          "power diag.": "mean powered per-record conditional accuracy; not a recovery bound",
+          "standard": "prefix exact recovery, percent",
+          "ours": "re-masking exact recovery, percent"
+        },
+        "note": "NT probes tokens; DNABERT-2 and overlapping DNABERT probe 48 nucleotide positions. Ranges preserve the original reported seed/model ranges."
+      },
+      "display_source_sha256": "54dcf9bcb1fa2a5a3409f80361d04aefc35c54f8e6c6831f3fa50e599f1ec777",
+      "headers": [
+        "checkpoint",
+        "copies",
+        "LOO top-1",
+        "power diag.",
+        "standard",
+        "ours"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "NT 250M, round 50 (3 seeds)",
+            "16",
+            "0.96–0.97",
+            "0.81–0.85",
+            "16–18%",
+            "48–54%"
+          ],
+          "emphasize": [
+            5
+          ]
+        },
+        {
+          "cells": [
+            "",
+            "1",
+            "0.57–0.66",
+            "0.14–0.23",
+            "0–2%",
+            "8%"
+          ],
+          "emphasize": [
+            5
+          ]
+        },
+        {
+          "cells": [
+            "NT 500M, round 50 (3 seeds)",
+            "16",
+            "0.96–0.99",
+            "0.84–0.92",
+            "24–50%",
+            "58–72%"
+          ],
+          "emphasize": [
+            5
+          ]
+        },
+        {
+          "cells": [
+            "",
+            "1",
+            "0.67–0.80",
+            "0.24–0.41",
+            "0%",
+            "12–18%"
+          ],
+          "emphasize": [
+            5
+          ]
+        },
+        {
+          "cells": [
+            "DNABERT-2, final (3 seeds)",
+            "16",
+            "0.99–1.00",
+            "0.85–0.91",
+            "40–44%",
+            "0%"
+          ],
+          "emphasize": [
+            4
+          ]
+        },
+        {
+          "cells": [
+            "",
+            "1",
+            "0.93–0.95",
+            "0.21–0.39",
+            "0%",
+            "0%"
+          ]
+        },
+        {
+          "cells": [
+            "DNABERT k=3-6, round 120",
+            "16",
+            "0.99–1.00",
+            "0.70–0.87",
+            "0–50%",
+            "0–4%"
+          ]
+        },
+        {
+          "cells": [
+            "",
+            "1",
+            "0.61–0.66",
+            "0.01–0.02",
+            "0%",
+            "0%"
+          ]
+        },
+        {
+          "cells": [
+            "never-trained control",
+            "0",
+            "0.07–0.51",
+            "0.000–0.003",
+            "0%",
+            "0%"
+          ],
+          "rule_before": true
+        }
+      ]
+    },
+    "scale": {
+      "metadata": {
+        "scope": "Single-copy records; non-overlapping 6-mer causal backbone; chromosome-22 background window count, not participant count; own-window evaluation; two seeds per size.",
+        "units": {
+          "best loss": "held-out bits per nucleotide",
+          "id": "candidate-record rank-1 rate",
+          "verbatim": "prefix exact recovery, percent"
+        },
+        "interpolation": {
+          "branch": "best_heldout_checkpoint_and_subsequent_checkpoints",
+          "order": "heldout_loss",
+          "method": "linear_between_bracketing_saved_points_per_seed_then_mean",
+          "exclude_duplicate_final_snapshot": true,
+          "extrapolate": false
+        },
+        "note": "Missing cells denote a loss not reached within the 30-epoch run. Stored rounded table values are preserved without recomputation."
+      },
+      "display_source_sha256": "12fad90a77e787539e3e5ac4bba0253c2a05cd454b432bc91163b520e472a538",
+      "headers": [
+        "windows",
+        "best loss",
+        "id @2.05",
+        "id @2.20",
+        "verbatim @2.05",
+        "verbatim @2.20"
+      ],
+      "rows": [
+        {
+          "cells": [
+            "1,000",
+            "1.954",
+            "1.00",
+            null,
+            "97%",
+            null
+          ]
+        },
+        {
+          "cells": [
+            "2,500",
+            "1.910",
+            "1.00",
+            null,
+            "96%",
+            null
+          ]
+        },
+        {
+          "cells": [
+            "5,000",
+            "1.883",
+            "0.95",
+            "1.00",
+            "56%",
+            "94%"
+          ]
+        },
+        {
+          "cells": [
+            "10,000",
+            "1.789",
+            "0.74",
+            "1.00",
+            "50%",
+            "82%"
+          ]
+        },
+        {
+          "cells": [
+            "20,000",
+            "1.708",
+            "0.64",
+            "0.91",
+            "23%",
+            "37%"
+          ],
+          "emphasize": [
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    }
+  }
+}

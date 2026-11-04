@@ -13,7 +13,7 @@ Privacy Leakage from Fine-Tuned Genomic Language Models* 的代码与测量结�
 | 实验 | 报告结果 | 条件 |
 | --- | --- | --- |
 | DNABERT-2，chr22，单拷贝记录 | 未见窗口中的 rank-1 比例 **18–26%**；匹配对照 **0%** | 最终检查点、三个训练种子、每种子 50 条记录、100 个其他候选 |
-| 受控合成 canary | 2-mer / 6-mer 精确恢复率 **0% / 92%** | 植入十六次，匹配 held-out loss **2.40 bits/nt** |
+| 受控合成 canary | 2-mer / 6-mer 精确恢复率 **0% / 92%** | 原训练窗口（own-window）中的前缀解码，植入十六次，匹配 held-out loss **2.40 bits/nt** |
 
 在已报告的 DNABERT-2 单拷贝评估中，两种被测解码器都未精确恢复隐藏的 48 nt 目标，
 但两者评估的检查点范围不同。这不是所有模型都零恢复：另一组 NT 实验的单拷贝恢复率
@@ -30,7 +30,7 @@ Privacy Leakage from Fine-Tuned Genomic Language Models* 的代码与测量结�
 - [论文证据索引](#evidence-map)
 - [发布范围与解释边界](#release-boundaries)
 - [补充审计细节](#supplementary-details)
-- [长附录归档](#appendix-archive)
+- [论文与公开复现材料](#manuscript-artifacts)
 - [仓库导航与检查](#navigation)
 
 <a id="quick-start"></a>
@@ -57,9 +57,8 @@ python -m pilot2.compact_appendix --tables reproduced/tables --out reproduced/ta
 只生成表格不需要 Arial。
 
 上述命令从公开测量生成 **Figure 2–3 和 22 个 TeX 表格片段**（13 个原表及 9 个精简排版片段），
-输出到 Git 忽略的 `reproduced/`。Figure 1 是独立的可编辑 PowerPoint 图，参见
-[源文件和导出说明](paper/figures/F1_source.md)。本仓库的 `paper/` 包含图件资源，
-不是完整 LaTeX 稿件；重生成图表不需要 TeX。
+输出到 Git 忽略的 `reproduced/`。公开仓库不包含论文稿件或可编辑图件资源。
+Figure 1 是作者制作的示意图；定量图表的生成程序仍在仓库中，重生成这些图表不需要 TeX。
 
 <a id="provenance"></a>
 ## 图表来源与生成口径
@@ -92,7 +91,8 @@ python -m pilot2.figures_privacy --out reproduced/figures
 ```
 
 精简表格式化程序复制数值单元，仅调整展示标签和移除表注中的程序文件名；
-不重新加权或计算统计量。若两个跨模型来源表的标准生成片段缺失，会使用已核实的归档副本。
+不重新加权或计算统计量。`results/compact_table_cells.json` 保存解码代价、条件诊断及
+语料规模表的原数值和科学条件，生成这些表不需要论文或历史 TeX 源文件。
 
 <a id="model-measurements"></a>
 ## 重新训练与测量
@@ -118,12 +118,42 @@ FASTA `chr22.fa` 放到 `$GLMEXT_DATA/human/`。VCF 的 2,548 个样本属于 GR
 
 ```bash
 python -m pilot2.human_canary
-python -m pilot2.canary_census
+python -m pilot2.canary_census --npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
+  --out reproduced/human_canary_census.json
 ```
 
 复现论文记录集时**不要加 `--phased`**。原构造不能保证真实的相位单倍型：400 个窗口中，
 审计分类为 145 个已观测单倍型、20 个个体内基因型复合记录、235 个未观测复合记录。
 稀有携带者筛选针对锚定位点，不自动适用于整段窗口。
+
+运行 NT 示例前请使用单独环境：原 NT 任务实际使用 Transformers 4.44.2 和 tokenizers 0.19.1，
+而上面的 DNABERT-2 环境使用 4.29.2 和 0.13.3。将上游
+[NT v2 250M 检查点](https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-250m-multi-species)
+下载到 `pilot2.nt` 要求的目录结构：
+
+```bash
+python -m venv .venv-nt
+source .venv-nt/bin/activate
+python -m pip install "numpy==1.24.3" "torch==2.1.1" "transformers==4.44.2" \
+  "tokenizers==0.19.1" "huggingface_hub==0.24.6"
+export NT_ROOT=/path/to/pretrained-nt
+python - <<'PY'
+import os
+from pathlib import Path
+from huggingface_hub import snapshot_download
+name = "nucleotide-transformer-v2-250m-multi-species"
+snapshot_download(repo_id=f"InstaDeepAI/{name}",
+                  local_dir=str(Path(os.environ["NT_ROOT"]) / name),
+                  ignore_patterns=["jax_model/*"])
+PY
+```
+
+每个启动 NT 训练或解码的 shell 都要导出 `NT_ROOT`。它下面的 250M 子目录名必须为
+`nucleotide-transformer-v2-250m-multi-species`，包含 `config.json`、`vocab.txt`、权重及模型 Python 文件。
+使用 [500M 检查点](https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-500m-multi-species) 时，
+将下载名中的 `250m` 换成 `500m`，训练参数改为 `--size 500m`。
+加载器以 `trust_remote_code=True` 读取本地模型，缺失时不会自动下载。
+该下载命令取得上游当前快照，不保证等于历史训练使用的权重修订。
 
 下面是一个 NT 250M 微调示例：
 
@@ -191,7 +221,8 @@ python -m pilot2.rescore --root outputs/bpe_human/dnabert2bpe_human_s0 \
     --ckpt ep120.pt --name reproduction_ep120 --compare scores_ep120.json
 
 # Requires original reconstructed run artifacts; do not replace published CSVs blindly.
-python -m pilot2.export_figure_data --root outputs --out reproduced/figure_data.csv```
+python -m pilot2.export_figure_data --root outputs --out reproduced/figure_data.csv
+```
 
 `sweep.sh` 会激活记录中的 `glm` 环境，其他机器需要相应调整。
 训练和重评分需要输入及检查点，不能与只读公开聚合结果的快速开始混为一谈。
@@ -203,23 +234,23 @@ python -m pilot2.export_figure_data --root outputs --out reproduced/figure_data.
 
 | 论文内容 / 稳定标签 | 测量文件与生成程序 | 关键范围 |
 | --- | --- | --- |
-| 配置与批次（`app:config`, `sec:basis`） | `outputs/*/args.json`、`train_summary.json`、归档配置段 | 重叠 DNABERT 的 50 轮 causal 与 150 轮 masked 是不同批次。 |
-| 人类记录（`app:haplo`, `app:resources`） | `pilot2/human_canary.py`、`canary_census.py`、`carrier_audit.py`；`results/human_canary_haplotype_audit.json` | 原始 400 个窗口与后来的相位重建不同；69、73 对应不同集合。 |
-| 匹配宿主（`app:bh`） | 原 borrowed-host 运行与 `results/figure_data.csv` 的对照行；归档对照段 | own 对照匹配 donor tier；fresh 的背景和偏移独立抽样。 |
+| 配置与批次（`app:config`, `sec:basis`） | `outputs/*/args.json`、`train_summary.json`、模型入口和带日期的启动脚本 | 重叠 DNABERT 的 50 轮 causal 与 150 轮 masked 是不同批次。 |
+| 人类记录（`app:haplo`, `app:resources`） | `pilot2/human_canary.py`、`canary_census.py`、`pilot2/canary_haplotype_audit.py`；`results/human_canary_haplotype_audit.json` | 原始 400 个窗口与后来的相位重建不同；69、73 对应不同集合。 |
+| 匹配宿主（`app:bh`） | 原 borrowed-host 运行与 `results/figure_data.csv` 的对照行；配对对照行 | own 对照匹配 donor tier；fresh 的背景和偏移独立抽样。 |
 | DNABERT-2 轨迹（`tab:ident`） | `results/figure_data.csv`；`pilot2/appendix_tables.py`、`figures_main10.py` | 六个检查点、三个种子、每 tier 50 条；含十六拷贝 fresh 排名。 |
 | Hidden-48 误差（`tab:target48`） | `results/target48_audit.json`；`pilot2/target48.py`、`export_figure_data.py` | 按核苷酸坐标裁剪；没有预测字符串的 `legacy_variable` 行不能重新裁剪。 |
 | 分词器扫描（`tab:slots`） | `results/kcurve300/`、`results/kcurve/`；`pilot2/kcurve_report.py`、`figures_privacy.py` | 300 nt 主实验与 288 nt 复现分开；逐 run 按 loss 顺序插值。 |
-| 参数与位置（`tab:capacity`, `tab:placement`） | `results/figure_data.csv`；归档 `t_capacity.tex`、`t_placement.tex`；`pilot2/appendix_tables.py` | 固定位置、每 tier 20 条、一或两个种子，不是严格等容量的随机位置实验。 |
-| 解码代价与诊断（`tab:cost`, `tab:loo`） | 归档表；原 `outputs/chr22_rerun/`；`results/nt_ckpt/`、`results/nt_seeds/` | 解码器、目标、拷贝层级、分母和访问条件须一并读取。 |
+| 参数与位置（`tab:capacity`, `tab:placement`） | `results/figure_data.csv`；生成的 `t_capacity.tex`、`t_placement.tex`；`pilot2/appendix_tables.py` | 固定位置、每 tier 20 条、一或两个种子，不是严格等容量的随机位置实验。 |
+| 解码代价与诊断（`tab:cost`, `tab:loo`） | `results/compact_table_cells.json`、`pilot2/compact_appendix.py`；原 `outputs/chr22_rerun/`；`results/nt_ckpt/`、`results/nt_seeds/` | 解码器、目标、拷贝层级、分母和访问条件须一并读取。 |
 | 跨模型来源单元（`tab:hyena30`, `tab:overlap50`） | `results/appendix_source_cells.json`；`pilot2/appendix_source_cells.py` | 含来源路径和哈希；均匀背景 HyenaDNA 的 `scores_final.json` 实际记录 epoch 30。 |
-| Scorer 审计（`app:measurement`, `app:bpenorm`） | `bpe_divisor_final.json` 及 E. coli 报告；归档定义 | 2,000 次评估包括 tier 0；500 次合并对照不等于三个 headline 的 50 条对照。 |
+| Scorer 审计（`app:measurement`, `app:bpenorm`） | `bpe_divisor_final.json` 及 E. coli 报告；`pilot2/score.py` 中的定义 | 2,000 次评估包括 tier 0；500 次合并对照不等于三个 headline 的 50 条对照。 |
 | 效用（`tab:a6`, `sec:blind`） | `results/dnabert_gue_ds/utility_downstream.json`、`utility_at_leak.json`；表格和绘图程序 | 配置/检查点去重后合并任务面板；包含零 MCC；冻结探针与微调头分开。 |
-| Edge-conditioned 解码 | `results/human_mlm/infill_audit.md`；归档 `t_infill_summary.tex`、`t_infill_cells.csv` | 88 个配置、264 个 tier 行、每行 20 条；完整分组结果已迁入仓库。 |
-| 数据划分与语料规模 | 归档 `t_draws.tex` 和实践段；`results/scale22/`、`results/big20x/` | 窗口数不是独立参与者数；20 倍数据也改变更新次数。 |
+| Edge-conditioned 解码 | `results/human_mlm/infill_audit.md`；生成的 `t_infill_summary.tex`、`t_infill_cells.csv` | 88 个配置、264 个 tier 行、每行 20 条；完整分组可从公开审计报告重新生成。 |
+| 数据划分与语料规模 | 生成的 `t_draws.tex`；`results/scale22/`、`results/big20x/` | 窗口数不是独立参与者数；20 倍数据也改变更新次数。 |
 
 `outputs/` 指原始运行和检查点目录，不表示公开仓库包含这些文件。
 已公开的聚合报告在 `results/`；来源清单标明原始路径，并不承诺分发相应权重。
-完整路径、例外条件见[长附录归档](docs/appendix_reference_20261103/README.md)，不要仅凭表号推断命令。
+完整路径见来源清单，批次例外条件见下文；不要仅凭表号推断命令。
 
 <a id="release-boundaries"></a>
 ## 发布范围与解释边界
@@ -235,8 +266,11 @@ batch 与单行路径的数值也可能不同，且存在边界已对齐的反�
 BPE 的零恢复也不能验证它。历史附录中的完整状态命题要求更新映射、约束、数值运算和 tie-breaking
 全部相同，并不为已报告输出提供证书。
 
-合成 canary 十六拷贝的 2-mer / 6-mer 在匹配 loss 2.40 bits/nt 时恢复率为 0% / 92%。
-该比较固定主干、目标函数与语料，但不证明目标可预测性相同或 slot 数是唯一原因。
+合成 canary 十六拷贝的 2-mer / 6-mer，在匹配 loss 2.40 bits/nt 时，
+原训练窗口（own-window）中的前缀恢复率为 0% / 92%。同一 matched loss 的 fresh-window
+逐种子插值均值分别为 0% / 0.33%（6-mer 三种子为 1%、0%、0%）。
+该访问条件比较限于这组十六拷贝合成实验。实验固定主干、目标函数与语料，
+但不证明目标可预测性相同或 slot 数是唯一原因。
 训练终点的 planted covering-token surprise 为 0.824 / 0.0052 bits/目标核苷酸：
 计算包含最后一个 token 内的宿主后缀，并按 48 nt 归一化，不是严格 48 nt 事件的边缘概率。
 这些训练终点也不是 matched-loss 检查点。
@@ -283,8 +317,8 @@ DNABERT-2 最终检查点、seed 0、单拷贝的平均 LOO 准确率为 0.945�
 | Core promoter | 0.085 |
 | Splice | 0.095 |
 
-比较使用同数据集的普通 DNABERT-2 行，来源见[归档下游段落](docs/appendix_reference_20261103/sections/p11_appendix.tex)
-及 `results/dnabert_gue_ds/utility_downstream.json`。TF 比较 dataset 0，而不是五个数据集均值。
+比较使用同数据集的普通 DNABERT-2 行，来源见
+`results/dnabert_gue_ds/utility_downstream.json`。TF 比较 dataset 0，而不是五个数据集均值。
 这些缩减 recipe 下的比较不能宣称 benchmark parity。
 
 ### 成员/对照划分重抽样
@@ -296,24 +330,21 @@ DNABERT-2 最终检查点、seed 0、单拷贝的平均 LOO 准确率为 0.945�
 为 0.00 +/- 0.05，round-50 excess 对初始偏移的回归斜率为 0.05--0.19。
 其中三个划分可做 matched-loss 比较，第四个的损失分支没有共同范围。
 可比较划分中，单拷贝 excess 的变化范围为 0.06--0.27 bits/nt，十六拷贝为 0.07--0.64。
-完整结果保留在[划分表](docs/appendix_reference_20261103/tables/t_draws.tex)及
+完整结果保留在 `pilot2.appendix_tables` 重新生成的 `t_draws.tex` 及
 `results/human_ds2345/`、`results/human_ds3456/`、`results/human_ds4567/` 的报告中。
 这支持在各评估条件内设置对照，不证明对新参与者样本稳定。
 
-语料规模扫描中的 matched loss 只是在同一预测损失水平比较，**不能独立控制优化更新次数**：
+语料规模表的插值只使用每个运行的最佳 held-out loss 检查点及其后检查点，再按 loss 排序；
+这是该表特有的最优点后分支限定。matched loss 只是在同一预测损失水平比较，**不能独立控制优化更新次数**：
 更新次数仍与语料规模混杂，参与者构成也不是被操纵的变量。
 
-<a id="appendix-archive"></a>
-## 长附录归档
+<a id="manuscript-artifacts"></a>
+## 论文与公开复现材料
 
-[精简前的补充材料](docs/appendix_reference_20261103/README.md) 保存完整源文件、原始表格和 SHA-256 清单。
-旧表号对应旧版排版，定位时请使用上面的语义名称与稳定标签。
-
-- **留在论文：**正文与主图、DNABERT-2 全部种子轨迹和 hidden-48 SE、两种窗口的分词器扫描、
-  匹配对照、解码预算与诊断边界、scorer 敏感性、数据版本、参数/位置对照、跨模型结果、效用图表及补充实验结论。
-- **迁入仓库：**命令、JSON/CSV/程序名、文件级来源、操作与优化细节、开发更正历史、重复论述，
-  以及完整 19 单元审计、infilling 分组、划分重抽样和 census 表等详细材料。
-- **另行保存：**完整版论文未压缩；原投稿长附录在上述归档中保留。归档是历史版本，当前投稿版决定论文表述。
+当前公开版本不包含论文源文件、可编辑图件或历史附录源文件。完整版稿件和备份另行保留。
+本 README 汇集复现命令、批次限定和审计细节；`results/` 保存已发布测量与来源清单。
+快速开始中的命令可重新生成定量图和表格片段。历史实验笔记仍用于记录过程，
+其中已撤回的解释不代表当前论文主张。
 
 <a id="navigation"></a>
 ## 仓库导航与检查

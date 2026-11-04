@@ -1,22 +1,21 @@
-"""Describe the human canary set, so the appendix can state what was planted.
+"""Describe metadata from the historical chromosome-22 record collection.
 
-    python -m pilot2.canary_census --npz /data/wh/yqdata/glm_data/human/canaries_chr22.npz \
-        --out results/human_canary_census.json
+    python -m pilot2.canary_census --npz "$GLMEXT_DATA/human/canaries_chr22.npz" \
+        --out reproduced/human_canary_census.json
 
-The paper says a canary is "a 96 nt window of chromosome 22 built around a variant carried by at
-most five of the 2,548 individuals in 1000 Genomes phase 3, written with that carrier's own
-alleles". That sentence has four numbers in it and a reader is entitled to the distribution behind
-them: how many distinct people the 400 segments come from, how many rare variants each carries, and
-how rare they actually are rather than how rare the filter allowed.
+The positional construction does not guarantee that a record is an observed
+haplotype. This census describes the stored carriers and variants; haplotype
+compatibility is evaluated separately by canary_haplotype_audit.
 
-Everything here is read from the metadata already stored in the .npz beside the sequences, so it
-describes exactly the file the runs used, not a reconstruction of it.
+Everything is read from the metadata stored beside the sequences in the .npz,
+so it describes the file the runs used, not a reconstruction of it.
 """
 from __future__ import annotations
 
 import argparse
 import collections
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -66,7 +65,9 @@ def census(npz_path: Path) -> dict:
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--npz", default="/data/wh/yqdata/glm_data/human/canaries_chr22.npz")
+    ap.add_argument("--npz", default=str(Path(os.environ.get("GLMEXT_DATA", "data")) /
+                                        "human" / "canaries_chr22.npz"),
+                    help="record set under GLMEXT_DATA/human by default (data/human if unset)")
     ap.add_argument("--out", default="results/human_canary_census.json")
     args = ap.parse_args(argv)
     c = census(Path(args.npz))

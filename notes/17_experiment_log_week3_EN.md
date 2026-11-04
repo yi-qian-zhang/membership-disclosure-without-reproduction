@@ -5789,3 +5789,14 @@ Remote receipt: GitHub implementation93bf65b (generator3aa660d), public codeb89a
 submission Overleaf29943a6, full Overleafd9e4dce. Fresh remote clones compile to
 38/50 pages with10/18 main pages, source parity44/44 and42/42, and exact PDF page-text
 parity with local builds. See43_consistency_remote_20261103.json.
+
+
+## 3 November - Access conditions and public release repair
+
+Own-window qualifiers now accompany the controlled 0%/92% comparison; fresh-window
+0%/0.33% is reported with its synthetic16-copy scope. Corpus-size interpolation uses
+the best-loss checkpoint and subsequent branch. Bilingual README rendering and
+reproduction setup are repaired. Public manuscript/old appendix sources are removed
+from the latest tree at author request, with Git history retained by explicit choice.
+Archive-independent table generation preserves all reported cells. See note52 for
+validation and final synchronization receipts.
