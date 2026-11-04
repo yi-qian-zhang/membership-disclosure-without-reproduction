@@ -1,0 +1,21 @@
+{
+  "pages": 22,
+  "main": 10,
+  "appendix": 8,
+  "errors": 0,
+  "undefined": 0,
+  "overfull": 0,
+  "warnings": [
+    "Underfull \\hbox (badness 1354) in paragraph at lines 64--71"
+  ],
+  "readme_links": [
+    "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/0baf010/README.md#measurement-campaigns-and-conditional-diagnostics",
+    "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/0baf010/README.md#quick-start-regenerate-figures-and-tables",
+    "https://github.com/yi-qian-zhang/membership-disclosure-without-reproduction/blob/0baf010/README.md"
+  ],
+  "all_label_numbers_and_pages_unchanged": true,
+  "scientific_numeric_tokens_unchanged": true,
+  "overleaf": "d0372c8",
+  "source_files_equal": 53,
+  "full_files_unchanged": 42
+}
