@@ -1,0 +1,19 @@
+{
+  "overleaf": "80b7b061359ea93fbdc315e88100459d808b153f",
+  "pages": 22,
+  "main_pages": 10,
+  "appendix_pages": 8,
+  "references_start_pdf": 12,
+  "appendix_start_pdf": 15,
+  "source_files_identical": 53,
+  "title_main_bibliography_text_identical": true,
+  "full_version_files_unchanged": 42,
+  "warnings": [
+    "Underfull \\hbox (badness 1354) in paragraph at lines 64--71"
+  ],
+  "readme_commit": "b5ae1a2",
+  "tables": 12,
+  "supplementary_figures": 1,
+  "sweep_rows": 33,
+  "utility_best_final_rows": 12
+}
